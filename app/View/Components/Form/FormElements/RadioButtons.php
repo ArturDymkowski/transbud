@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form\input;
+namespace App\View\Components\Form\FormElements;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Radio extends Component
+class RadioButtons extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class Radio extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.input.radio');
+        return view('components.form.form-elements.radio-buttons');
     }
 }

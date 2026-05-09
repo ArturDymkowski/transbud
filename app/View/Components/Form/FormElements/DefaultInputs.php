@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form\FormElements;
+namespace App\View\Components\Form\FormElements;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class ToggleSwitch extends Component
+class DefaultInputs extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class ToggleSwitch extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.form-elements.toggle-switch');
+        return view('components.form.form-elements.default-inputs');
     }
 }

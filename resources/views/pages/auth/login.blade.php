@@ -27,14 +27,8 @@
                             <form method="post" action="{{ route('login.store') }}">
                                 @csrf
                                 <div class="space-y-5">
-                                    <!-- Email -->
-                                    <div>
-                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            Email<span class="text-error-500">*</span>
-                                        </label>
-                                        <input type="email" id="email" name="email" placeholder="info@gmail.com"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
-                                    </div>
+                                    <x-form.text-input name="email" required="true" placeholder="info@gmail.com" />
+
                                     <!-- Password -->
                                     <div>
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -56,6 +50,9 @@
                                                 </svg>
                                             </span>
                                         </div>
+                                        @error('email')
+                                            <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <!-- Checkbox -->
                                     <div class="flex items-center justify-between">

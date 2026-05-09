@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form\select;
+namespace App\View\Components\Form\FormElements;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class MultipleSelect extends Component
+class InputGroup extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class MultipleSelect extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.select.multiple-select');
+        return view('components.form.form-elements.input-group');
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form\FormElements;
+namespace App\View\Components\Form\FormElements;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class TextAreaInputs extends Component
+class Dropzone extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class TextAreaInputs extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.form-elements.text-area-inputs');
+        return view('components.form.form-elements.dropzone');
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form\FormElements;
+namespace App\View\Components\Form\FormElements;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class InputGroup extends Component
+class SelectInputs extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class InputGroup extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.form-elements.input-group');
+        return view('components.form.form-elements.select-inputs');
     }
 }

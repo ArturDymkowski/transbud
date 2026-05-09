@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\form\FormElements;
+namespace App\View\Components\Form\FormElements;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class CheckboxComponent extends Component
+class FileInputExample extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class CheckboxComponent extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.form-elements.checkbox-component');
+        return view('components.form.form-elements.file-input-example');
     }
 }
