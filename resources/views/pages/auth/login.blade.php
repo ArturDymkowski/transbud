@@ -29,6 +29,7 @@
                                 <div class="space-y-5">
                                     <x-form.input.text-input type="email" name="email" required="true" placeholder="info@gmail.com" />
                                     <x-form.input.text-input type="password" name="password" required="true" placeholder="Enter your password" />
+                                    <x-form.input.radio-group name="test" :options="['entry', 'intermediate', 'senior']" />
 
                                     <!-- Checkbox -->
                                     <div class="flex items-center justify-between">

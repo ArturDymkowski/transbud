@@ -6,12 +6,16 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Radio extends Component
+class RadioGroup extends Component
 {
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct(
+        public string $name,
+        public ?bool $disabled = false,
+        public array $options,
+    )
     {
         //
     }
@@ -21,6 +25,6 @@ class Radio extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.form.input.radio');
+        return view('components.form.input.radio-group');
     }
 }
