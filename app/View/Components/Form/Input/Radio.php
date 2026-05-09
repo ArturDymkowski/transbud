@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\Form\input;
+namespace App\View\Components\Form\Input;
 
 use Closure;
 use Illuminate\Contracts\View\View;
