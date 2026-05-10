@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\Menu\DriverController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function() {
@@ -18,6 +19,8 @@ Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('langu
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('/drivers', DriverController::class)->only(['index']);
 });
 
 //Route::resource('auth', LoginController::class)->only(['create', 'store']);

@@ -10,7 +10,7 @@ class MenuHelper
             [
                 'icon' => 'heroicon-o-user-group',
                 'name' => 'Kierowcy',
-                'path' => '/drivers'
+                'path' => route('drivers.index'),
             ],
 //            [
 //                'icon' => 'dashboard',
