@@ -1,6 +1,7 @@
 @extends('layouts.fullscreen-layout')
 
 @section('content')
+    @include('layouts.language_switcher')
     <div class="relative z-1 bg-white p-6 sm:p-0 dark:bg-gray-900">
         <div class="relative flex h-screen w-full flex-col justify-center sm:p-0 lg:flex-row dark:bg-gray-900">
             <!-- Form -->
@@ -9,33 +10,25 @@
                     <div>
                         <div class="mb-5 sm:mb-8">
                             <h1 class="text-title-sm sm:text-title-md mb-2 font-semibold text-gray-800 dark:text-white/90">
-                                Sign In
+                                {{ __('auth.sign_in') }}
                             </h1>
                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Enter your email and password to sign in!
+                                {{ __('auth.enter_email_password') }}
                             </p>
                         </div>
                         <div>
-                            <div class="relative py-3 sm:py-5">
-                                <div class="absolute inset-0 flex items-center">
-                                    <div class="w-full border-t border-gray-200 dark:border-gray-800"></div>
-                                </div>
-                                <div class="relative flex justify-center text-sm">
-                                    <span class="bg-white p-2 text-gray-400 sm:px-5 sm:py-2 dark:bg-gray-900">Or</span>
-                                </div>
-                            </div>
                             <form method="post" action="{{ route('login.store') }}">
                                 @csrf
                                 <div class="space-y-5">
                                     <x-form.input.text-input type="email" name="email" required="true" placeholder="info@gmail.com" />
-                                    <x-form.input.text-input type="password" name="password" required="true" placeholder="Enter your password" />
+                                    <x-form.input.text-input type="password" name="password" required="true" placeholder="{{ __('auth.enter_password') }}" />
 
                                     <div class="flex items-center justify-between">
-                                        <x-form.input.checkbox name="keep_login" value="keep_login"> Keep me logged in </x-form.input.checkbox>
-                                        <x-form.input.link href="/reset-password">Forgot password?</x-form.input.link>
+                                        <x-form.input.checkbox name="keep_login" value="keep_login"> {{ __('auth.keep_login') }} </x-form.input.checkbox>
+                                        <x-form.input.link href="/reset-password">{{ __('auth.forgot_password') }}</x-form.input.link>
                                     </div>
 
-                                    <x-form.input.button>Sign in</x-form.input.button>
+                                    <x-form.input.button>{{ __('auth.sign_in') }}</x-form.input.button>
                                 </div>
                             </form>
                         </div>
@@ -43,20 +36,6 @@
                 </div>
             </div>
 
-            <div class="bg-brand-950 relative hidden h-full w-full items-center lg:grid lg:w-1/2 dark:bg-white/5">
-                <div class="z-1 flex items-center justify-center">
-                    <!-- ===== Common Grid Shape Start ===== -->
-                    <x-common.common-grid-shape/>
-                    <div class="flex max-w-xs flex-col items-center">
-                        <a href="/" class="mb-4 block">
-                            <img src="./images/logo/auth-logo.svg" alt="Logo" />
-                        </a>
-                        <p class="text-center text-gray-400 dark:text-white/60">
-                            Free and Open-Source Tailwind CSS Admin Dashboard Template
-                        </p>
-                    </div>
-                </div>
-            </div>
             <!-- Toggler -->
             <div class="fixed right-6 bottom-6 z-50">
                 <button

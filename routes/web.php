@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function() {
@@ -13,6 +14,7 @@ Route::get("/", function() {
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login/store', [LoginController::class, 'store'])->name('login.store');
 Route::delete('/login', [LoginController::class, 'destroy'])->name('login.destroy');
+Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
