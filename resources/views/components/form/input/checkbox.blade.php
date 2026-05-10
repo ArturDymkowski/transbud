@@ -3,7 +3,7 @@
         <label for="{{ $name }}"
                class="flex cursor-pointer items-center text-sm text-gray-700 select-none dark:text-gray-400">
             <div class="relative">
-                <input type="checkbox" id="{{ $name }}" class="sr-only" @if($required) required @endif
+                <input type="checkbox" id="{{ $name }}" name="{{ $name }}" class="sr-only" @if($required) required @endif
                        @change="checkboxToggle = !checkboxToggle" value="{{ $value }}" />
                 <div :class="checkboxToggle ? 'border-brand-500 bg-brand-500' :
                         'bg-transparent border-gray-300 dark:border-gray-700'"

@@ -24,7 +24,7 @@
                                     <x-form.input.text-input type="password" name="password" required="true" placeholder="{{ __('auth.enter_password') }}" />
 
                                     <div class="flex items-center justify-between">
-                                        <x-form.input.checkbox name="keep_login" value="keep_login"> {{ __('auth.keep_login') }} </x-form.input.checkbox>
+                                        <x-form.input.checkbox name="remember" value="true"> {{ __('auth.keep_login') }} </x-form.input.checkbox>
                                         <x-form.input.link href="/reset-password">{{ __('auth.forgot_password') }}</x-form.input.link>
                                     </div>
 
