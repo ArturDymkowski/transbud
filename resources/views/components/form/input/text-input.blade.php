@@ -1,8 +1,6 @@
 <div>
     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-        {{ Str::ucfirst($name) }} @if($required)
-            <span class="text-error-500">*</span>
-        @endif
+        {{ Str::ucfirst($name) }} @if($required) <x-form.input.required-star /> @endif
     </label>
     @if($type != 'password')
         <input type="{{ $type }}"
