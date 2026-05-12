@@ -11,7 +11,7 @@ class DriversTable extends Component
     use WithPagination;
 
     public $search = '';
-    public $perPage = 5;
+    public $perPage = 10;
     public $isActive = '';
 
     public function updatedPerPage()

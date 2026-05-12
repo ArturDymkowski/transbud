@@ -36,13 +36,13 @@ class MenuHelper
 //                    ['name' => 'Form Elements', 'path' => '/form-elements', 'pro' => false],
 //                ],
 //            ],
-//            [
-//                'name' => 'Tables',
-//                'icon' => 'tables',
-//                'subItems' => [
-//                    ['name' => 'Basic Tables', 'path' => '/basic-tables', 'pro' => false]
-//                ],
-//            ],
+            [
+                'name' => 'Tables',
+                'icon' => 'heroicon-o-user-group',
+                'subItems' => [
+                    ['name' => 'Basic Tables', 'path' => '/basic-tables', 'pro' => false]
+                ],
+            ],
 //            [
 //                'name' => 'Pages',
 //                'icon' => 'pages',
