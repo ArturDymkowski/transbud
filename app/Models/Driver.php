@@ -33,4 +33,18 @@ class Driver extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->when($search, function ($q) use ($search) {
+            $q->where(function ($q) use ($search) {
+                $q->orWhere('name', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('pesel', 'like', '%' . $search . '%');
+//                foreach ($this->fillable as $column) {
+//                    $q->orWhere($column, 'like', "%{$search}%");
+//                }
+            });
+        });
+    }
 }
