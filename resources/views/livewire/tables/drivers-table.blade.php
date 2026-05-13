@@ -21,10 +21,24 @@
 
         <!-- Table -->
         <div class="overflow-hidden">
-            <div class="max-w-full px-5 overflow-x-auto">
+            <div class="max-w-full px-5 overflow-x-auto" x-data="{
+                selected: @entangle('selected'),
+                allIds: {{ json_encode($drivers->pluck('id')) }},
+
+                toggleAll() {
+                    if (this.selected.length < this.allIds.length) {
+                        this.selected = this.allIds;
+                    } else {
+                        this.selected = [];
+                    }
+                }
+            }">
                 <table class="min-w-full">
                     <thead>
                     <tr class="border-gray-200 border-y dark:border-gray-700">
+                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            <x-form.input.checkbox name="selectAll" @click="toggleAll" x-bind:checked="selected.length === allIds.length && allIds.length > 0" />
+                        </th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Nazwa</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Telefon</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Pesel</th>
@@ -37,7 +51,12 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($drivers as $driver)
-                            <tr>
+                            <tr wire:key="driver-row-{{ $driver->id }}">
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" />
+                                    </div>
+                                </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>
                                 </td>
@@ -80,3 +99,23 @@
         {{ $drivers->links() }}
     </div>
 </div>
+
+<script>
+    {{--function checkboxTable() {--}}
+    {{--    return {--}}
+    {{--        selectAll: false,--}}
+    {{--        selected: [],--}}
+    {{--        items: @json($drivers) ?? [],--}}
+
+    {{--        toggleAll() {--}}
+    {{--        console.log('items:', this.items);--}}
+    {{--        const allIds = Object.values(this.items).map(item => item.id);--}}
+    {{--        this.selected = this.selectAll ? allIds : [];--}}
+    {{--    },--}}
+
+    {{--    updateSelectAll() {--}}
+    {{--        this.selectAll = this.selected.length === Object.values(this.items).length;--}}
+    {{--    }--}}
+    {{--}--}}
+    {{--}--}}
+</script>
