@@ -32,34 +32,43 @@
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data wygaśnięcia prawa jazdy</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data wygaśnięcia badań medycznych</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Aktywny</th>
-                        <th scope="col" class="relative px-4 py-3 capitalize">
-                            <span class="sr-only">Akcje</span>
-                        </th>
+                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Akcje</th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($drivers as $driver)
                             <tr>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->phone }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->phone ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pesel }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pesel ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->driving_license_number }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->driving_license_number ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->license_expiry_date }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->license_expiry_date ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_valid_until }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_valid_until ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->is_active }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->is_active ?? '-' }}</div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
+                                        <a href="#">
+                                            <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500" />
+                                        </a>
+                                        <a href="">
+                                            <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500" />
+                                        </a>
+
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
