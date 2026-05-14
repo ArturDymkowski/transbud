@@ -55,12 +55,44 @@
                     }
                 }
             }">
+                <div x-show="selected.length > 0"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-2"
+                     class="flex items-center justify-between px-4 py-3 mb-4 bg-brand-50 border border-brand-200 rounded-lg dark:bg-brand-900/20 dark:border-brand-800">
+
+                    <div class="flex items-center gap-2 text-sm font-medium text-brand-700 dark:text-brand-400">
+                        <span x-text="selected.length" class="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-brand-500"></span>
+                        <span>Zaznaczono rekordy</span>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <button type="button"
+                                @click="selected = []"
+                                class="text-sm font-semibold text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                            Odznacz wszystkie
+                        </button>
+
+                        <button type="button"
+                                wire:click="deleteSelected"
+                                wire:confirm="Czy na pewno chcesz usunąć zaznaczone rekordy? Tej operacji nie da się cofnąć."
+                                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                            <x-heroicon-o-trash class="w-4 h-4" />
+                            Usuń zaznaczone
+                        </button>
+                    </div>
+                </div>
+
                 <table class="min-w-full">
                     <thead>
                     <tr class="border-gray-200 border-y dark:border-gray-700">
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             <x-form.input.checkbox name="selectAll" @click="togglePage" x-bind:checked="isAllPageSelected()" />
                         </th>
+                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">ID</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Nazwa</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Telefon</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Pesel</th>
@@ -78,6 +110,9 @@
                                     <div class="text-sm text-gray-500 dark:text-gray-400">
                                         <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" />
                                     </div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->id }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>

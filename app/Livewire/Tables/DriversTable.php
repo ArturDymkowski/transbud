@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Driver;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -37,5 +38,17 @@ class DriversTable extends Component
         return view('livewire.tables.drivers-table', [
             'drivers' => $drivers
         ]);
+    }
+
+    public function deleteSelected()
+    {
+        if (empty($this->selected)) {
+            return;
+        }
+
+        Driver::whereIn('id', $this->selected)->delete();
+        $this->selected = [];
+
+        session()->flash('success', 'Pomyślnie usunięto zaznaczone rekordy.');
     }
 }
