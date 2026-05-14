@@ -51,4 +51,13 @@ class DriversTable extends Component
 
         $this->dispatch('notify', message: 'Pomyślnie usunięto ' . $deletedRecords . ' rekordów');
     }
+
+    public function toggleActive($driverId)
+    {
+        $driver = Driver::findOrFail($driverId);
+        $driver->is_active = !$driver->is_active;
+        $driver->save();
+
+        $this->dispatch('notify', message: 'Rekord zaktualizowany');
+    }
 }

@@ -133,7 +133,9 @@
                                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_valid_until ?? '-' }}</div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->is_active ?? '-' }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})" name="{{ $driver->id }}" :isActive="$driver->is_active" />
+                                    </div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
