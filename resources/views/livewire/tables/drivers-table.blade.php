@@ -5,7 +5,24 @@
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90"></h3>
             </div>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between w-full">
+                <div class="per-page flex items-center gap-3">
+                    <span class="text-gray-500 dark:text-gray-400"> Show </span>
+                    <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
+                        <select wire:model.live="perPage" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-9 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none py-2 pr-8 pl-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-500 dark:text-gray-400'" @click="isOptionSelected = true" @change="perPage = $event.target.value">
+                            @foreach ($this->optionsPerPage as $option)
+                                <option value="{{ $option }}" class="text-gray-500 dark:bg-gray-900 dark:text-gray-400"> {{ $option }} </option>
+                            @endforeach
+                        </select>
+                        <span class="absolute top-1/2 right-2 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                      <svg class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.8335 5.9165L8.00016 10.0832L12.1668 5.9165" stroke="" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </span>
+                    </div>
+                    <span class="text-gray-500 dark:text-gray-400"> entries </span>
+                </div>
+
                 <form>
                     <div class="relative">
                         <button type="button" class="absolute -translate-y-1/2 left-4 top-1/2">
@@ -23,13 +40,18 @@
         <div class="overflow-hidden">
             <div class="max-w-full px-5 overflow-x-auto" x-data="{
                 selected: @entangle('selected'),
+                idsOnPage: @entangle('idsOnPage'),
                 allIds: {{ json_encode($drivers->pluck('id')) }},
 
-                toggleAll() {
-                    if (this.selected.length < this.allIds.length) {
-                        this.selected = this.allIds;
+                isAllPageSelected() {
+                    return this.idsOnPage.length > 0 && this.idsOnPage.every(id => this.selected.includes(id));
+                },
+
+                togglePage() {
+                    if (this.isAllPageSelected()) {
+                        this.selected = this.selected.filter(id => !this.idsOnPage.includes(id));
                     } else {
-                        this.selected = [];
+                        this.selected = [...new Set([...this.selected, ...this.idsOnPage])];
                     }
                 }
             }">
@@ -37,7 +59,7 @@
                     <thead>
                     <tr class="border-gray-200 border-y dark:border-gray-700">
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            <x-form.input.checkbox name="selectAll" @click="toggleAll" x-bind:checked="selected.length === allIds.length && allIds.length > 0" />
+                            <x-form.input.checkbox name="selectAll" @click="togglePage" x-bind:checked="isAllPageSelected()" />
                         </th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Nazwa</th>
                         <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Telefon</th>

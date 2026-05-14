@@ -12,29 +12,30 @@ class DriversTable extends Component
     use WithPagination;
 
     public $search = '';
-    public $perPage = 10;
     public $isActive = '';
     public array $selected = [];
+    public array $optionsPerPage  = [10, 25, 50, 100];
+    public $perPage = 10;
+    public array $idsOnPage = [];
 
     public function updatedPerPage()
     {
+        $this->selected = [];
         $this->resetPage();
-    }
-
-    #[Computed]
-    public function drivers()
-    {
-        return Driver::search($this->search)->paginate($this->perPage);
     }
 
     public function render()
     {
+        $drivers = Driver::search($this->search)
+            ->when(filled($this->isActive), function ($query) {
+                return $query->where('is_active', $this->isActive);
+            })
+            ->paginate($this->perPage);
+
+        $this->idsOnPage = $drivers->pluck('id')->toArray();
+
         return view('livewire.tables.drivers-table', [
-            'drivers' => Driver::search($this->search)
-                ->when(filled($this->isActive), function ($query) {
-                    return $query->where('is_active', $this->isActive);
-                })
-                ->paginate($this->perPage)
+            'drivers' => $drivers
         ]);
     }
 }
