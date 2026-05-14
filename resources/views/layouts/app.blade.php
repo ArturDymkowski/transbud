@@ -112,6 +112,8 @@
 
     </div>
 
+
+
     <!-- Apply dark mode immediately to prevent flash -->
     <script>
         (function() {
@@ -127,6 +129,34 @@
             }
         })();
     </script>
+
+    <div x-data="{
+        show: false,
+        message: '',
+
+        init() {
+            @if (session()->has('success'))
+                this.flash('{{ session('success') }}');
+            @endif
+        },
+        flash(msg) {
+            this.message = msg;
+            this.show = true;
+            setTimeout(() => this.show = false, 3000); {{-- Zniknie po 3 sekundach --}}
+        }
+     }"
+         x-on:notify.window="flash($event.detail.message)"
+         x-show="show"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-x-8"
+         x-transition:enter-end="opacity-100 transform translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-x-0"
+         x-transition:leave-end="opacity-0 transform translate-x-8"
+         class="fixed top-20 right-5 z-[9999] flex items-center p-4 mb-4 bg-white rounded-lg shadow-xl dark:bg-gray-800 dark:text-gray-400"
+         style="display: none;">
+                <x-ui.alert variant="success" message="@this.message" />
+    </div>
 
 </body>
 

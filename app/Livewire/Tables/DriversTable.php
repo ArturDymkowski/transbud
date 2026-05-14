@@ -45,10 +45,10 @@ class DriversTable extends Component
         if (empty($this->selected)) {
             return;
         }
-
+        $deletedRecords = count($this->selected);
         Driver::whereIn('id', $this->selected)->delete();
         $this->selected = [];
 
-        session()->flash('success', 'Pomyślnie usunięto zaznaczone rekordy.');
+        $this->dispatch('notify', message: 'Pomyślnie usunięto ' . $deletedRecords . ' rekordów');
     }
 }
