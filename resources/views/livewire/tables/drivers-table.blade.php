@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center w-full">
-                <x-form.input.select label="Per Page" :options="$this->optionsPerPage" name="perPage"/>
+                <x-form.input.select wire:model.live="perPage" label="Per Page" :options="$this->optionsPerPage" name="perPage"/>
                 <x-form.input.select label="Active" :options="['' => 'All', 0 => 'No', 1 => 'Yes']" name="isActive"
                                      wire:model.live="isActive"/>
             </div>
@@ -95,7 +95,6 @@
                 </span>
                             @endif
 
-                            {{-- Wskaźnik dla Filtru Aktywności --}}
                             @if(filled($isActive))
                                 <span
                                     class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
@@ -108,7 +107,6 @@
                             @endif
                         </div>
 
-                        {{-- Przycisk resetujący wszystko --}}
                         <button type="button"
                                 wire:click="resetFilters"
                                 class="text-xs font-semibold transition text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
