@@ -3,23 +3,29 @@
         <!-- Header -->
         <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center w-full">
-                <x-form.input.select label="Per Page" :options="$this->optionsPerPage" name="perPage" />
-                <x-form.input.select label="Active" :options="['' => 'All', 0 => 'No', 1 => 'Yes']" name="isActive" wire:model.live="isActive" />
+                <x-form.input.select label="Per Page" :options="$this->optionsPerPage" name="perPage"/>
+                <x-form.input.select label="Active" :options="['' => 'All', 0 => 'No', 1 => 'Yes']" name="isActive"
+                                     wire:model.live="isActive"/>
             </div>
             <form>
                 <div class="relative">
                     <button type="button" class="absolute -translate-y-1/2 left-4 top-1/2">
-                        <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.04199 9.37381C3.04199 5.87712 5.87735 3.04218 9.37533 3.04218C12.8733 3.04218 15.7087 5.87712 15.7087 9.37381C15.7087 12.8705 12.8733 15.7055 9.37533 15.7055C5.87735 15.7055 3.04199 12.8705 3.04199 9.37381ZM9.37533 1.54218C5.04926 1.54218 1.54199 5.04835 1.54199 9.37381C1.54199 13.6993 5.04926 17.2055 9.37533 17.2055C11.2676 17.2055 13.0032 16.5346 14.3572 15.4178L17.1773 18.2381C17.4702 18.531 17.945 18.5311 18.2379 18.2382C18.5308 17.9453 18.5309 17.4704 18.238 17.1775L15.4182 14.3575C16.5367 13.0035 17.2087 11.2671 17.2087 9.37381C17.2087 5.04835 13.7014 1.54218 9.37533 1.54218Z" fill=""/>
+                        <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20"
+                             fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M3.04199 9.37381C3.04199 5.87712 5.87735 3.04218 9.37533 3.04218C12.8733 3.04218 15.7087 5.87712 15.7087 9.37381C15.7087 12.8705 12.8733 15.7055 9.37533 15.7055C5.87735 15.7055 3.04199 12.8705 3.04199 9.37381ZM9.37533 1.54218C5.04926 1.54218 1.54199 5.04835 1.54199 9.37381C1.54199 13.6993 5.04926 17.2055 9.37533 17.2055C11.2676 17.2055 13.0032 16.5346 14.3572 15.4178L17.1773 18.2381C17.4702 18.531 17.945 18.5311 18.2379 18.2382C18.5308 17.9453 18.5309 17.4704 18.238 17.1775L15.4182 14.3575C16.5367 13.0035 17.2087 11.2671 17.2087 9.37381C17.2087 5.04835 13.7014 1.54218 9.37533 1.54218Z"
+                                  fill=""/>
                         </svg>
                     </button>
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search..." class="h-[42px] w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-[42px] pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 xl:w-[300px]"/>
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search..."
+                           class="h-[42px] w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-[42px] pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 xl:w-[300px]"/>
                 </div>
             </form>
         </div>
 
         <!-- Table -->
         <div class="overflow-hidden">
+            <!-- Selected options -->
             <div class="max-w-full px-5 overflow-x-auto" x-data="{
                 selected: @entangle('selected'),
                 idsOnPage: @entangle('idsOnPage'),
@@ -47,7 +53,8 @@
                      class="flex items-center justify-between px-4 py-3 mb-4 bg-brand-50 border border-brand-200 rounded-lg dark:bg-brand-900/20 dark:border-brand-800">
 
                     <div class="flex items-center gap-2 text-sm font-medium text-brand-700 dark:text-brand-400">
-                        <span x-text="selected.length" class="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-brand-500"></span>
+                        <span x-text="selected.length"
+                              class="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-brand-500"></span>
                         <span>Zaznaczono rekordy</span>
                     </div>
 
@@ -62,76 +69,151 @@
                                 wire:click="deleteSelected"
                                 wire:confirm="Czy na pewno chcesz usunąć zaznaczone rekordy? Tej operacji nie da się cofnąć."
                                 class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                            <x-heroicon-o-trash class="w-4 h-4" />
+                            <x-heroicon-o-trash class="w-4 h-4"/>
                             Usuń zaznaczone
                         </button>
                     </div>
                 </div>
 
+                <!-- Search Indicator -->
+                @if(filled($search) || filled($isActive))
+                    <div
+                        class="flex flex-wrap items-center justify-between gap-3 px-4 py-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800/40 dark:border-gray-700">
+
+                        <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <span class="font-medium text-gray-500 dark:text-gray-400">Filtry:</span>
+
+                            @if(filled($search))
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
+                    Search: "{{ $search }}"
+
+                    <button type="button" wire:click="$set('search', '')"
+                            class="hover:text-brand-900 dark:hover:text-brand-200">
+                        <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
+                    </button>
+                </span>
+                            @endif
+
+                            {{-- Wskaźnik dla Filtru Aktywności --}}
+                            @if(filled($isActive))
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
+                    Status: {{ $isActive === '1' ? 'Aktywni' : 'Nieaktywni' }}
+                    <button type="button" wire:click="$set('isActive', '')"
+                            class="hover:text-brand-900 dark:hover:text-brand-200">
+                        <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
+                    </button>
+                </span>
+                            @endif
+                        </div>
+
+                        {{-- Przycisk resetujący wszystko --}}
+                        <button type="button"
+                                wire:click="resetFilters"
+                                class="text-xs font-semibold transition text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
+                            Wyczyść wszystko
+                        </button>
+                    </div>
+                @endif
+
                 <table class="min-w-full">
                     <thead>
                     <tr class="border-gray-200 border-y dark:border-gray-700">
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            <x-form.input.checkbox name="selectAll" @click="togglePage" x-bind:checked="isAllPageSelected()" />
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            <x-form.input.checkbox name="selectAll" @click="togglePage"
+                                                   x-bind:checked="isAllPageSelected()"/>
                         </th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">ID</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Nazwa</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Telefon</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Pesel</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Adres</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data wygaśnięcia prawa jazdy</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data wygaśnięcia badań medycznych</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Aktywny</th>
-                        <th scope="col" class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Akcje</th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">ID
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Nazwa
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Telefon
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Pesel
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Adres
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data
+                            wygaśnięcia prawa jazdy
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data
+                            wygaśnięcia badań medycznych
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Aktywny
+                        </th>
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Akcje
+                        </th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($drivers as $driver)
-                            <tr wire:key="driver-row-{{ $driver->id }}">
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                                        <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" />
-                                    </div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->id }}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->phone ?? '-' }}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pesel ?? '-' }}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{!! $driver->fullAddress ?? '-' !!}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->license_expiry_date ?? '-' }}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_valid_until ?? '-' }}</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                                        <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})" name="{{ $driver->id }}" :isActive="$driver->is_active" />
-                                    </div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                                        <a href="#">
-                                            <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500" />
-                                        </a>
-                                        <a href="">
-                                            <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500" />
-                                        </a>
+                    @foreach($drivers as $driver)
+                        <tr wire:key="driver-row-{{ $driver->id }}">
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                    <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}"
+                                                           x-model="selected"/>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->id }}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->phone ?? '-' }}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pesel ?? '-' }}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div
+                                    class="text-sm text-gray-500 dark:text-gray-400">{!! $driver->fullAddress ?? '-' !!}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div
+                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->license_expiry_date ?? '-' }}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div
+                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_valid_until ?? '-' }}</div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                    <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
+                                                         name="{{ $driver->id }}" :isActive="$driver->is_active"/>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
+                                    <a href="#">
+                                        <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                                    </a>
+                                    <a href="">
+                                        <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                                    </a>
 
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>

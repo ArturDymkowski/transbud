@@ -60,4 +60,22 @@ class DriversTable extends Component
 
         $this->dispatch('notify', message: 'Rekord zaktualizowany');
     }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+
+    public function updatedIsActive()
+    {
+        $this->resetPage();
+    }
+
+
+    public function resetFilters()
+    {
+        $this->reset(['search', 'isActive']);
+        $this->resetPage();
+    }
 }
