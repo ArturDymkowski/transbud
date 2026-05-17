@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('pesel', 11)->unique();
 
-            $table->string('country')->nullable();
+            $table->tinyInteger('country')->nullable();
             $table->string('region')->nullable();
             $table->string('zipcode')->nullable();
             $table->string('city')->nullable();

@@ -285,13 +285,30 @@
 
                     <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
-                        <div class="col-span-1">
                             <x-form.input.text-input name="driverData.driving_license_number" label="Nr prawa jazdy" wire:model="driverData.driving_license_number"/>
-                        </div>
+
+                            <x-form.date-picker name="driverData.license_expiry_date" label="Ważność prawa jazdy" wire:model="driverData.license_expiry_date" defaultDate="{{ $driverData['license_expiry_date'] ?? '' }}"/>
+
+                            <x-form.date-picker name="driverData.medical_exam_valid_until" label="Badania lekarskie do" wire:model="driverData.medical_exam_valid_until" defaultDate="{{ $driverData['medical_exam_valid_until'] ?? '' }}"/>
+
+                    </div>
+                </div>
+
+                <!-- Sekcja: Adres -->
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                            Adres Zamieszkania
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
                         <div class="col-span-1">
-                            <x-form.date-picker name="driverData.license_expiry_date" label="Ważność prawa jazdy" wire:model="driverData.license_expiry_date" defaultDate="{{ $driverData['license_expiry_date'] }}"/>
+{{--                            <x-form.input.text-input name="driverData.country" label="Kraj" wire:model="driverData.country"/>--}}
+                            <x-form.input.select name="driverData.country" label="Kraj" wire:model="driverData.country" :options="\App\Enums\CountriesEnum::getOptions()" default="{{ \App\Enums\CountriesEnum::POLAND }}" />
                         </div>
+
                     </div>
                 </div>
 
