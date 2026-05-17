@@ -14,7 +14,7 @@ class DriversTable extends Component
 
     public $search = '';
     public $isActive = '';
-    public array $selected = []; //10, 25, 50, 100
+    public array $selected = [];
     public array $optionsPerPage  = [
         10 => 10,
         25 => 25,
