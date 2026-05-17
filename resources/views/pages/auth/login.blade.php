@@ -20,8 +20,8 @@
                             <form method="post" action="{{ route('login.store') }}">
                                 @csrf
                                 <div class="space-y-5">
-                                    <x-form.input.text-input type="email" name="email" required="true" placeholder="info@gmail.com" />
-                                    <x-form.input.text-input type="password" name="password" required="true" placeholder="{{ __('auth.enter_password') }}" />
+                                    <x-form.input.text-input type="email" name="email" required="true" placeholder="info@gmail.com" label="email" />
+                                    <x-form.input.text-input type="password" name="password" required="true" placeholder="{{ __('auth.enter_password') }}" label="password" />
 
                                     <div class="flex items-center justify-between">
                                         <x-form.input.checkbox name="remember" value="true"> {{ __('auth.keep_login') }} </x-form.input.checkbox>

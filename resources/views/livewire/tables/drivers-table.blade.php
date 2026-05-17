@@ -201,9 +201,9 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                                    <a href="#">
+                                    <button type="button" wire:click="editDriver({{ $driver->id }})">
                                         <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                    </a>
+                                    </button>
                                     <a href="">
                                         <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
                                     </a>
@@ -232,11 +232,92 @@
                 @endif
             </div>
 
-            {{-- Linki paginacji (z prawej strony) --}}
             <div class="w-full sm:w-auto">
                 {{ $drivers->links() }}
             </div>
 
         </div>
     </div>
+
+    <x-ui.modal wire:model="showEditModal" class="max-w-4xl text-left">
+
+        <div class="relative w-full rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
+
+        <!-- Formularz -->
+        <form wire:submit="updateDriver">
+
+            <h4 class="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Edycja Kierowcy</h4>
+
+            <div class="grid grid-cols-1 gap-6">
+
+                <!-- Sekcja: Dane podstawowe -->
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                            Dane podstawowe
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+
+                        <div class="col-span-1">
+                            <x-form.input.text-input name="driverData.name" label="Imię i Nazwisko" wire:model="driverData.name"/>
+                        </div>
+
+                        <div class="col-span-1">
+                            <x-form.input.text-input name="driverData.phone" label="Telefon" wire:model="driverData.phone"/>
+                        </div>
+
+                        <div class="col-span-1">
+                            <x-form.input.text-input name="driverData.pesel" label="PESEL" wire:model="driverData.pesel"/>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Sekcja: Dokumenty -->
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                            Uprawnienia i status
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+
+                        <div class="col-span-1">
+                            <x-form.input.text-input name="driverData.driving_license_number" label="Nr prawa jazdy" wire:model="driverData.driving_license_number"/>
+                        </div>
+
+                        <div class="col-span-1">
+                            <x-form.date-picker name="driverData.license_expiry_date" label="Ważność prawa jazdy" wire:model="driverData.license_expiry_date"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Stopka (Przyciski akcji) -->
+{{--            <div class="px-6 py-4 border-t border-stroke dark:border-strokedark flex justify-end gap-3 bg-gray-50 dark:bg-gray-800">--}}
+{{--                <button type="button" @click="open = false" class="px-4 py-2 text-sm font-medium border border-stroke rounded-lg text-gray-600 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">--}}
+{{--                    Anuluj--}}
+{{--                </button>--}}
+{{--                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg hover:bg-brand-600 transition-colors">--}}
+{{--                    Zapisz zmiany--}}
+{{--                </button>--}}
+{{--            </div>--}}
+
+            <div class="flex items-center justify-end w-full gap-3 mt-6">
+                <button @click="open = false" type="button" class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">
+                    Close
+                </button>
+                <button @click="open = false" type="button" class="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 sm:w-auto">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+        </div>
+    </x-ui.modal>
+
 </div>

@@ -35,9 +35,9 @@
                         @foreach ($element as $page => $url)
                             <li wire:key="paginator-page-{{ $page }}">
                                 @if ($page == $paginator->currentPage())
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-white text-theme-sm font-medium">{{ $page }}</span>
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-500 text-white text-theme-sm font-medium">{{ $page }}</span>
                                 @else
-                                    <button type="button" wire:click="gotoPage({{ $page }})" class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-blue-500/[0.08] hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-500 text-theme-sm font-medium">
+                                    <button type="button" wire:click="gotoPage({{ $page }})" class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-brand-500/[0.08] hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-500 text-theme-sm font-medium">
                                         {{ $page }}
                                     </button>
                                 @endif
