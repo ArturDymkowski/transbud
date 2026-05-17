@@ -290,22 +290,12 @@
                         </div>
 
                         <div class="col-span-1">
-                            <x-form.date-picker name="driverData.license_expiry_date" label="Ważność prawa jazdy" wire:model="driverData.license_expiry_date"/>
+                            <x-form.date-picker name="driverData.license_expiry_date" label="Ważność prawa jazdy" wire:model="driverData.license_expiry_date" defaultDate="{{ $driverData['license_expiry_date'] }}"/>
                         </div>
                     </div>
                 </div>
 
             </div>
-
-            <!-- Stopka (Przyciski akcji) -->
-{{--            <div class="px-6 py-4 border-t border-stroke dark:border-strokedark flex justify-end gap-3 bg-gray-50 dark:bg-gray-800">--}}
-{{--                <button type="button" @click="open = false" class="px-4 py-2 text-sm font-medium border border-stroke rounded-lg text-gray-600 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">--}}
-{{--                    Anuluj--}}
-{{--                </button>--}}
-{{--                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-brand-500 rounded-lg hover:bg-brand-600 transition-colors">--}}
-{{--                    Zapisz zmiany--}}
-{{--                </button>--}}
-{{--            </div>--}}
 
             <div class="flex items-center justify-end w-full gap-3 mt-6">
                 <button @click="open = false" type="button" class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">

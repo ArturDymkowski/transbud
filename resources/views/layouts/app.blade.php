@@ -9,7 +9,7 @@
     <title>{{ $title ?? 'Dashboard' }} | TailAdmin - Laravel Tailwind CSS Admin Dashboard Template</title>
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', /* 'resources/js/app.js' */])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Theme Store -->
     <script>
@@ -142,7 +142,7 @@
         flash(msg) {
             this.message = msg;
             this.show = true;
-            setTimeout(() => this.show = false, 3000); {{-- Zniknie po 3 sekundach --}}
+            setTimeout(() => this.show = false, 3000);
         }
      }"
          x-on:notify.window="flash($event.detail.message)"
