@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Menu;
+namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
@@ -15,7 +15,7 @@ class DriverController extends Controller
     {
         $drivers = Driver::all();
 
-        return view('menu.drivers.index', [
+        return view('pages.drivers.index', [
             'drivers' => $drivers
         ]);
     }

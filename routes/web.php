@@ -3,7 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\Menu\DriverController;
+use App\Http\Controllers\Page\DriverController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", function() {
