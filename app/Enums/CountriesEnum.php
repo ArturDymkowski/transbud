@@ -32,14 +32,8 @@ enum CountriesEnum: int
         return $options;
     }
 
-    public static function fromNullable(?int $value): ?self
+    public static function fromId(int $id): ?self
     {
-        if ($value === null) {
-            return null;
-        }
-
-        return self::from($value);
+        return self::tryFrom($id);
     }
-
-
 }

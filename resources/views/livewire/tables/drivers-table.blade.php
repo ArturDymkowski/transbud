@@ -246,6 +246,16 @@
         <!-- Formularz -->
         <form wire:submit="updateDriver">
 
+            @if ($errors->any())
+                <div class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg dark:bg-red-900 dark:text-red-200">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <h4 class="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Edycja Kierowcy</h4>
 
             <div class="grid grid-cols-1 gap-6">
@@ -323,14 +333,14 @@
                         </h2>
                     </div>
 
-                    <x-form.input.text-input type="textarea" name="driverData.notes" wire:model="driverData.notes"/>
+                    <x-form.input.text-input type="textarea" name="driverData.extra_info" wire:model="driverData.extra_info"/>
                 </div>
 
             </div>
 
             <div class="flex items-center justify-end w-full gap-3 mt-6">
                 <x-ui.button @click="open = false" class="w-full" size="sm" variant="outline">Close</x-ui.button>
-                <x-ui.button @click="open = false" class="w-full" size="sm" variant="primary">Save Changes</x-ui.button>
+                <x-ui.button type="submit" class="w-full" size="sm" variant="primary">Save Changes</x-ui.button>
             </div>
 
         </form>

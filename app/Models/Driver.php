@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CountriesEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,7 @@ class Driver extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'country' => CountriesEnum::class,
     ];
 
     public function scopeSearch($query, $search)
@@ -82,7 +84,7 @@ class Driver extends Model
 
                 // Kraj
                 if ($this->country) {
-                    $parts[] = ', ' . $this->country;
+                    $parts[] = ', ' . CountriesEnum::fromId($this->country->value)->label();
                 }
 
                 if (empty($parts)) {

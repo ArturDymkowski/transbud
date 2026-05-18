@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\CountriesEnum;
 use App\Models\Driver;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Enum;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -93,7 +95,7 @@ class DriversTable extends Component
             'driverData.name' => 'required|string|max:255',
             'driverData.phone' => 'required|string|max:30',
             'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,' . ($this->editingDriver?->id ?? 'NULL'),
-            'driverData.country' => 'nullable|string|max:100',
+            'driverData.country' => ['nullable', new Enum(CountriesEnum::class)],
             'driverData.region' => 'nullable|string|max:100',
             'driverData.zipcode' => 'nullable|string|max:20',
             'driverData.city' => 'nullable|string|max:100',
