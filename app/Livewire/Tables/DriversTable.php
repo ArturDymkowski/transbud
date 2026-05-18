@@ -88,8 +88,6 @@ class DriversTable extends Component
         $this->resetPage();
     }
 
-    // Formularz
-    // Reguły walidacji
     protected function rules() {
         return [
             'driverData.name' => 'required|string|max:255',
@@ -110,12 +108,10 @@ class DriversTable extends Component
         ];
     }
 
-    // 1. Otwieranie modalu i ładowanie danych
     public function editDriver($id)
     {
         $this->editingDriver = \App\Models\Driver::findOrFail($id);
 
-        // Przypisujemy dane do tablicy, z której korzysta formularz
         $this->driverData = $this->editingDriver->toArray();
 
         $this->showEditModal = true;

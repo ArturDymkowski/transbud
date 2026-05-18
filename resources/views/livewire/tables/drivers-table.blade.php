@@ -241,7 +241,7 @@
 
     <x-ui.modal wire:model="showEditModal" class="max-w-4xl text-left">
 
-        <div class="relative w-full rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
+        <div class="relative w-full max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">
 
         <!-- Formularz -->
         <form wire:submit="updateDriver">
@@ -314,6 +314,16 @@
                         <x-form.input.text-input name="driverData.home_nr" label="Nr lokalu" wire:model="driverData.home_nr"/>
 
                     </div>
+                </div>
+
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                            Uwagi
+                        </h2>
+                    </div>
+
+                    <x-form.input.text-input type="textarea" name="driverData.notes" wire:model="driverData.notes"/>
                 </div>
 
             </div>

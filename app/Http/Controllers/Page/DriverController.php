@@ -13,11 +13,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $drivers = Driver::all();
-
-        return view('pages.drivers.index', [
-            'drivers' => $drivers
-        ]);
+        return view('pages.drivers.index');
     }
 
     /**
