@@ -25,7 +25,6 @@ class DriverFactory extends Factory
             'pesel' => fake()->unique()->numerify('###########'),
 
             'country' => fake()->numberBetween(0, 8),
-            'region' => fake()->state(),
             'zipcode' => fake()->postcode(),
             'city' => fake()->city(),
             'street' => fake()->streetName(),

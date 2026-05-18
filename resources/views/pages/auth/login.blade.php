@@ -30,7 +30,8 @@
                                         <x-form.input.link href="/reset-password">{{ __('auth.forgot_password') }}</x-form.input.link>
                                     </div>
 
-                                    <x-form.input.button>{{ __('auth.sign_in') }}</x-form.input.button>
+{{--                                    <x-form.input.button>{{ __('auth.sign_in') }}</x-form.input.button>--}}
+                                    <x-ui.button type="submit" class="w-full" size="sm" variant="primary">{{ __('auth.sign_in') }}</x-ui.button>
                                 </div>
                             </form>
                         </div>

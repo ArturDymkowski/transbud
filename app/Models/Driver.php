@@ -17,7 +17,6 @@ class Driver extends Model
         'pesel',
 
         'country',
-        'region',
         'zipcode',
         'city',
         'street',

@@ -304,10 +304,14 @@
 
                     <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
-                        <div class="col-span-1">
-{{--                            <x-form.input.text-input name="driverData.country" label="Kraj" wire:model="driverData.country"/>--}}
-                            <x-form.input.select name="driverData.country" label="Kraj" wire:model="driverData.country" :options="\App\Enums\CountriesEnum::getOptions()" default="{{ \App\Enums\CountriesEnum::POLAND }}" />
-                        </div>
+                        <x-form.input.select name="driverData.country" label="Kraj" wire:model="driverData.country" :options="\App\Enums\CountriesEnum::getOptions()" default="{{ \App\Enums\CountriesEnum::POLAND }}" />
+
+                        <x-form.input.text-input name="driverData.zipcode" label="Kod pocztowy" wire:model="driverData.zipcode"/>
+
+                        <x-form.input.text-input name="driverData.city" label="Miasto" wire:model="driverData.city"/>
+                        <x-form.input.text-input name="driverData.street" label="Ulica" wire:model="driverData.street"/>
+                        <x-form.input.text-input name="driverData.street_nr" label="Nr budynku" wire:model="driverData.street_nr"/>
+                        <x-form.input.text-input name="driverData.home_nr" label="Nr lokalu" wire:model="driverData.home_nr"/>
 
                     </div>
                 </div>
@@ -315,12 +319,8 @@
             </div>
 
             <div class="flex items-center justify-end w-full gap-3 mt-6">
-                <button @click="open = false" type="button" class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">
-                    Close
-                </button>
-                <button @click="open = false" type="button" class="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 sm:w-auto">
-                    Save Changes
-                </button>
+                <x-ui.button @click="open = false" class="w-full" size="sm" variant="outline">Close</x-ui.button>
+                <x-ui.button @click="open = false" class="w-full" size="sm" variant="primary">Save Changes</x-ui.button>
             </div>
 
         </form>
