@@ -3,9 +3,19 @@
         <!-- Header -->
         <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center w-full">
-                <x-form.input.select wire:model.live="perPage" label="Per Page" :options="$this->optionsPerPage" name="perPage"/>
-                <x-form.input.select label="Active" :options="['' => 'All', 0 => 'No', 1 => 'Yes']" name="isActive"
+                <x-form.input.select wire:model.live="perPage"
+                                     label="Per Page"
+                                     :options="$this->optionsPerPage"
+                                     name="perPage"/>
+                <x-form.input.select label="Active"
+                                     :options="['' => 'All', 0 => 'No', 1 => 'Yes']"
+                                     name="isActive"
                                      wire:model.live="isActive"/>
+
+                <x-form.input.select label="Country"
+                                     :options="$this->countryOptions"
+                                     name="country"
+                                     wire:model.live="country"/>
             </div>
             <form>
                 <div class="relative">

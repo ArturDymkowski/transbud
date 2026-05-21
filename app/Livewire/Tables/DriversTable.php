@@ -16,6 +16,7 @@ class DriversTable extends Component
 
     public string $search = '';
     public string $isActive = '';
+    public ?int $country = null;
     public array $selected = [];
     public array $optionsPerPage  = [
         10 => 10,
@@ -37,6 +38,9 @@ class DriversTable extends Component
         $drivers = Driver::search($this->search)
             ->when(filled($this->isActive), function ($query) {
                 return $query->where('is_active', $this->isActive);
+            })
+            ->when(filled($this->country), function ($query) {
+                return $query->where('country', $this->country);
             })
             ->paginate($this->perPage);
 
@@ -89,5 +93,12 @@ class DriversTable extends Component
     public function editDriver($id)
     {
         $this->dispatch('edit-driver', id: $id);
+    }
+
+    public function getCountryOptionsProperty()
+    {
+        $options = \App\Enums\CountriesEnum::getOptions();
+
+        return ['' => 'All'] + $options;
     }
 }

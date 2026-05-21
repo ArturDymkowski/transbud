@@ -44,9 +44,7 @@ class Driver extends Model
                 $q->orWhere('name', 'like', '%' . $search . '%')
                     ->orWhere('phone', 'like', '%' . $search . '%')
                     ->orWhere('pesel', 'like', '%' . $search . '%')
-                    ->orWhere('region', 'like', '%' . $search . '%')
                     ->orWhere('zipcode', 'like', '%' . $search . '%')
-                    ->orWhere('city', 'like', '%' . $search . '%')
                     ->orWhere('street', 'like', '%' . $search . '%');
             });
         });
