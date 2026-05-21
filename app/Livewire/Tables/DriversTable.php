@@ -95,6 +95,13 @@ class DriversTable extends Component
         $this->dispatch('edit-driver', id: $id);
     }
 
+    public function deleteDriver($id)
+    {
+        Driver::where('id', $id)->delete();
+
+        $this->dispatch('notify', message: 'Pomyślnie usunięto');
+    }
+
     public function getCountryOptionsProperty()
     {
         $options = \App\Enums\CountriesEnum::getOptions();

@@ -77,7 +77,7 @@
 
                         <button type="button"
                                 wire:click="deleteSelected"
-                                wire:confirm="Czy na pewno chcesz usunąć zaznaczone rekordy? Tej operacji nie da się cofnąć."
+                                wire:confirm="Czy na pewno chcesz usunąć zaznaczone rekordy?"
                                 class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                             <x-heroicon-o-trash class="w-4 h-4"/>
                             Usuń zaznaczone
@@ -214,9 +214,12 @@
                                     <button type="button" wire:click="editDriver({{ $driver->id }})">
                                         <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
                                     </button>
-                                    <a href="">
+                                    <button type="button"
+                                            wire:click="deleteDriver({{ $driver->id }})"
+                                            wire:confirm="Czy na pewno chcesz usunąć kierowcę?"
+                                    >
                                         <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                    </a>
+                                    </button>
 
                                 </div>
                             </td>
