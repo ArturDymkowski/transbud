@@ -29,18 +29,27 @@
                     <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
                         <div class="col-span-1">
-                            <x-form.input.text-input name="driverData.name" label="Imię i Nazwisko"
-                                                     wire:model="driverData.name"/>
+                            <x-form.input.text-input name="driverData.name"
+                                                     label="Imię i Nazwisko"
+                                                     required="true"
+                                                     wire:model="driverData.name"
+                            />
                         </div>
 
                         <div class="col-span-1">
-                            <x-form.input.text-input name="driverData.phone" label="Telefon"
-                                                     wire:model="driverData.phone"/>
+                            <x-form.input.text-input name="driverData.phone"
+                                                     label="Telefon"
+                                                     wire:model="driverData.phone"
+                                                     required="true"
+                            />
                         </div>
 
                         <div class="col-span-1">
-                            <x-form.input.text-input name="driverData.pesel" label="PESEL"
-                                                     wire:model="driverData.pesel"/>
+                            <x-form.input.text-input name="driverData.pesel"
+                                                     label="PESEL"
+                                                     wire:model="driverData.pesel"
+                                                     required="true"
+                            />
                         </div>
 
                     </div>
@@ -56,10 +65,14 @@
 
                     <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
-                        <x-form.input.text-input name="driverData.driving_license_number" label="Nr prawa jazdy"
+                        <x-form.input.text-input name="driverData.driving_license_number"
+                                                 label="Nr prawa jazdy"
+                                                 required="true"
                                                  wire:model="driverData.driving_license_number"/>
 
-                        <x-form.date-picker name="driverData.license_expiry_date" label="Ważność prawa jazdy"
+                        <x-form.date-picker name="driverData.license_expiry_date"
+                                            label="Ważność prawa jazdy"
+                                            required="true"
                                             wire:model="driverData.license_expiry_date"
                                             defaultDate="{{ $driverData['license_expiry_date'] ?? '' }}"/>
 

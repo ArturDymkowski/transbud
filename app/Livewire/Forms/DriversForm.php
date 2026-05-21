@@ -56,7 +56,13 @@ class DriversForm extends Component
         $this->showEditModal = false;
         $this->reset(['driverData', 'editingDriver']);
 
-        // Wywołujemy nasz Toast, który zrobiliśmy wcześniej!
         $this->dispatch('notify', message: 'Dane kierowcy zostały pomyślnie zaktualizowane.');
+    }
+
+    public function updatedDriverData($value, $key)
+    {
+        if ($value === '') {
+            data_set($this->driverData, $key, null);
+        }
     }
 }

@@ -6,19 +6,27 @@
     'placeholder' => 'Select date',
     'name' => null,
     'dateFormat' => 'Y-m-d',
+    'required' => false
 ])
 
-<div x-data="{
+<div wire:ignore x-data="{
     flatpickrInstance: null,
     init() {
         this.$nextTick(() => {
             this.flatpickrInstance = flatpickr(this.$refs.dateInput, {
                 mode: '{{ $mode }}',
-                static: true,
+                allowInput: true,
                 monthSelectorType: 'static',
                 dateFormat: '{{ $dateFormat }}',
-                defaultDate: {{ $defaultDate ? (is_array($defaultDate) ? json_encode($defaultDate) : "'" . $defaultDate . "'") : 'null' }},
                 onChange: (selectedDates, dateStr, instance) => {
+                    const finalValue = dateStr === '' ? null : dateStr;
+                    this.$refs.dateInput.value = dateStr;
+
+                    this.$refs.dateInput.dispatchEvent(new CustomEvent('input', {
+                        bubbles: true,
+                        detail: finalValue
+                    }));
+
                     this.$dispatch('date-change', {
                         selectedDates,
                         dateStr,
@@ -37,18 +45,23 @@
 }" x-init="init()" x-destroy="destroy()">
     @if($label)
         <label for="{{ $id }}" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            {{ $label }}
+            {{ $label }} @if($required) <x-form.input.required-star /> @endif
         </label>
     @endif
 
     <div class="relative custom-datepicker">
         <input
+            {{ $attributes }}
             x-ref="dateInput"
             type="text"
             id="{{ $id }}"
             name="{{ $name }}"
             placeholder="{{ $placeholder }}"
-            class="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:focus:border-brand-800"
+            @class([
+                'h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-transparent text-gray-800 focus:border-brand-300 focus:ring-brand-500/20  dark:focus:border-brand-800',
+                'border-gray-300 dark:border-gray-700' => !$errors->has($name),
+                'border-red-300 dark:border-red-700' => $errors->has($name)
+            ])
             autocomplete="off"
         />
         <span class="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
@@ -57,4 +70,7 @@
             </svg>
         </span>
     </div>
+        @error($name)
+        <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
+        @enderror
 </div>
