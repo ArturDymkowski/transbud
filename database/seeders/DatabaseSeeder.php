@@ -14,7 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Driver::factory()->count(10)->create();
-        $this->call([UserSeeder::class]);
+        $this->call([
+            UserSeeder::class,
+            DriverSeeder::class,
+        ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Driver;
 use App\Models\User;
 use Database\DisableForeignKeys;
 use Database\TruncateTable;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Class UserTableSeeder.
  */
-class UserSeeder extends Seeder
+class DriverSeeder extends Seeder
 {
     use DisableForeignKeys, TruncateTable;
 
@@ -23,15 +24,9 @@ class UserSeeder extends Seeder
     public function run()
     {
         $this->disableForeignKeys();
-        $this->truncate('users');
+        $this->truncate('drivers');
 
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('admin'),
-            'is_active' => 1,
-            'created_at' => now(),
-        ]);
+        Driver::factory()->count(100)->create();
 
         $this->enableForeignKeys();
     }
