@@ -3,19 +3,27 @@
         <!-- Header -->
         <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center w-full">
-                <x-form.input.select wire:model.live="perPage"
-                                     label="Per Page"
-                                     :options="$this->optionsPerPage"
-                                     name="perPage"/>
-                <x-form.input.select label="Active"
-                                     :options="['' => 'All', 0 => 'No', 1 => 'Yes']"
-                                     name="isActive"
-                                     wire:model.live="isActive"/>
+                <x-form.input.select
+                    wire:model.live="perPage"
+                    :label="__('labels.tables.per_page')"
+                    :options="$this->optionsPerPage"
+                    name="perPage"/>
 
-                <x-form.input.select label="Country"
-                                     :options="$this->countryOptions"
-                                     name="country"
-                                     wire:model.live="country"/>
+                <x-form.input.select
+                    :label="__('labels.tables.active')"
+                    :options="[
+                        '' => __('labels.tables.all'),
+                         0 => __('labels.tables.no'),
+                         1 => __('labels.tables.yes')
+                        ]"
+                    name="isActive"
+                    wire:model.live="isActive"/>
+
+                <x-form.input.select
+                    :label="__('labels.tables.country')"
+                    :options="$this->countryOptions"
+                    name="country"
+                    wire:model.live="country"/>
             </div>
             <form>
                 <div class="relative">
@@ -27,7 +35,8 @@
                                   fill=""/>
                         </svg>
                     </button>
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search..."
+                    <input type="text" wire:model.live.debounce.300ms="search"
+                           placeholder="{{ __('labels.tables.search_placeholder') }}"
                            class="h-[42px] w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-[42px] pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 xl:w-[300px]"/>
                 </div>
             </form>
@@ -65,22 +74,22 @@
                     <div class="flex items-center gap-2 text-sm font-medium text-brand-700 dark:text-brand-400">
                         <span x-text="selected.length"
                               class="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-brand-500"></span>
-                        <span>Zaznaczono rekordy</span>
+                        <span>{{ __('drivers.selected_records') }}</span>
                     </div>
 
                     <div class="flex items-center gap-4">
                         <button type="button"
                                 @click="selected = []"
                                 class="text-sm font-semibold text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                            Odznacz wszystkie
+                            {{ __('drivers.unselect_all') }}
                         </button>
 
                         <button type="button"
                                 wire:click="deleteSelected"
-                                wire:confirm="Czy na pewno chcesz usunąć zaznaczone rekordy?"
+                                wire:confirm="{{ __('drivers.confirm_delete_selected') }}"
                                 class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                             <x-heroicon-o-trash class="w-4 h-4"/>
-                            Usuń zaznaczone
+                            wire:confirm="{{ __('drivers.confirm_delete_selected') }}"
                         </button>
                     </div>
                 </div>
@@ -91,12 +100,14 @@
                         class="flex flex-wrap items-center justify-between gap-3 px-4 py-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800/40 dark:border-gray-700">
 
                         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <span class="font-medium text-gray-500 dark:text-gray-400">Filtry:</span>
+                            <span class="font-medium text-gray-500 dark:text-gray-400">
+                                {{ __('drivers.filters') }}
+                            </span>
 
                             @if(filled($search))
                                 <span
                                     class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
-                    Search: "{{ $search }}"
+                    {{ __('drivers.search') }}: "{{ $search }}"
 
                     <button type="button" wire:click="$set('search', '')"
                             class="hover:text-brand-900 dark:hover:text-brand-200">
@@ -108,7 +119,10 @@
                             @if(filled($isActive))
                                 <span
                                     class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
-                    Status: {{ $isActive === '1' ? 'Aktywni' : 'Nieaktywni' }}
+                    {{ __('drivers.status') }}:: {{ $isActive === '1'
+                            ? __('drivers.active_plural')
+                            : __('drivers.inactive_plural')
+                        }}
                     <button type="button" wire:click="$set('isActive', '')"
                             class="hover:text-brand-900 dark:hover:text-brand-200">
                         <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
@@ -120,7 +134,7 @@
                         <button type="button"
                                 wire:click="resetFilters"
                                 class="text-xs font-semibold transition text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
-                            Wyczyść wszystko
+                            {{ __('drivers.clear_all') }}
                         </button>
                     </div>
                 @endif
@@ -130,52 +144,64 @@
                     <tr class="border-gray-200 border-y dark:border-gray-700">
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            <x-form.input.checkbox name="selectAll" @click="togglePage"
-                                                   x-bind:checked="isAllPageSelected()"/>
+                            <x-form.input.checkbox
+                                name="selectAll"
+                                @click="togglePage"
+                                x-bind:checked="isAllPageSelected()"
+                            />
                         </th>
+
                         <x-tables.th-sort
                             field="id"
                             label="ID"
                             :sortField="$sortField"
                             :sortDirection="$sortDirection"
                         />
+
                         <x-tables.th-sort
                             field="name"
-                            label="Nazwa"
+                            :label="__('drivers.name')"
                             :sortField="$sortField"
                             :sortDirection="$sortDirection"
                         />
+
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            Telefon
+                            {{ __('drivers.phone') }}
                         </th>
+
                         <x-tables.th-sort
                             field="pesel"
-                            label="Pesel"
+                            :label="__('drivers.pesel')"
                             :sortField="$sortField"
                             :sortDirection="$sortDirection"
                         />
+
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            Adres
+                            {{ __('drivers.address') }}
                         </th>
+
                         <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data
-                            wygaśnięcia prawa jazdy
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            {{ __('drivers.driving_license_expiry_date') }}
                         </th>
+
                         <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data
-                            wygaśnięcia badań medycznych
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            {{ __('drivers.medical_exam_expiry_date') }}
                         </th>
+
                         <x-tables.th-sort
                             field="is_active"
-                            label="Aktywny"
+                            :label="__('labels.tables.active')"
                             :sortField="$sortField"
                             :sortDirection="$sortDirection"
                         />
+
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            Akcje
+                            {{ __('labels.tables.actions') }}
                         </th>
                     </tr>
                     </thead>
@@ -220,18 +246,18 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                                    <x-ui.tooltip text="Edytuj">
+                                    <x-ui.tooltip :text="__('labels.tables.edit')">
                                         <button type="button" wire:click="editDriver({{ $driver->id }})">
-                                        <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                                            <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
                                         </button>
                                     </x-ui.tooltip>
-                                    <x-ui.tooltip text="Usuń">
-                                    <button type="button"
-                                            wire:click="deleteDriver({{ $driver->id }})"
-                                            wire:confirm="Czy na pewno chcesz usunąć kierowcę?"
-                                    >
-                                        <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                    </button>
+                                    <x-ui.tooltip :text="__('labels.tables.delete')">
+                                        <button type="button"
+                                                wire:click="deleteDriver({{ $driver->id }})"
+                                                wire:confirm="{{ __('drivers.confirm_delete_driver') }}"
+                                        >
+                                            <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                                        </button>
                                     </x-ui.tooltip>
                                 </div>
                             </td>
@@ -242,19 +268,33 @@
             </div>
         </div>
 
-        <div class="flex flex-col items-center justify-between gap-4 px-4 py-3 border-t border-gray-100 dark:border-gray-800 sm:flex-row">
+        <div
+            class="flex flex-col items-center justify-between gap-4 px-4 py-3 border-t border-gray-100 dark:border-gray-800 sm:flex-row">
 
             <div class="text-sm text-gray-600 dark:text-gray-400">
                 @if($drivers->total() > 0)
-                    Pozycje od
-                    <span class="font-semibold text-gray-700 dark:text-gray-200">{{ $drivers->firstItem() }}</span>
-                    do
-                    <span class="font-semibold text-gray-700 dark:text-gray-200">{{ $drivers->lastItem() }}</span>
-                    z
-                    <span class="font-semibold text-gray-700 dark:text-gray-200">{{ $drivers->total() }}</span> łącznie
-                @else
-                    Nie znaleziono żadnych pozycji
-                @endif
+                    {{ __('labels.pagination.showing_from') }}
+
+                    <span class="font-semibold text-gray-700 dark:text-gray-200">
+                        {{ $drivers->firstItem() }}
+                    </span>
+
+                    {{ __('labels.pagination.showing_to') }}
+
+                    <span class="font-semibold text-gray-700 dark:text-gray-200">
+                        {{ $drivers->lastItem() }}
+                    </span>
+
+                    {{ __('labels.pagination.showing_of') }}
+
+                    <span class="font-semibold text-gray-700 dark:text-gray-200">
+                        {{ $drivers->total() }}
+                    </span>
+
+                    {{ __('labels.pagination.showing_total') }}
+                        @else
+                    {{ __('labels.pagination.no_results') }}
+                      @endif
             </div>
 
             <div class="w-full sm:w-auto">
@@ -265,5 +305,5 @@
     </div>
 
     <!-- Modal z formularzem edycji -->
-    <livewire:forms.drivers-form />
+    <livewire:forms.drivers-form/>
 </div>
