@@ -220,16 +220,19 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                                    <button type="button" wire:click="editDriver({{ $driver->id }})">
+                                    <x-ui.tooltip text="Edytuj">
+                                        <button type="button" wire:click="editDriver({{ $driver->id }})">
                                         <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                    </button>
+                                        </button>
+                                    </x-ui.tooltip>
+                                    <x-ui.tooltip text="Usuń">
                                     <button type="button"
                                             wire:click="deleteDriver({{ $driver->id }})"
                                             wire:confirm="Czy na pewno chcesz usunąć kierowcę?"
                                     >
                                         <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
                                     </button>
-
+                                    </x-ui.tooltip>
                                 </div>
                             </td>
                         </tr>
