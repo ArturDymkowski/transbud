@@ -8,6 +8,7 @@ use App\Models\Driver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -110,5 +111,11 @@ class DriversTable extends Component
         $options = \App\Enums\CountriesEnum::getOptions();
 
         return ['' => 'All'] + $options;
+    }
+
+    #[On('driver-updated')]
+    public function refreshTable()
+    {
+
     }
 }

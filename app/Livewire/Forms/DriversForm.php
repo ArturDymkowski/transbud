@@ -55,6 +55,7 @@ class DriversForm extends Component
 
         $this->showEditModal = false;
         $this->reset(['driverData', 'editingDriver']);
+        $this->dispatch('driver-updated');
 
         $this->dispatch('notify', message: 'Dane kierowcy zostały pomyślnie zaktualizowane.');
     }
