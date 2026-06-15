@@ -125,10 +125,6 @@
                     </div>
                 @endif
 
-                <div class="p-4 bg-yellow-100">
-                    Sortuję po: {{ $sortField }} | Kierunek: {{ $sortDirection }}
-                </div>
-
                 <table class="min-w-full">
                     <thead>
                     <tr class="border-gray-200 border-y dark:border-gray-700">
@@ -143,18 +139,22 @@
                             :sortField="$sortField"
                             :sortDirection="$sortDirection"
                         />
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            Nazwa
-                        </th>
+                        <x-tables.th-sort
+                            field="name"
+                            label="Nazwa"
+                            :sortField="$sortField"
+                            :sortDirection="$sortDirection"
+                        />
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Telefon
                         </th>
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            Pesel
-                        </th>
+                        <x-tables.th-sort
+                            field="pesel"
+                            label="Pesel"
+                            :sortField="$sortField"
+                            :sortDirection="$sortDirection"
+                        />
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Adres
@@ -167,10 +167,12 @@
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">Data
                             wygaśnięcia badań medycznych
                         </th>
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            Aktywny
-                        </th>
+                        <x-tables.th-sort
+                            field="is_active"
+                            label="Aktywny"
+                            :sortField="$sortField"
+                            :sortDirection="$sortDirection"
+                        />
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Akcje
