@@ -125,6 +125,10 @@
                     </div>
                 @endif
 
+                <div class="p-4 bg-yellow-100">
+                    Sortuję po: {{ $sortField }} | Kierunek: {{ $sortDirection }}
+                </div>
+
                 <table class="min-w-full">
                     <thead>
                     <tr class="border-gray-200 border-y dark:border-gray-700">
@@ -133,9 +137,12 @@
                             <x-form.input.checkbox name="selectAll" @click="togglePage"
                                                    x-bind:checked="isAllPageSelected()"/>
                         </th>
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">ID
-                        </th>
+                        <x-tables.th-sort
+                            field="id"
+                            label="ID"
+                            :sortField="$sortField"
+                            :sortDirection="$sortDirection"
+                        />
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Nazwa

@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Enums\CountriesEnum;
+use App\Livewire\Traits\WithSorting;
 use App\Models\Driver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
@@ -12,7 +13,8 @@ use Livewire\WithPagination;
 
 class DriversTable extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSorting;
+    public $allowedSortFields = ['name', 'phone', 'pesel', 'city', 'id'];
 
     public string $search = '';
     public string $isActive = '';
@@ -42,6 +44,7 @@ class DriversTable extends Component
             ->when(filled($this->country), function ($query) {
                 return $query->where('country', $this->country);
             })
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         $this->idsOnPage = $drivers->pluck('id')->toArray();
