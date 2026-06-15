@@ -206,11 +206,11 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div
-                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->license_expiry_date ?? '-' }}</div>
+                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->driving_license_expiry_date ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div
-                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_valid_until ?? '-' }}</div>
+                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_expiry_date ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400">

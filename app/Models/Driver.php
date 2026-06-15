@@ -26,8 +26,8 @@ class Driver extends Model
         'extra_info',
 
         'driving_license_number',
-        'license_expiry_date',
-        'medical_exam_valid_until',
+        'driving_license_expiry_date',
+        'medical_exam_expiry_date',
         'is_active',
     ];
 

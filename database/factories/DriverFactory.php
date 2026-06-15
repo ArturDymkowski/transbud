@@ -35,9 +35,9 @@ class DriverFactory extends Factory
 
             'driving_license_number' => strtoupper(fake()->bothify('???######')),
 
-            'license_expiry_date' => fake()->dateTimeBetween('now', '+5 years'),
+            'driving_license_expiry_date' => fake()->dateTimeBetween('now', '+5 years'),
 
-            'medical_exam_valid_until' => fake()->optional()->dateTimeBetween('now', '+2 years'),
+            'medical_exam_expiry_date' => fake()->optional()->dateTimeBetween('now', '+2 years'),
 
             'is_active' => fake()->boolean(90),
         ];

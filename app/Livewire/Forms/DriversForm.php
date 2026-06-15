@@ -31,8 +31,8 @@ class DriversForm extends Component
             'driverData.home_nr' => 'nullable|string|max:20',
             'driverData.extra_info' => 'nullable|string',
             'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->editingDriver?->id ?? 'NULL'),
-            'driverData.license_expiry_date' => 'required|date',
-            'driverData.medical_exam_valid_until' => 'nullable|date',
+            'driverData.driving_license_expiry_date' => 'required|date',
+            'driverData.medical_exam_expiry_date' => 'nullable|date',
             'driverData.is_active' => 'boolean',
         ];
     }

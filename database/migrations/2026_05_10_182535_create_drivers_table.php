@@ -26,8 +26,8 @@ return new class extends Migration
             $table->longText('extra_info')->nullable();
 
             $table->string('driving_license_number')->unique();
-            $table->date('license_expiry_date');
-            $table->date('medical_exam_valid_until')->nullable();
+            $table->date('driving_license_expiry_date');
+            $table->date('medical_exam_expiry_date')->nullable();
             $table->boolean('is_active')->default(true);
 
             $table->timestamps();
