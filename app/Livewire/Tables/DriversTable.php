@@ -110,7 +110,7 @@ class DriversTable extends Component
     {
         $options = \App\Enums\CountriesEnum::getOptions();
 
-        return ['' => 'All'] + $options;
+        return ['' => __('labels.tables.all')] + $options;
     }
 
     #[On('driver-updated')]

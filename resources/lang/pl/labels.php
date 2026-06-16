@@ -38,5 +38,6 @@ return [
         'edit' => 'Edytuj',
         'delete' => 'Usuń',
         'no_results' => 'Nie znaleziono żadnych pozycji',
+        'create' => 'Utwórz',
     ],
 ];

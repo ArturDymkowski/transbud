@@ -1,4 +1,9 @@
 <div>
+
+    <div class="flex w-full justify-end mb-4">
+        <x-ui.button>{{ __('labels.tables.create') }}</x-ui.button>
+    </div>
+
     <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
         <!-- Header -->
         <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -182,15 +187,19 @@
                             {{ __('drivers.address') }}
                         </th>
 
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {{ __('drivers.driving_license_expiry_date') }}
-                        </th>
+                        <x-tables.th-sort
+                            field="driving_license_expiry_date"
+                            :label="__('drivers.driving_license_expiry_date')"
+                            :sortField="$sortField"
+                            :sortDirection="$sortDirection"
+                        />
 
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {{ __('drivers.medical_exam_expiry_date') }}
-                        </th>
+                        <x-tables.th-sort
+                            field="medical_exam_expiry_date"
+                            :label="__('drivers.medical_exam_expiry_date')"
+                            :sortField="$sortField"
+                            :sortDirection="$sortDirection"
+                        />
 
                         <x-tables.th-sort
                             field="is_active"
