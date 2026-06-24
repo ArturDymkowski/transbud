@@ -112,7 +112,7 @@
                             @if(filled($search))
                                 <span
                                     class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
-                    {{ __('drivers.search') }}: "{{ $search }}"
+                    {{ __('labels.tables.search') }}: "{{ $search }}"
 
                     <button type="button" wire:click="$set('search', '')"
                             class="hover:text-brand-900 dark:hover:text-brand-200">
