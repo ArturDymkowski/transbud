@@ -13,7 +13,7 @@ use Livewire\WithPagination;
 
 class DriversForm extends Component
 {
-    public bool $showEditModal = false;
+
     public array $driverData = [];
     public ?\App\Models\Driver $editingDriver = null;
 
@@ -45,27 +45,17 @@ class DriversForm extends Component
         ];
     }
 
-    #[On('edit-driver')]
-    public function editDriver($id)
-    {
-        $this->editingDriver = \App\Models\Driver::findOrFail($id);
-
-        $this->driverData = $this->editingDriver->toArray();
-
-        $this->showEditModal = true;
-    }
-
     public function updateDriver()
     {
         $this->validate();
 
-        $this->editingDriver->update($this->driverData);
+        // Wyciągamy dane z klucza driverData, ponieważ tak zdefiniowałeś reguły i bindowanie
+        $this->editingDriver->update($this->driverData['driverData'] ?? $this->driverData);
 
-        $this->showEditModal = false;
-        $this->reset(['driverData', 'editingDriver']);
-        $this->dispatch('driver-updated');
+        // Zamiast czyszczenia komponentu i zamykania modala, przekierowujemy użytkownika z powrotem na listę
+        session()->flash('notify', 'Dane kierowcy zostały pomyślnie zaktualizowane.');
 
-        $this->dispatch('notify', message: 'Dane kierowcy zostały pomyślnie zaktualizowane.');
+        return $this->redirect(route('drivers.index'), navigate: true);
     }
 
     public function updatedDriverData($value, $key)
