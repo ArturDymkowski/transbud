@@ -256,9 +256,9 @@
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
                                     <x-ui.tooltip :text="__('labels.tables.edit')">
-                                        <button type="button" wire:click="editDriver({{ $driver->id }})">
+                                        <a href="{{ route('drivers.edit', $driver->id) }}">
                                             <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                        </button>
+                                        </a>
                                     </x-ui.tooltip>
                                     <x-ui.tooltip :text="__('labels.tables.delete')">
                                         <button type="button"

@@ -11,6 +11,8 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    @livewireStyles
+
     <!-- Theme Store -->
     <script>
         document.addEventListener('alpine:init', () => {
@@ -158,6 +160,7 @@
                 <x-ui.alert variant="success" message="@this.message" />
     </div>
 
+    @livewireScripts
 </body>
 
 @stack('scripts')
