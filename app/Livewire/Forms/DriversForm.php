@@ -17,6 +17,14 @@ class DriversForm extends Component
     public array $driverData = [];
     public ?\App\Models\Driver $editingDriver = null;
 
+    public function mount(\App\Models\Driver $editingDriver = null)
+    {
+        if ($editingDriver && $editingDriver->exists) {
+            $this->editingDriver = $editingDriver;
+            $this->driverData = $editingDriver->toArray();
+        }
+    }
+
     protected function rules() {
         return [
             'driverData.name' => 'required|string|max:255',
