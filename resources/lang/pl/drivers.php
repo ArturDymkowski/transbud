@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'singular_model_label' => 'Kierowca',
+    'plural_model_label' => 'Kierowcy',
     'confirm_delete_driver' => 'Czy na pewno chcesz usunąć kierowcę?',
     'name' => 'Nazwa',
     'phone' => 'Telefon',

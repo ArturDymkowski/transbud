@@ -13,8 +13,6 @@
             </div>
         @endif
 
-        <h4 class="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Edycja Kierowcy</h4>
-
         <div class="grid grid-cols-1 gap-6">
 
             <!-- Sekcja: Dane podstawowe -->

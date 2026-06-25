@@ -312,7 +312,4 @@
 
         </div>
     </div>
-
-    <!-- Modal z formularzem edycji -->
-    <livewire:forms.drivers-form/>
 </div>

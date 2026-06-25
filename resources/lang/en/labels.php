@@ -37,6 +37,7 @@ return [
         'actions' => 'Actions',
         'edit' => 'Edit',
         'delete' => 'Delete',
+        'list' => 'List',
         'no_results' => 'No results found',
         'create' => 'Create',
     ],

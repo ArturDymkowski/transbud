@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'singular_model_label' => 'Driver',
+    'plural_model_label' => 'Drivers',
     'confirm_delete_driver' => 'Are you sure you want to delete the driver?',
     'name' => 'Name',
     'phone' => 'Phone',
