@@ -13,15 +13,14 @@ use Livewire\WithPagination;
 
 class DriversForm extends Component
 {
-
     public array $driverData = [];
-    public ?\App\Models\Driver $editingDriver = null;
+    public ?\App\Models\Driver $driver = null;
 
-    public function mount(\App\Models\Driver $editingDriver = null)
+    public function mount(\App\Models\Driver $driver = null)
     {
-        if ($editingDriver && $editingDriver->exists) {
-            $this->editingDriver = $editingDriver;
-            $this->driverData = $editingDriver->toArray();
+        if ($driver && $driver->exists) {
+            $this->driver = $driver;
+            $this->driverData = $driver->toArray();
         }
     }
 
@@ -29,7 +28,7 @@ class DriversForm extends Component
         return [
             'driverData.name' => 'required|string|max:255',
             'driverData.phone' => 'required|string|max:30',
-            'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,' . ($this->editingDriver?->id ?? 'NULL'),
+            'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,' . ($this->driver?->id ?? 'NULL'),
             'driverData.country' => ['nullable', new Enum(CountriesEnum::class)],
             'driverData.region' => 'nullable|string|max:100',
             'driverData.zipcode' => 'nullable|string|max:20',
@@ -38,7 +37,7 @@ class DriversForm extends Component
             'driverData.street_nr' => 'nullable|string|max:20',
             'driverData.home_nr' => 'nullable|string|max:20',
             'driverData.extra_info' => 'nullable|string',
-            'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->editingDriver?->id ?? 'NULL'),
+            'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->driver?->id ?? 'NULL'),
             'driverData.driving_license_expiry_date' => 'required|date',
             'driverData.medical_exam_expiry_date' => 'nullable|date',
             'driverData.is_active' => 'boolean',
@@ -50,18 +49,11 @@ class DriversForm extends Component
         $this->validate();
 
         // Wyciągamy dane z klucza driverData, ponieważ tak zdefiniowałeś reguły i bindowanie
-        $this->editingDriver->update($this->driverData['driverData'] ?? $this->driverData);
+        $this->driver->update($this->driverData['driverData'] ?? $this->driverData);
 
         // Zamiast czyszczenia komponentu i zamykania modala, przekierowujemy użytkownika z powrotem na listę
         session()->flash('notify', 'Dane kierowcy zostały pomyślnie zaktualizowane.');
 
         return $this->redirect(route('drivers.index'), navigate: true);
-    }
-
-    public function updatedDriverData($value, $key)
-    {
-        if ($value === '') {
-            data_set($this->driverData, $key, null);
-        }
     }
 }

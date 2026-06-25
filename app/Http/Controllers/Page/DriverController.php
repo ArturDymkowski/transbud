@@ -53,29 +53,9 @@ class DriverController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Driver $driver)
+    public function update(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:30',
-            'pesel' => 'required|string|size:11|unique:drivers,pesel,' . ($driver->id),
-            'country' => ['nullable', new Enum(CountriesEnum::class)],
-            'region' => 'nullable|string|max:100',
-            'zipcode' => 'nullable|string|max:20',
-            'city' => 'nullable|string|max:100',
-            'street' => 'nullable|string|max:100',
-            'street_nr' => 'nullable|string|max:20',
-            'home_nr' => 'nullable|string|max:20',
-            'extra_info' => 'nullable|string',
-            'driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($driver->id),
-            'driving_license_expiry_date' => 'required|date',
-            'medical_exam_expiry_date' => 'nullable|date',
-            'is_active' => 'boolean',
-        ]);
-
-        $driver->update($validated);
-
-        return redirect()->route('drivers.index')->with('success', 'Kierowca zaktualizowany!');
+        //
     }
 
     /**

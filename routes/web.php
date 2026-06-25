@@ -20,7 +20,7 @@ Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('langu
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'update']);
+    Route::resource('/drivers', DriverController::class)->only(['index', 'edit']);
 });
 
 //Route::resource('auth', LoginController::class)->only(['create', 'store']);
