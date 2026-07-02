@@ -4,15 +4,18 @@ namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
 use App\Models\Driver;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Enum;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Livewire\Component;
-use Livewire\WithPagination;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Validate;
+
+use Illuminate\Validation\Rules\Enum;
 
 class DriversForm extends Component
 {
+    use WithFileUploads;
+
     public array $driverData = [];
     public ?\App\Models\Driver $driver = null;
 
@@ -20,11 +23,21 @@ class DriversForm extends Component
     {
         if ($driver && $driver->exists) {
             $this->driver = $driver;
-            $this->driverData = $driver->toArray();
+        } else {
+            $this->driver = new \App\Models\Driver();
         }
+
+        $this->driverData = $this->driver->only([
+            'name', 'phone', 'pesel', 'country', 'region', 'zipcode',
+            'city', 'street', 'street_nr', 'home_nr', 'extra_info',
+            'driving_license_number', 'driving_license_expiry_date',
+            'identity_card_number', 'identity_card_expiry_date',
+            'is_active',
+        ]);
     }
 
-    protected function rules() {
+    protected function rules(): array
+    {
         return [
             'driverData.name' => 'required|string|max:255',
             'driverData.phone' => 'required|string|max:30',
@@ -41,19 +54,78 @@ class DriversForm extends Component
             'driverData.driving_license_expiry_date' => 'required|date',
             'driverData.identity_card_expiry_date' => 'nullable|date',
             'driverData.is_active' => 'boolean',
+
+            'driverData.driving_license_document_front' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'driverData.driving_license_document_back'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'driverData.identity_card_document_front'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'driverData.identity_card_document_back'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ];
     }
 
-    public function updateDriver()
+    public function save()
     {
         $this->validate();
 
-        // Wyciągamy dane z klucza driverData, ponieważ tak zdefiniowałeś reguły i bindowanie
-        $this->driver->update($this->driverData['driverData'] ?? $this->driverData);
+        $fileKeys = array_keys($this->mediaCollectionsMap());
+        $files = array_intersect_key($this->driverData, array_flip($fileKeys));
+        $attributes = array_diff_key($this->driverData, array_flip($fileKeys));
 
-        // Zamiast czyszczenia komponentu i zamykania modala, przekierowujemy użytkownika z powrotem na listę
+        if ($this->driver->exists) {
+            $this->driver->update($attributes);
+        } else {
+            $this->driver->fill($attributes);
+            $this->driver->save();
+        }
+
+        foreach ($this->mediaCollectionsMap() as $key => $collection) {
+            $this->attachMedia($files[$key] ?? null, $collection);
+        }
+
         session()->flash('notify', 'Dane kierowcy zostały pomyślnie zaktualizowane.');
 
         return $this->redirect(route('drivers.index'), navigate: true);
+    }
+
+    private function attachMedia(mixed $file, string $collection): void
+    {
+        if (! $file instanceof TemporaryUploadedFile) {
+            return;
+        }
+
+        $this->driver
+            ->addMedia($file->getRealPath())
+            ->usingName($file->getClientOriginalName())
+            ->usingFileName($file->hashName())
+            ->toMediaCollection($collection);
+    }
+
+    private function mediaCollectionsMap(): array
+    {
+        return [
+            'driving_license_document_front' => Driver::MEDIA_DRIVING_LICENSE_FRONT,
+            'driving_license_document_back'  => Driver::MEDIA_DRIVING_LICENSE_BACK,
+            'identity_card_document_front'   => Driver::MEDIA_IDENTITY_CARD_FRONT,
+            'identity_card_document_back'    => Driver::MEDIA_IDENTITY_CARD_BACK,
+        ];
+    }
+
+    #[Computed]
+    public function existingMedia(): array
+    {
+        if (! $this->driver?->exists) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($this->mediaCollectionsMap() as $key => $collection) {
+            $result[$key] = $this->driver->getFirstMedia($collection)?->id;
+        }
+
+        return $result;
+    }
+
+    public function render()
+    {
+        return view('livewire.forms.drivers-form');
     }
 }

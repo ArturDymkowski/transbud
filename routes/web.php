@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Page\DriverController;
 use Illuminate\Support\Facades\Route;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 Route::get("/", function() {
     return Auth::check()
@@ -23,19 +24,23 @@ Route::middleware('auth')->group(function () {
     Route::resource('/drivers', DriverController::class)->only(['index', 'edit']);
 });
 
-//Route::resource('auth', LoginController::class)->only(['create', 'store']);
+Route::get('/driver-documents/{media}', function (Media $media) {
+    abort_unless($media->model_type === \App\Models\Driver::class, 404);
 
-// authentication pages
-//Route::get('/login', function () {
-//    return view('pages.auth.login', ['title' => 'Login']);
-//})->name('login');
+    /** @var \App\Models\Driver $driver */
+    $driver = $media->model;
+
+    abort_unless(auth()->user()?->can('view', $driver), 403);
+
+    return response()->file($media->getPath());
+})->middleware('auth')->name('driver-documents.show');
 
 
 
 
 
 
-
+// =======================================================================
 
 // ui elements pages
 Route::get('/alerts', function () {

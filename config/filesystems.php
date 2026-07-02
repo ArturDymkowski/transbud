@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        // Custom
+        'driver_documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/driver-documents'),
+            'visibility' => 'private',
+            'throw' => false,
+        ],
     ],
 
     /*

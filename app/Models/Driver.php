@@ -7,10 +7,18 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Driver extends Model
+class Driver extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
+
+    public const MEDIA_DRIVING_LICENSE_FRONT = 'driving_license_front';
+    public const MEDIA_DRIVING_LICENSE_BACK  = 'driving_license_back';
+    public const MEDIA_IDENTITY_CARD_FRONT   = 'identity_card_front';
+    public const MEDIA_IDENTITY_CARD_BACK    = 'identity_card_back';
 
     protected $fillable = [
         'name',
@@ -27,12 +35,8 @@ class Driver extends Model
 
         'driving_license_number',
         'driving_license_expiry_date',
-        'driving_license_document_front',
-        'driving_license_document_back',
         'identity_card_number',
         'identity_card_expiry_date',
-        'identity_card_document_front',
-        'identity_card_document_back',
         'is_active',
     ];
 
@@ -97,5 +101,36 @@ class Driver extends Model
                 return implode('', $parts);
             }
         );
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $collections = [
+            self::MEDIA_DRIVING_LICENSE_FRONT,
+            self::MEDIA_DRIVING_LICENSE_BACK,
+            self::MEDIA_IDENTITY_CARD_FRONT,
+            self::MEDIA_IDENTITY_CARD_BACK,
+        ];
+
+        foreach ($collections as $collection) {
+            $this->addMediaCollection($collection)
+                ->useDisk('driver_documents')
+                ->singleFile()
+                ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+        }
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(400)
+            ->height(250)
+            ->sharpen(10)
+            ->performOnCollections(
+                self::MEDIA_DRIVING_LICENSE_FRONT,
+                self::MEDIA_DRIVING_LICENSE_BACK,
+                self::MEDIA_IDENTITY_CARD_FRONT,
+                self::MEDIA_IDENTITY_CARD_BACK,
+            );
     }
 }

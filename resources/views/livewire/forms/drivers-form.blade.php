@@ -1,7 +1,7 @@
 {{--<div class="relative w-full max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 dark:bg-gray-900 lg:p-10">--}}
 
     <!-- Formularz -->
-    <form wire:submit="updateDriver">
+    <form wire:submit="save">
 
         @if ($errors->any())
             <div class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg dark:bg-red-900 dark:text-red-200">
@@ -57,16 +57,13 @@
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Prawo jazdy</h2>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
                     <div>
                         <x-form.input.text-input name="driverData.driving_license_number"
                                                  label="Nr prawa jazdy"
                                                  required="true"
                                                  wire:model="driverData.driving_license_number"/>
                     </div>
-
                     <div>
                         <x-form.input.date-picker name="driverData.driving_license_expiry_date"
                                                   label="Ważność prawa jazdy"
@@ -77,34 +74,57 @@
 
                     <!-- Przód dokumentu -->
                     <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.driving_license_document_front" label="Dokument przód" />
+                        <x-form.input.file-input name="driverData.driving_license_document_front"
+                                                 label="Dokument przód"
+                                                 wire:model="driverData.driving_license_document_front" />
 
                         @if(isset($driverData['driving_license_document_front']) && is_object($driverData['driving_license_document_front']))
+                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
                             <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
                                 <img src="{{ $driverData['driving_license_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
+                            </div>
+                        @elseif($this->existingMedia['driving_license_document_front'] ?? null)
+                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ route('driver-documents.show', $this->existingMedia['driving_license_document_front']) }}" class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
                                 <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
                             </div>
                         @endif
+
+                        @error('driverData.driving_license_document_front')
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <!-- Tył dokumentu -->
                     <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.driving_license_document_back" label="Dokument tył" />
+                        <x-form.input.file-input name="driverData.driving_license_document_back"
+                                                 label="Dokument przód"
+                                                 wire:model="driverData.driving_license_document_back" />
 
                         @if(isset($driverData['driving_license_document_back']) && is_object($driverData['driving_license_document_back']))
+                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
                             <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
                                 <img src="{{ $driverData['driving_license_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
                             </div>
+                        @elseif($this->existingMedia['driving_license_document_back'] ?? null)
+                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ route('driver-documents.show', $this->existingMedia['driving_license_document_back']) }}" class="w-full h-full object-cover">
+                            </div>
                         @else
                             <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu tyłu</span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
                             </div>
                         @endif
-                    </div>
 
+                        @error('driverData.driving_license_document_back')
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
@@ -113,16 +133,13 @@
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Dowód osobisty</h2>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
                     <div>
                         <x-form.input.text-input name="driverData.identity_card_number"
                                                  label="Nr dowodu osobistego"
                                                  required="true"
                                                  wire:model="driverData.identity_card_number"/>
                     </div>
-
                     <div>
                         <x-form.input.date-picker name="driverData.identity_card_expiry_date"
                                                   label="Ważność dowodu osobistego"
@@ -133,34 +150,57 @@
 
                     <!-- Przód dokumentu -->
                     <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.identity_card_document_front" label="Dokument przód" />
+                        <x-form.input.file-input name="driverData.identity_card_document_front"
+                                                 label="Dokument przód"
+                                                 wire:model="driverData.identity_card_document_front" />
 
                         @if(isset($driverData['identity_card_document_front']) && is_object($driverData['identity_card_document_front']))
+                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
                             <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
                                 <img src="{{ $driverData['identity_card_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
+                            </div>
+                        @elseif($this->existingMedia['identity_card_document_front'] ?? null)
+                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ route('driver-documents.show', $this->existingMedia['identity_card_document_front']) }}" class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
                                 <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
                             </div>
                         @endif
+
+                        @error('driverData.identity_card_document_front')
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <!-- Tył dokumentu -->
                     <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.identity_card_document_back" label="Dokument tył" />
+                        <x-form.input.file-input name="driverData.identity_card_document_back"
+                                                 label="Dokument przód"
+                                                 wire:model="driverData.identity_card_document_back" />
 
                         @if(isset($driverData['identity_card_document_back']) && is_object($driverData['identity_card_document_back']))
+                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
                             <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
                                 <img src="{{ $driverData['identity_card_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
                             </div>
+                        @elseif($this->existingMedia['identity_card_document_back'] ?? null)
+                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ route('driver-documents.show', $this->existingMedia['identity_card_document_back']) }}" class="w-full h-full object-cover">
+                            </div>
                         @else
                             <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu tyłu</span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
                             </div>
                         @endif
-                    </div>
 
+                        @error('driverData.identity_card_document_back')
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
