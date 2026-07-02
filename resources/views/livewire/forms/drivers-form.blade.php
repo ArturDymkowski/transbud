@@ -54,126 +54,111 @@
 
             <!-- SEKCJA PRAWO JAZDY -->
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950 mb-6">
-                <div class="mb-4">
+                <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Prawo jazdy</h2>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-                    <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 content-start">
-                        <div>
-                            <x-form.input.text-input name="driverData.driving_license_number"
-                                                     label="Nr prawa jazdy"
-                                                     required="true"
-                                                     wire:model="driverData.driving_license_number"/>
-                        </div>
-                        <div>
-                            <x-form.input.date-picker name="driverData.driving_license_expiry_date"
-                                                      label="Ważność prawa jazdy"
-                                                      required="true"
-                                                      wire:model="driverData.driving_license_expiry_date"
-                                                      defaultDate="{{ $driverData['driving_license_expiry_date'] ?? '' }}"/>
-                        </div>
+                    <div>
+                        <x-form.input.text-input name="driverData.driving_license_number"
+                                                 label="Nr prawa jazdy"
+                                                 required="true"
+                                                 wire:model="driverData.driving_license_number"/>
                     </div>
 
-                    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <x-form.input.date-picker name="driverData.driving_license_expiry_date"
+                                                  label="Ważność prawa jazdy"
+                                                  required="true"
+                                                  wire:model="driverData.driving_license_expiry_date"
+                                                  defaultDate="{{ $driverData['driving_license_expiry_date'] ?? '' }}"/>
+                    </div>
 
-                        <!-- Przód dokumentu -->
-                        <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                            <x-form.input.file-input name="driverData.driving_license_document_front"
-                                                     label="Dokument przód" />
+                    <!-- Przód dokumentu -->
+                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                        <x-form.input.file-input name="driverData.driving_license_document_front" label="Dokument przód" />
 
-                            <!-- Kontener na podgląd zdjęcia -->
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden group relative">
-                                {{-- Przykład warunku Livewire dla podglądu temporary URL lub z bazy --}}
-                                @if(isset($driverData['driving_license_document_front']) && is_object($driverData['driving_license_document_front']))
-                                    <img src="{{ $driverData['driving_license_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
-                                @else
-                                    <!-- Placeholder gdy nie ma zdjęcia -->
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">Brak podglądu przodu</span>
-                                @endif
+                        @if(isset($driverData['driving_license_document_front']) && is_object($driverData['driving_license_document_front']))
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ $driverData['driving_license_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
                             </div>
-                        </div>
-
-                        <!-- Tył dokumentu -->
-                        <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                            <x-form.input.file-input name="driverData.driving_license_document_back"
-                                                     label="Dokument tył" />
-
-                            <!-- Kontener na podgląd zdjęcia -->
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                @if(isset($driverData['driving_license_document_back']) && is_object($driverData['driving_license_document_back']))
-                                    <img src="{{ $driverData['driving_license_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
-                                @else
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">Brak podglądu tyłu</span>
-                                @endif
+                        @else
+                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
+                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
                             </div>
-                        </div>
+                        @endif
+                    </div>
 
+                    <!-- Tył dokumentu -->
+                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                        <x-form.input.file-input name="driverData.driving_license_document_back" label="Dokument tył" />
+
+                        @if(isset($driverData['driving_license_document_back']) && is_object($driverData['driving_license_document_back']))
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ $driverData['driving_license_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
+                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu tyłu</span>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
             </div>
 
-            <!-- SEKCJA PRAWO JAZDY -->
+            <!-- SEKCJA DOWÓD OSOBISTY -->
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950 mb-6">
-                <div class="mb-4">
+                <div class="mb-6">
                     <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Dowód osobisty</h2>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-                    <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 content-start">
-                        <div>
-                            <x-form.input.text-input name="driverData.identity_card_number"
-                                                     label="Nr dowodu osobistego"
-                                                     required="true"
-                                                     wire:model="driverData.identity_card_number"/>
-                        </div>
-                        <div>
-                            <x-form.input.date-picker name="driverData.identity_card_expiry_date"
-                                                      label="Ważność prawa jazdy"
-                                                      required="true"
-                                                      wire:model="driverData.identity_card_expiry_date"
-                                                      defaultDate="{{ $driverData['identity_card_expiry_date'] ?? '' }}"/>
-                        </div>
+                    <div>
+                        <x-form.input.text-input name="driverData.identity_card_number"
+                                                 label="Nr dowodu osobistego"
+                                                 required="true"
+                                                 wire:model="driverData.identity_card_number"/>
                     </div>
 
+                    <div>
+                        <x-form.input.date-picker name="driverData.identity_card_expiry_date"
+                                                  label="Ważność dowodu osobistego"
+                                                  required="true"
+                                                  wire:model="driverData.identity_card_expiry_date"
+                                                  defaultDate="{{ $driverData['identity_card_expiry_date'] ?? '' }}"/>
+                    </div>
 
-                    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Przód dokumentu -->
+                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                        <x-form.input.file-input name="driverData.identity_card_document_front" label="Dokument przód" />
 
-                        <!-- Przód dokumentu -->
-                        <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                            <x-form.input.file-input name="driverData.identity_card_document_front"
-                                                     label="Dokument przód" />
-
-                            <!-- Kontener na podgląd zdjęcia -->
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden group relative">
-                                {{-- Przykład warunku Livewire dla podglądu temporary URL lub z bazy --}}
-                                @if(isset($driverData['identity_card_document_front']) && is_object($driverData['identity_card_document_front']))
-                                    <img src="{{ $driverData['identity_card_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
-                                @else
-                                    <!-- Placeholder gdy nie ma zdjęcia -->
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">Brak podglądu przodu</span>
-                                @endif
+                        @if(isset($driverData['identity_card_document_front']) && is_object($driverData['identity_card_document_front']))
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ $driverData['identity_card_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
                             </div>
-                        </div>
-
-                        <!-- Tył dokumentu -->
-                        <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                            <x-form.input.file-input name="driverData.identity_card_document_back"
-                                                     label="Dokument tył" />
-
-                            <!-- Kontener na podgląd zdjęcia -->
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                @if(isset($driverData['identity_card_document_back']) && is_object($driverData['identity_card_document_back']))
-                                    <img src="{{ $driverData['identity_card_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
-                                @else
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">Brak podglądu tyłu</span>
-                                @endif
+                        @else
+                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
+                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
                             </div>
-                        </div>
+                        @endif
+                    </div>
 
+                    <!-- Tył dokumentu -->
+                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                        <x-form.input.file-input name="driverData.identity_card_document_back" label="Dokument tył" />
+
+                        @if(isset($driverData['identity_card_document_back']) && is_object($driverData['identity_card_document_back']))
+                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
+                                <img src="{{ $driverData['identity_card_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
+                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu tyłu</span>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
