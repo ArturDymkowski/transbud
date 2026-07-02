@@ -4,15 +4,14 @@
     <div class="flex items-center gap-1">
         {{ $label }}
 
-        {{-- Ikonki --}}
         @if($sortField === $field)
             @if($sortDirection === 'asc')
-                <x-heroicon-o-chevron-up class="w-4 h-4" />
+                <x-heroicon-o-chevron-up class="w-4 h-4 shrink-0" />
             @else
-                <x-heroicon-o-chevron-down class="w-4 h-4" />
+                <x-heroicon-o-chevron-down class="w-4 h-4 shrink-0" />
             @endif
         @else
-            <x-heroicon-o-arrows-up-down class="w-4 h-4 text-gray-300" />
+            <x-heroicon-o-arrows-up-down class="w-4 h-4 text-gray-300 shrink-0" />
         @endif
     </div>
 </th>

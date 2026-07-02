@@ -9,5 +9,5 @@ return [
     'pesel' => 'PESEL',
     'address' => 'Address',
     'driving_license_expiry_date' => 'Driving license expiry date',
-    'medical_exam_expiry_date' => 'Medical examination expiry date',
+    'identity_card_expiry_date' => 'Medical examination expiry date',
 ];

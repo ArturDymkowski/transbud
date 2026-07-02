@@ -15,7 +15,7 @@ use Livewire\WithPagination;
 class DriversTable extends Component
 {
     use WithPagination, WithSorting;
-    public $allowedSortFields = ['name', 'pesel', 'id', 'is_active', 'driving_license_expiry_date', 'medical_exam_expiry_date'];
+    public $allowedSortFields = ['name', 'pesel', 'id', 'is_active', 'driving_license_expiry_date', 'identity_card_expiry_date'];
 
     public string $search = '';
     public string $isActive = '';

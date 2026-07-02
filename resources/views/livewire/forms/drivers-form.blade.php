@@ -73,9 +73,9 @@
                                         wire:model="driverData.driving_license_expiry_date"
                                         defaultDate="{{ $driverData['driving_license_expiry_date'] ?? '' }}"/>
 
-                    <x-form.date-picker name="driverData.medical_exam_expiry_date" label="Badania lekarskie do"
-                                        wire:model="driverData.medical_exam_expiry_date"
-                                        defaultDate="{{ $driverData['medical_exam_expiry_date'] ?? '' }}"/>
+                    <x-form.date-picker name="driverData.identity_card_expiry_date" label="Badania lekarskie do"
+                                        wire:model="driverData.identity_card_expiry_date"
+                                        defaultDate="{{ $driverData['identity_card_expiry_date'] ?? '' }}"/>
 
                 </div>
             </div>

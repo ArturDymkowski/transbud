@@ -27,7 +27,12 @@ class Driver extends Model
 
         'driving_license_number',
         'driving_license_expiry_date',
-        'medical_exam_expiry_date',
+        'driving_license_document_front',
+        'driving_license_document_back',
+        'identity_card_number',
+        'identity_card_expiry_date',
+        'identity_card_document_front',
+        'identity_card_document_back',
         'is_active',
     ];
 

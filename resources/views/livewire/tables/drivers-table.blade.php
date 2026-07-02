@@ -79,22 +79,21 @@
                     <div class="flex items-center gap-2 text-sm font-medium text-brand-700 dark:text-brand-400">
                         <span x-text="selected.length"
                               class="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-brand-500"></span>
-                        <span>{{ __('drivers.selected_records') }}</span>
+                        <span>{{ __('labels.tables.selected_records') }}</span>
                     </div>
 
                     <div class="flex items-center gap-4">
                         <button type="button"
                                 @click="selected = []"
                                 class="text-sm font-semibold text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                            {{ __('drivers.unselect_all') }}
+                            {{ __('labels.tables.unselect_all') }}
                         </button>
 
                         <button type="button"
                                 wire:click="deleteSelected"
-                                wire:confirm="{{ __('drivers.confirm_delete_selected') }}"
+                                wire:confirm="{{ __('labels.tables.confirm_delete_selected') }}"
                                 class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                             <x-heroicon-o-trash class="w-4 h-4"/>
-                            wire:confirm="{{ __('drivers.confirm_delete_selected') }}"
                         </button>
                     </div>
                 </div>
@@ -106,7 +105,7 @@
 
                         <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <span class="font-medium text-gray-500 dark:text-gray-400">
-                                {{ __('drivers.filters') }}
+                                {{ __('labels.tables.filters') }}
                             </span>
 
                             @if(filled($search))
@@ -139,7 +138,7 @@
                         <button type="button"
                                 wire:click="resetFilters"
                                 class="text-xs font-semibold transition text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
-                            {{ __('drivers.clear_all') }}
+                            {{ __('labels.tables.clear_all') }}
                         </button>
                     </div>
                 @endif
@@ -175,12 +174,10 @@
                             {{ __('drivers.phone') }}
                         </th>
 
-                        <x-tables.th-sort
-                            field="pesel"
-                            :label="__('drivers.pesel')"
-                            :sortField="$sortField"
-                            :sortDirection="$sortDirection"
-                        />
+                        <th scope="col"
+                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            {{ __('drivers.pesel') }}
+                        </th>
 
                         <th scope="col"
                             class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -195,8 +192,8 @@
                         />
 
                         <x-tables.th-sort
-                            field="medical_exam_expiry_date"
-                            :label="__('drivers.medical_exam_expiry_date')"
+                            field="identity_card_expiry_date"
+                            :label="__('drivers.identity_card_expiry_date')"
                             :sortField="$sortField"
                             :sortDirection="$sortDirection"
                         />
@@ -216,7 +213,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($drivers as $driver)
-                        <tr wire:key="driver-row-{{ $driver->id }}">
+                        <tr>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400">
                                     <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}"
@@ -245,7 +242,7 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div
-                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->medical_exam_expiry_date ?? '-' }}</div>
+                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->identity_card_expiry_date ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500 dark:text-gray-400">

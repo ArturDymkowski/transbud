@@ -27,7 +27,14 @@ return new class extends Migration
 
             $table->string('driving_license_number')->unique();
             $table->date('driving_license_expiry_date');
-            $table->date('medical_exam_expiry_date')->nullable();
+            $table->string('driving_license_document_front')->nullable();
+            $table->string('driving_license_document_back')->nullable();
+
+            $table->string('identity_card_number')->nullable();
+            $table->date('identity_card_expiry_date');
+            $table->string('identity_card_document_front')->nullable();
+            $table->string('identity_card_document_back')->nullable();
+
             $table->boolean('is_active')->default(true);
 
             $table->timestamps();
