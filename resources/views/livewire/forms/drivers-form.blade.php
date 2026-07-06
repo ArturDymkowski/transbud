@@ -73,78 +73,18 @@
                     </div>
 
                     <!-- Przód dokumentu -->
-                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.driving_license_document_front"
-                                                 label="Dokument przód"
-                                                 wire:model="driverData.driving_license_document_front" />
-
-                        @if(isset($driverData['driving_license_document_front']) && is_object($driverData['driving_license_document_front']))
-                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden relative">
-                                <img src="{{ $driverData['driving_license_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
-                                <button type="button"
-                                        wire:click="removeDocument('driving_license_document_front')"
-                                        wire:loading.attr="disabled"
-                                        class="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-900/70 text-white hover:bg-red-600 transition-colors"
-                                        title="Usuń zdjęcie">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                        @elseif($this->existingMedia['driving_license_document_front'] ?? null)
-                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden relative">
-                                <img src="{{ route('driver-documents.show', $this->existingMedia['driving_license_document_front']) }}" class="w-full h-full object-cover">
-
-                                <button type="button"
-                                        wire:click="removeDocument('driving_license_document_front')"
-                                        wire:loading.attr="disabled"
-                                        wire:confirm="Czy na pewno chcesz usunąć ten dokument?"
-                                        class="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-900/70 text-white hover:bg-red-600 transition-colors"
-                                        title="Usuń zdjęcie">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                        @else
-                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
-                            </div>
-                        @endif
-
-                        @error('driverData.driving_license_document_front')
-                        <span class="text-xs text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    <x-form.document-upload
+                        field="driving_license_document_front"
+                        label="Dokument przód"
+                        :file="$driverData['driving_license_document_front'] ?? null"
+                        :existing-media-id="$this->existingMedia['driving_license_document_front'] ?? null" />
 
                     <!-- Tył dokumentu -->
-                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.driving_license_document_back"
-                                                 label="Dokument przód"
-                                                 wire:model="driverData.driving_license_document_back" />
-
-                        @if(isset($driverData['driving_license_document_back']) && is_object($driverData['driving_license_document_back']))
-                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                <img src="{{ $driverData['driving_license_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
-                            </div>
-                        @elseif($this->existingMedia['driving_license_document_back'] ?? null)
-                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                <img src="{{ route('driver-documents.show', $this->existingMedia['driving_license_document_back']) }}" class="w-full h-full object-cover">
-                            </div>
-                        @else
-                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
-                            </div>
-                        @endif
-
-                        @error('driverData.driving_license_document_back')
-                        <span class="text-xs text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    <x-form.document-upload
+                        field="driving_license_document_back"
+                        label="Dokument tył"
+                        :file="$driverData['driving_license_document_back'] ?? null"
+                        :existing-media-id="$this->existingMedia['driving_license_document_back'] ?? null" />
                 </div>
             </div>
 
@@ -169,58 +109,18 @@
                     </div>
 
                     <!-- Przód dokumentu -->
-                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.identity_card_document_front"
-                                                 label="Dokument przód"
-                                                 wire:model="driverData.identity_card_document_front" />
-
-                        @if(isset($driverData['identity_card_document_front']) && is_object($driverData['identity_card_document_front']))
-                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                <img src="{{ $driverData['identity_card_document_front']->temporaryUrl() }}" class="w-full h-full object-cover">
-                            </div>
-                        @elseif($this->existingMedia['identity_card_document_front'] ?? null)
-                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                <img src="{{ route('driver-documents.show', $this->existingMedia['identity_card_document_front']) }}" class="w-full h-full object-cover">
-                            </div>
-                        @else
-                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
-                            </div>
-                        @endif
-
-                        @error('driverData.identity_card_document_front')
-                        <span class="text-xs text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    <x-form.document-upload
+                        field="identity_card_document_front"
+                        label="Dokument przód"
+                        :file="$driverData['identity_card_document_front'] ?? null"
+                        :existing-media-id="$this->existingMedia['identity_card_document_front'] ?? null" />
 
                     <!-- Tył dokumentu -->
-                    <div class="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                        <x-form.input.file-input name="driverData.identity_card_document_back"
-                                                 label="Dokument przód"
-                                                 wire:model="driverData.identity_card_document_back" />
-
-                        @if(isset($driverData['identity_card_document_back']) && is_object($driverData['identity_card_document_back']))
-                            {{-- Świeżo wybrany, jeszcze niezapisany plik --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                <img src="{{ $driverData['identity_card_document_back']->temporaryUrl() }}" class="w-full h-full object-cover">
-                            </div>
-                        @elseif($this->existingMedia['identity_card_document_back'] ?? null)
-                            {{-- Plik już zapisany w bazie (edycja kierowcy) --}}
-                            <div class="mt-1 aspect-[16/10] w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 flex items-center justify-center overflow-hidden">
-                                <img src="{{ route('driver-documents.show', $this->existingMedia['identity_card_document_back']) }}" class="w-full h-full object-cover">
-                            </div>
-                        @else
-                            <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-                                <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu przodu</span>
-                            </div>
-                        @endif
-
-                        @error('driverData.identity_card_document_back')
-                        <span class="text-xs text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    <x-form.document-upload
+                        field="identity_card_document_back"
+                        label="Dokument tył"
+                        :file="$driverData['identity_card_document_back'] ?? null"
+                        :existing-media-id="$this->existingMedia['identity_card_document_back'] ?? null" />
                 </div>
             </div>
 
