@@ -124,6 +124,29 @@ class DriversForm extends Component
         return $result;
     }
 
+    public function removeDocument(string $key): void
+    {
+        // nie zapisany plik
+        if (isset($this->driverData[$key]) && $this->driverData[$key] instanceof TemporaryUploadedFile) {
+            unset($this->driverData[$key]);
+            $this->resetValidation("driverData.{$key}");
+            return;
+        }
+
+        // zapisany plik
+        $collectionsMap = $this->mediaCollectionsMap();
+
+        if (! isset($collectionsMap[$key]) || ! $this->driver?->exists) {
+            return;
+        }
+
+        $media = $this->driver->getFirstMedia($collectionsMap[$key]);
+        $media?->delete();
+
+        $this->driver->unsetRelation('media');
+        unset($this->existingMedia);
+    }
+
     public function render()
     {
         return view('livewire.forms.drivers-form');
