@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'general' => [
+        'close' => 'Close',
+        'save' => 'Save',
+        'extra_info' => 'Extra Info',
+        'basic_info' => 'Basic information',
+    ],
+
     'languages' => [
         'pl' => 'Polish',
         'en' => 'English',
@@ -40,5 +47,15 @@ return [
         'list' => 'List',
         'no_results' => 'No results found',
         'create' => 'Create',
+    ],
+
+    'address' => [
+        'address' => 'Address',
+        'zipcode' => 'Zipcode',
+        'city' => 'City',
+        'street' => 'Street',
+        'house_nr' => 'House nr',
+        'apartment_nr' => 'Apartment nt',
+        'country' => 'Country',
     ],
 ];

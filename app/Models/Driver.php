@@ -29,8 +29,8 @@ class Driver extends Model implements HasMedia
         'zipcode',
         'city',
         'street',
-        'street_nr',
-        'home_nr',
+        'house_nr',
+        'apartment_nr',
         'extra_info',
 
         'driving_license_number',
@@ -67,10 +67,10 @@ class Driver extends Model implements HasMedia
 
                 // Ulica nr_domu/nr_mieszkania
                 $streetPart = trim($this->street ?? '');
-                if ($this->street_nr) {
-                    $streetPart .= ' ' . $this->street_nr;
-                    if ($this->home_nr) {
-                        $streetPart .= '/' . $this->home_nr;
+                if ($this->house_nr) {
+                    $streetPart .= ' ' . $this->house_nr;
+                    if ($this->apartment_nr) {
+                        $streetPart .= '/' . $this->apartment_nr;
                     }
                 }
                 if ($streetPart) {

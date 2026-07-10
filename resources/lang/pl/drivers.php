@@ -8,6 +8,12 @@ return [
     'phone' => 'Telefon',
     'pesel' => 'PESEL',
     'address' => 'Adres',
+    'driving_license' => 'Prawo jazdy',
+    'driving_license_nr' => 'Nr prawa jazdy',
     'driving_license_expiry_date' => 'Data wygaśnięcia prawa jazdy',
+    'identity_card' => 'Dowód osobisty',
+    'identity_card_nr' => 'Nr dowodu osobistego',
     'identity_card_expiry_date' => 'Data wygaśnięcia dowodu osobistego',
+    'document_front' => 'Dokument przód',
+    'document_back' => 'Dokument tył',
 ];

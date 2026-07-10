@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'general' => [
+        'close' => 'Zamknij',
+        'save' => 'Zapisz',
+        'extra_info' => 'Informacje dodatkowe',
+        'basic_info' => 'Informacje podstawowe',
+    ],
+
     'languages' => [
         'pl' => 'Polski',
         'en' => 'Angielski',
@@ -40,5 +47,15 @@ return [
         'list' => 'Lista',
         'no_results' => 'Nie znaleziono żadnych pozycji',
         'create' => 'Utwórz',
+    ],
+
+    'address' => [
+        'address' => 'Adres',
+        'zipcode' => 'Kod pocztowy',
+        'city' => 'Miasto',
+        'street' => 'Ulica',
+        'house_nr' => 'Nr domu',
+        'apartment_nr' => 'Nr mieszkania',
+        'country' => 'Kraj',
     ],
 ];

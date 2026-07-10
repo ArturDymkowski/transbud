@@ -29,7 +29,7 @@ class DriversForm extends Component
 
         $this->driverData = $this->driver->only([
             'name', 'phone', 'pesel', 'country', 'region', 'zipcode',
-            'city', 'street', 'street_nr', 'home_nr', 'extra_info',
+            'city', 'street', 'house_nr', 'apartment_nr', 'extra_info',
             'driving_license_number', 'driving_license_expiry_date',
             'identity_card_number', 'identity_card_expiry_date',
             'is_active',
@@ -47,8 +47,8 @@ class DriversForm extends Component
             'driverData.zipcode' => 'nullable|string|max:20',
             'driverData.city' => 'nullable|string|max:100',
             'driverData.street' => 'nullable|string|max:100',
-            'driverData.street_nr' => 'nullable|string|max:20',
-            'driverData.home_nr' => 'nullable|string|max:20',
+            'driverData.house_nr' => 'nullable|string|max:20',
+            'driverData.apartment_nr' => 'nullable|string|max:20',
             'driverData.extra_info' => 'nullable|string',
             'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->driver?->id ?? 'NULL'),
             'driverData.driving_license_expiry_date' => 'required|date',

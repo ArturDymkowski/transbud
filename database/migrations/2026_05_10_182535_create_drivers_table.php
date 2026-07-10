@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('zipcode')->nullable();
             $table->string('city')->nullable();
             $table->string('street')->nullable();
-            $table->string('street_nr')->nullable();
-            $table->string('home_nr')->nullable();
+            $table->string('house_nr')->nullable();
+            $table->string('apartment_nr')->nullable();
             $table->longText('extra_info')->nullable();
 
             $table->string('driving_license_number')->unique();

@@ -28,8 +28,8 @@ class DriverFactory extends Factory
             'zipcode' => fake()->postcode(),
             'city' => fake()->city(),
             'street' => fake()->streetName(),
-            'street_nr' => fake()->buildingNumber(),
-            'home_nr' => fake()->optional()->buildingNumber(),
+            'house_nr' => fake()->buildingNumber(),
+            'apartment_nr' => fake()->optional()->buildingNumber(),
 
             'extra_info' => fake()->optional()->sentence(),
 

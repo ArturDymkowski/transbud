@@ -8,6 +8,12 @@ return [
     'phone' => 'Phone',
     'pesel' => 'PESEL',
     'address' => 'Address',
+    'driving_license' => 'Driving license',
+    'driving_license_nr' => 'Driving license nr',
     'driving_license_expiry_date' => 'Driving license expiry date',
+    'identity_card' => 'Identity card',
+    'identity_card_nr' => 'Identity card nr',
     'identity_card_expiry_date' => 'Medical examination expiry date',
+    'document_front' => 'Document front',
+    'document_back' => 'Document back',
 ];
