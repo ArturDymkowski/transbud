@@ -91,7 +91,11 @@ class Driver extends Model implements HasMedia
 
                 // Kraj
                 if ($this->country) {
-                    $parts[] = ', ' . CountriesEnum::fromId($this->country->value)->label();
+                    if (!empty($parts)) {
+                        $parts[] = ', ' . CountriesEnum::fromId($this->country->value)->label();
+                    } else {
+                        $parts[] = CountriesEnum::fromId($this->country->value)->label();
+                    }
                 }
 
                 if (empty($parts)) {
