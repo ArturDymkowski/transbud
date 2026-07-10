@@ -28,7 +28,7 @@ class DriversForm extends Component
         }
 
         $this->driverData = $this->driver->only([
-            'name', 'phone', 'pesel', 'country', 'region', 'zipcode',
+            'name', 'phone', 'pesel', 'country', 'zipcode',
             'city', 'street', 'house_nr', 'apartment_nr', 'extra_info',
             'driving_license_number', 'driving_license_expiry_date',
             'identity_card_number', 'identity_card_expiry_date',
@@ -42,7 +42,6 @@ class DriversForm extends Component
             'driverData.phone' => 'required|string|max:30',
             'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,' . ($this->driver?->id ?? 'NULL'),
             'driverData.country' => ['nullable', new Enum(CountriesEnum::class)],
-            'driverData.region' => 'nullable|string|max:100',
             'driverData.zipcode' => 'nullable|string|max:20',
             'driverData.city' => 'nullable|string|max:100',
             'driverData.street' => 'nullable|string|max:100',
@@ -51,12 +50,36 @@ class DriversForm extends Component
             'driverData.extra_info' => 'nullable|string',
             'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->driver?->id ?? 'NULL'),
             'driverData.driving_license_expiry_date' => 'required|date',
-            'driverData.identity_card_expiry_date' => 'nullable|date',
+            'driverData.identity_card_expiry_date' => 'required|date',
 
             'driverData.driving_license_document_front' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'driverData.driving_license_document_back'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'driverData.identity_card_document_front'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'driverData.identity_card_document_back'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ];
+    }
+
+    protected function validationAttributes(): array
+    {
+        return [
+            'driverData.name' => __('drivers.name'),
+            'driverData.phone' => __('drivers.phone'),
+            'driverData.pesel' => __('drivers.pesel'),
+            'driverData.country' => __('labels.address.country'),
+            'driverData.zipcode' => __('labels.address.zipcode'),
+            'driverData.city' => __('labels.address.city'),
+            'driverData.street' => __('labels.address.street'),
+            'driverData.house_nr' => __('labels.address.house_nr'),
+            'driverData.apartment_nr' => __('labels.address.apartment_nr'),
+            'driverData.extra_info' => __('drivers.extra_info'),
+
+            'driverData.driving_license_number' => __('drivers.driving_license_number'),
+            'driverData.driving_license_expiry_date' => __('drivers.driving_license_expiry_date'),
+            'driverData.identity_card_expiry_date' => __('drivers.identity_card_expiry_date'),
+            'driverData.driving_license_document_front' => __('drivers.document_front'),
+            'driverData.driving_license_document_back' => __('drivers.document_back'),
+            'driverData.identity_card_document_front' => __('drivers.document_front'),
+            'driverData.identity_card_document_back' => __('drivers.document_back'),
         ];
     }
 
@@ -79,7 +102,7 @@ class DriversForm extends Component
             $this->attachMedia($files[$key] ?? null, $collection);
         }
 
-        session()->flash('notify', 'Dane kierowcy zostały pomyślnie zaktualizowane.');
+        session()->flash('notify', trans('labels.general.saved_success'));
 
         return $this->redirect(route('drivers.index'), navigate: true);
     }

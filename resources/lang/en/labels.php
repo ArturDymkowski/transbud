@@ -7,6 +7,7 @@ return [
         'extra_info' => 'Extra Info',
         'basic_info' => 'Basic information',
         'not_selected' => '-- not selected --',
+        'saved_success' => 'Zapisano poprawnie',
     ],
 
     'languages' => [
