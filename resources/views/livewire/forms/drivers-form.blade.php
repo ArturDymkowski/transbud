@@ -13,7 +13,7 @@
 
     <div class="grid grid-cols-1 gap-6">
 
-        <!-- Sekcja: Dane podstawowe -->
+        <!-- Sekcja: Informacje podstawowe -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
             <div class="mb-6">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
@@ -133,8 +133,7 @@
             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
                 <x-form.input.select name="driverData.country" label="Kraj" wire:model="driverData.country"
-                                     :options="\App\Enums\CountriesEnum::getOptions()"
-                                     default="{{ \App\Enums\CountriesEnum::POLAND }}"/>
+                                     :options="\App\Enums\CountriesEnum::getOptions()"/>
 
                 <x-form.input.text-input name="driverData.zipcode" label="{{ __('labels.address.zipcode') }}"
                                          wire:model="driverData.zipcode"/>
@@ -143,7 +142,7 @@
                 <x-form.input.text-input name="driverData.street" label="{{ __('labels.address.street') }}" wire:model="driverData.street"/>
                 <x-form.input.text-input name="driverData.house_nr" label="{{ __('labels.address.house_nr') }}"
                                          wire:model="driverData.house_nr"/>
-                <x-form.input.text-input name="driverData.apartment_nr" label="{{ __('labels.address.zipcode') }}"
+                <x-form.input.text-input name="driverData.apartment_nr" label="{{ __('labels.address.apartment_nr') }}"
                                          wire:model="driverData.apartment_nr"/>
 
             </div>

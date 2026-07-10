@@ -1,7 +1,7 @@
 <div>
 
     <div class="flex w-full justify-end mb-4">
-        <x-ui.button>{{ __('labels.tables.create') }}</x-ui.button>
+        <x-ui.button><a href="{{ route('drivers.create') }}">{{ __('labels.tables.create') }}</a></x-ui.button>
     </div>
 
     <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">

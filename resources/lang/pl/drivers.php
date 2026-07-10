@@ -16,4 +16,5 @@ return [
     'identity_card_expiry_date' => 'Data wygaśnięcia dowodu osobistego',
     'document_front' => 'Dokument przód',
     'document_back' => 'Dokument tył',
+    'create_title' => 'Utwórz kierowcę'
 ];

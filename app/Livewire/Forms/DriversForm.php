@@ -32,7 +32,6 @@ class DriversForm extends Component
             'city', 'street', 'house_nr', 'apartment_nr', 'extra_info',
             'driving_license_number', 'driving_license_expiry_date',
             'identity_card_number', 'identity_card_expiry_date',
-            'is_active',
         ]);
     }
 
@@ -53,7 +52,6 @@ class DriversForm extends Component
             'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->driver?->id ?? 'NULL'),
             'driverData.driving_license_expiry_date' => 'required|date',
             'driverData.identity_card_expiry_date' => 'nullable|date',
-            'driverData.is_active' => 'boolean',
 
             'driverData.driving_license_document_front' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'driverData.driving_license_document_back'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',

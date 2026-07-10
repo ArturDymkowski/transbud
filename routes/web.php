@@ -7,6 +7,7 @@ use App\Http\Controllers\Page\DriverController;
 use Illuminate\Support\Facades\Route;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+// Auth
 Route::get("/", function() {
     return Auth::check()
         ? redirect()->route("dashboard")
@@ -18,12 +19,7 @@ Route::post('/login/store', [LoginController::class, 'store'])->name('login.stor
 Route::delete('/login', [LoginController::class, 'destroy'])->name('login.destroy');
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::resource('/drivers', DriverController::class)->only(['index', 'edit']);
-});
-
+// Documents
 Route::get('/driver-documents/{media}', function (Media $media) {
     abort_unless($media->model_type === \App\Models\Driver::class, 404);
 
@@ -34,6 +30,13 @@ Route::get('/driver-documents/{media}', function (Media $media) {
 
     return response()->file($media->getPath());
 })->middleware('auth')->name('driver-documents.show');
+
+// After login
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create']);
+});
 
 
 

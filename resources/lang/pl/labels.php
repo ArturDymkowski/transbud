@@ -6,6 +6,7 @@ return [
         'save' => 'Zapisz',
         'extra_info' => 'Informacje dodatkowe',
         'basic_info' => 'Informacje podstawowe',
+        'not_selected' => '-- nie wybrano --',
     ],
 
     'languages' => [

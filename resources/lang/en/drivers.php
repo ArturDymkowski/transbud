@@ -16,4 +16,5 @@ return [
     'identity_card_expiry_date' => 'Medical examination expiry date',
     'document_front' => 'Document front',
     'document_back' => 'Document back',
+    'create_title' => 'Create driver',
 ];
