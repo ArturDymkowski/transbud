@@ -3,119 +3,111 @@
 namespace App\Livewire\Tables;
 
 use App\Enums\CountriesEnum;
-use App\Livewire\Traits\WithSorting;
+use App\Livewire\Concerns\WithBulkSelection;
+use App\Livewire\Concerns\WithFilters;
+use App\Livewire\Concerns\WithPerPage;
+use App\Livewire\Concerns\WithTableSorting;
 use App\Models\Driver;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Enum;
-use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class DriversTable extends Component
 {
-    use WithPagination, WithSorting;
-    public $allowedSortFields = ['name', 'pesel', 'id', 'is_active', 'driving_license_expiry_date', 'identity_card_expiry_date'];
+    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+
+    public array $allowedSortFields = [
+        'name', 'id', 'is_active',
+        'driving_license_expiry_date', 'identity_card_expiry_date',
+    ];
 
     public string $search = '';
     public string $isActive = '';
     public ?int $country = null;
-    public array $selected = [];
-    public array $optionsPerPage  = [
-        10 => 10,
-        25 => 25,
-        50 => 50,
-        100 => 100,
-    ];
-    public int $perPage = 10;
-    public array $idsOnPage = [];
 
-    public function updatedPerPage()
+    protected function filterFields(): array
     {
-        $this->selected = [];
-        $this->resetPage();
+        return ['search', 'isActive', 'country'];
     }
 
     public function render()
     {
         $drivers = Driver::search($this->search)
-            ->when(filled($this->isActive), function ($query) {
-                return $query->where('is_active', $this->isActive);
-            })
-            ->when(filled($this->country), function ($query) {
-                return $query->where('country', $this->country);
-            })
+            ->when(filled($this->isActive), fn ($q) => $q->where('is_active', $this->isActive))
+            ->when(filled($this->country), fn ($q) => $q->where('country', $this->country))
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         $this->idsOnPage = $drivers->pluck('id')->toArray();
 
         return view('livewire.tables.drivers-table', [
-            'drivers' => $drivers
+            'drivers' => $drivers,
         ]);
     }
 
-    public function deleteSelected()
+    public function deleteSelected(): void
     {
-        if (empty($this->selected)) {
-            return;
-        }
-        $deletedRecords = count($this->selected);
-        Driver::whereIn('id', $this->selected)->delete();
-        $this->selected = [];
-
-        $this->dispatch('notify', message: 'Pomyślnie usunięto ' . $deletedRecords . ' rekordów');
+        $this->deleteSelectedRecords(Driver::class, 'kierowców');
     }
 
-    public function toggleActive($driverId)
+    public function deleteDriver(int $id): void
+    {
+        Driver::where('id', $id)->delete();
+        $this->dispatch('notify', message: 'Pomyślnie usunięto');
+    }
+
+    public function toggleActive(int $driverId): void
     {
         $driver = Driver::findOrFail($driverId);
-        $driver->is_active = !$driver->is_active;
+        $driver->is_active = ! $driver->is_active;
         $driver->save();
 
         $this->dispatch('notify', message: 'Rekord zaktualizowany');
     }
 
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
-
-
-    public function updatedIsActive()
-    {
-        $this->resetPage();
-    }
-
-
-    public function resetFilters()
-    {
-        $this->reset(['search', 'isActive']);
-        $this->resetPage();
-    }
-
-    public function editDriver($id)
+    public function editDriver(int $id): void
     {
         $this->dispatch('edit-driver', id: $id);
     }
 
-    public function deleteDriver($id)
-    {
-        Driver::where('id', $id)->delete();
-
-        $this->dispatch('notify', message: 'Pomyślnie usunięto');
-    }
-
-    public function getCountryOptionsProperty()
-    {
-        $options = \App\Enums\CountriesEnum::getOptions();
-
-        return ['' => __('labels.tables.all')] + $options;
-    }
-
     #[On('driver-updated')]
-    public function refreshTable()
+    public function refreshTable(): void
     {
+        //
+    }
 
+    public function getCountryOptionsProperty(): array
+    {
+        return ['' => __('labels.tables.all')] + CountriesEnum::getOptions();
+    }
+
+    public function getActiveFiltersProperty(): array
+    {
+        $filters = [];
+
+        if (filled($this->search)) {
+            $filters[] = [
+                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'property' => 'search',
+            ];
+        }
+
+        if (filled($this->isActive)) {
+            $filters[] = [
+                'label' => __('labels.tables.active') . ': ' . ($this->isActive === '1'
+                        ? __('labels.tables.yes')
+                        : __('labels.tables.no')),
+                'property' => 'isActive',
+            ];
+        }
+
+        if (filled($this->country)) {
+            $filters[] = [
+                'label' => __('labels.address.country') . ': ' . CountriesEnum::fromId($this->country)->label(),
+                'property' => 'country',
+            ];
+        }
+
+        return $filters;
     }
 }

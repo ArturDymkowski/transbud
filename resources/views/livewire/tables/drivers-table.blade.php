@@ -1,324 +1,151 @@
-<div>
-
-    <div class="flex w-full justify-end mb-4">
-        <x-ui.button><a href="{{ route('drivers.create') }}">{{ __('labels.tables.create') }}</a></x-ui.button>
-    </div>
-
-    <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
-        <!-- Header -->
-        <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center w-full">
-                <x-form.input.select
-                    wire:model.live="perPage"
-                    :label="__('labels.tables.per_page')"
-                    :options="$this->optionsPerPage"
-                    name="perPage"/>
-
-                <x-form.input.select
-                    :label="__('labels.tables.active')"
-                    :options="[
-                        '' => __('labels.tables.all'),
+<x-tables.card :createRoute="route('drivers.create')">
+    <x-slot:header>
+        <x-tables.filter-bar searchModel="search">
+            <x-form.input.select wire:model.live="perPage" :label="__('labels.tables.per_page')" :options="$this->optionsPerPage" name="perPage"/>
+            <x-form.input.select :label="__('labels.tables.active')" :options="[
+				         '' => __('labels.tables.all'),
                          0 => __('labels.tables.no'),
                          1 => __('labels.tables.yes')
-                        ]"
-                    name="isActive"
-                    wire:model.live="isActive"/>
+			]" name="isActive" wire:model.live="isActive"/>
+            <x-form.input.select :label="__('labels.address.country')" :options="$this->countryOptions" name="country" wire:model.live="country"/>
+        </x-tables.filter-bar>
+    </x-slot:header>
 
-                <x-form.input.select
-                    :label="__('labels.tables.country')"
-                    :options="$this->countryOptions"
-                    name="country"
-                    wire:model.live="country"/>
-            </div>
-            <form>
-                <div class="relative">
-                    <button type="button" class="absolute -translate-y-1/2 left-4 top-1/2">
-                        <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20"
-                             fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                  d="M3.04199 9.37381C3.04199 5.87712 5.87735 3.04218 9.37533 3.04218C12.8733 3.04218 15.7087 5.87712 15.7087 9.37381C15.7087 12.8705 12.8733 15.7055 9.37533 15.7055C5.87735 15.7055 3.04199 12.8705 3.04199 9.37381ZM9.37533 1.54218C5.04926 1.54218 1.54199 5.04835 1.54199 9.37381C1.54199 13.6993 5.04926 17.2055 9.37533 17.2055C11.2676 17.2055 13.0032 16.5346 14.3572 15.4178L17.1773 18.2381C17.4702 18.531 17.945 18.5311 18.2379 18.2382C18.5308 17.9453 18.5309 17.4704 18.238 17.1775L15.4182 14.3575C16.5367 13.0035 17.2087 11.2671 17.2087 9.37381C17.2087 5.04835 13.7014 1.54218 9.37533 1.54218Z"
-                                  fill=""/>
-                        </svg>
-                    </button>
-                    <input type="text" wire:model.live.debounce.300ms="search"
-                           placeholder="{{ __('labels.tables.search_placeholder') }}"
-                           class="h-[42px] w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-[42px] pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 xl:w-[300px]"/>
-                </div>
-            </form>
-        </div>
+    <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($drivers->pluck('id')) }})">
+        <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <!-- Table -->
-        <div class="overflow-hidden">
-            <!-- Selected options -->
-            <div class="max-w-full px-5 overflow-x-auto" x-data="{
-                selected: @entangle('selected'),
-                idsOnPage: @entangle('idsOnPage'),
-                allIds: {{ json_encode($drivers->pluck('id')) }},
+        <table class="min-w-full">
+            <thead>
+            <tr class="border-gray-200 border-y dark:border-gray-700">
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <x-form.input.checkbox
+                        name="selectAll"
+                        @click="togglePage"
+                        x-bind:checked="isAllPageSelected()"
+                    />
+                </th>
 
-                isAllPageSelected() {
-                    return this.idsOnPage.length > 0 && this.idsOnPage.every(id => this.selected.includes(id));
-                },
+                <x-tables.th-sort
+                    field="id"
+                    label="ID"
+                    :sortField="$sortField"
+                    :sortDirection="$sortDirection"
+                />
 
-                togglePage() {
-                    if (this.isAllPageSelected()) {
-                        this.selected = this.selected.filter(id => !this.idsOnPage.includes(id));
-                    } else {
-                        this.selected = [...new Set([...this.selected, ...this.idsOnPage])];
-                    }
-                }
-            }">
-                <div x-show="selected.length > 0"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 -translate-y-2"
-                     x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-200"
-                     x-transition:leave-start="opacity-100 translate-y-0"
-                     x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="flex items-center justify-between px-4 py-3 mb-4 bg-brand-50 border border-brand-200 rounded-lg dark:bg-brand-900/20 dark:border-brand-800">
+                <x-tables.th-sort
+                    field="name"
+                    :label="__('drivers.name')"
+                    :sortField="$sortField"
+                    :sortDirection="$sortDirection"
+                />
 
-                    <div class="flex items-center gap-2 text-sm font-medium text-brand-700 dark:text-brand-400">
-                        <span x-text="selected.length"
-                              class="flex items-center justify-center w-6 h-6 text-xs text-white rounded-full bg-brand-500"></span>
-                        <span>{{ __('labels.tables.selected_records') }}</span>
-                    </div>
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('drivers.phone') }}
+                </th>
 
-                    <div class="flex items-center gap-4">
-                        <button type="button"
-                                @click="selected = []"
-                                class="text-sm font-semibold text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                            {{ __('labels.tables.unselect_all') }}
-                        </button>
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('drivers.pesel') }}
+                </th>
 
-                        <button type="button"
-                                wire:click="deleteSelected"
-                                wire:confirm="{{ __('labels.tables.confirm_delete_selected') }}"
-                                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                            <x-heroicon-o-trash class="w-4 h-4"/>
-                        </button>
-                    </div>
-                </div>
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('labels.address.address') }}
+                </th>
 
-                <!-- Search Indicator -->
-                @if(filled($search) || filled($isActive) || filled($country))
-                    <div
-                        class="flex flex-wrap items-center justify-between gap-3 px-4 py-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800/40 dark:border-gray-700">
+                <x-tables.th-sort
+                    field="driving_license_expiry_date"
+                    :label="__('drivers.driving_license_expiry_date')"
+                    :sortField="$sortField"
+                    :sortDirection="$sortDirection"
+                />
 
-                        <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <span class="font-medium text-gray-500 dark:text-gray-400">
-                                {{ __('labels.tables.filters') }}
-                            </span>
+                <x-tables.th-sort
+                    field="identity_card_expiry_date"
+                    :label="__('drivers.identity_card_expiry_date')"
+                    :sortField="$sortField"
+                    :sortDirection="$sortDirection"
+                />
 
-                            @if(filled($search))
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
-                    {{ __('labels.tables.search') }}: "{{ $search }}"
+                <x-tables.th-sort
+                    field="is_active"
+                    :label="__('labels.tables.active')"
+                    :sortField="$sortField"
+                    :sortDirection="$sortDirection"
+                />
 
-                    <button type="button" wire:click="$set('search', '')"
-                            class="hover:text-brand-900 dark:hover:text-brand-200">
-                        <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
-                    </button>
-                </span>
-                            @endif
-
-                            @if(filled($isActive))
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
-                    {{ __('drivers.status') }}:: {{ $isActive === '1'
-                            ? __('drivers.active_plural')
-                            : __('drivers.inactive_plural')
-                        }}
-                    <button type="button" wire:click="$set('isActive', '')"
-                            class="hover:text-brand-900 dark:hover:text-brand-200">
-                        <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
-                    </button>
-                </span>
-                            @endif
-
-                            @if(filled($country))
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
-                    {{ __('labels.address.country') }}: "{{ \App\Enums\CountriesEnum::fromId($country)->label() }}"
-
-                    <button type="button" wire:click="$set('country', '')"
-                            class="hover:text-brand-900 dark:hover:text-brand-200">
-                        <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
-                    </button>
-                </span>
-                            @endif
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('labels.tables.actions') }}
+                </th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            @foreach($drivers as $driver)
+                <tr>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}"
+                                                   x-model="selected"/>
                         </div>
-
-                        <button type="button"
-                                wire:click="resetFilters"
-                                class="text-xs font-semibold transition text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300">
-                            {{ __('labels.tables.clear_all') }}
-                        </button>
-                    </div>
-                @endif
-
-                <table class="min-w-full">
-                    <thead>
-                    <tr class="border-gray-200 border-y dark:border-gray-700">
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            <x-form.input.checkbox
-                                name="selectAll"
-                                @click="togglePage"
-                                x-bind:checked="isAllPageSelected()"
-                            />
-                        </th>
-
-                        <x-tables.th-sort
-                            field="id"
-                            label="ID"
-                            :sortField="$sortField"
-                            :sortDirection="$sortDirection"
-                        />
-
-                        <x-tables.th-sort
-                            field="name"
-                            :label="__('drivers.name')"
-                            :sortField="$sortField"
-                            :sortDirection="$sortDirection"
-                        />
-
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {{ __('drivers.phone') }}
-                        </th>
-
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {{ __('drivers.pesel') }}
-                        </th>
-
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {{ __('labels.address.address') }}
-                        </th>
-
-                        <x-tables.th-sort
-                            field="driving_license_expiry_date"
-                            :label="__('drivers.driving_license_expiry_date')"
-                            :sortField="$sortField"
-                            :sortDirection="$sortDirection"
-                        />
-
-                        <x-tables.th-sort
-                            field="identity_card_expiry_date"
-                            :label="__('drivers.identity_card_expiry_date')"
-                            :sortField="$sortField"
-                            :sortDirection="$sortDirection"
-                        />
-
-                        <x-tables.th-sort
-                            field="is_active"
-                            :label="__('labels.tables.active')"
-                            :sortField="$sortField"
-                            :sortDirection="$sortDirection"
-                        />
-
-                        <th scope="col"
-                            class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            {{ __('labels.tables.actions') }}
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @foreach($drivers as $driver)
-                        <tr>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">
-                                    <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}"
-                                                           x-model="selected"/>
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->id }}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->phone ?? '-' }}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pesel ?? '-' }}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div
-                                    class="text-sm text-gray-500 dark:text-gray-400">{!! $driver->fullAddress ?? '-' !!}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div
-                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->driving_license_expiry_date ?? '-' }}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div
-                                    class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->identity_card_expiry_date ?? '-' }}</div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">
-                                    <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
-                                                         name="{{ $driver->id }}" :isActive="$driver->is_active"/>
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                                    <x-ui.tooltip :text="__('labels.tables.edit')">
-                                        <a href="{{ route('drivers.edit', $driver->id) }}" wire:navigate>
-                                            <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                        </a>
-                                    </x-ui.tooltip>
-                                    <x-ui.tooltip :text="__('labels.tables.delete')">
-                                        <button type="button"
-                                                wire:click="deleteDriver({{ $driver->id }})"
-                                                wire:confirm="{{ __('drivers.confirm_delete_driver') }}"
-                                        >
-                                            <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                        </button>
-                                    </x-ui.tooltip>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div
-            class="flex flex-col items-center justify-between gap-4 px-4 py-3 border-t border-gray-100 dark:border-gray-800 sm:flex-row">
-
-            <div class="text-sm text-gray-600 dark:text-gray-400">
-                @if($drivers->total() > 0)
-                    {{ __('labels.pagination.showing_from') }}
-
-                    <span class="font-semibold text-gray-700 dark:text-gray-200">
-                        {{ $drivers->firstItem() }}
-                    </span>
-
-                    {{ __('labels.pagination.showing_to') }}
-
-                    <span class="font-semibold text-gray-700 dark:text-gray-200">
-                        {{ $drivers->lastItem() }}
-                    </span>
-
-                    {{ __('labels.pagination.showing_of') }}
-
-                    <span class="font-semibold text-gray-700 dark:text-gray-200">
-                        {{ $drivers->total() }}
-                    </span>
-
-                    {{ __('labels.pagination.showing_total') }}
-                        @else
-                    {{ __('labels.pagination.no_results') }}
-                      @endif
-            </div>
-
-            <div class="w-full sm:w-auto">
-                {{ $drivers->links() }}
-            </div>
-
-        </div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->id }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name ?? '-' }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->phone ?? '-' }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pesel ?? '-' }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div
+                            class="text-sm text-gray-500 dark:text-gray-400">{!! $driver->fullAddress ?? '-' !!}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div
+                            class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->driving_license_expiry_date ?? '-' }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div
+                            class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->identity_card_expiry_date ?? '-' }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
+                                                 name="{{ $driver->id }}" :isActive="$driver->is_active"/>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
+                            <x-ui.tooltip :text="__('labels.tables.edit')">
+                                <a href="{{ route('drivers.edit', $driver->id) }}" wire:navigate>
+                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                                </a>
+                            </x-ui.tooltip>
+                            <x-ui.tooltip :text="__('labels.tables.delete')">
+                                <button type="button"
+                                        wire:click="deleteDriver({{ $driver->id }})"
+                                        wire:confirm="{{ __('drivers.confirm_delete_driver') }}"
+                                >
+                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                                </button>
+                            </x-ui.tooltip>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
-</div>
+
+    <x-slot:footer>
+        <x-tables.pagination-footer :paginator="$drivers"/>
+    </x-slot:footer>
+</x-tables.card>
