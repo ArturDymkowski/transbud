@@ -8,6 +8,8 @@ return [
         'basic_info' => 'Informacje podstawowe',
         'not_selected' => '-- nie wybrano --',
         'saved_success' => 'Zapisano poprawnie',
+        'download_document' => 'Pobierz dokument',
+        'delete_document' => 'Usuń dokument',
     ],
 
     'languages' => [

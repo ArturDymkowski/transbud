@@ -120,7 +120,7 @@ class Driver extends Model implements HasMedia
             $this->addMediaCollection($collection)
                 ->useDisk('driver_documents')
                 ->singleFile()
-                ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+                ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
         }
     }
 

@@ -13,7 +13,7 @@ class DocumentUpload extends Component
         public string $field,
         public string $label,
         public mixed  $file = null,
-        public ?int   $existingMediaId = null,
+        public ?array   $existingMediaId = null,
     )
     {
     }

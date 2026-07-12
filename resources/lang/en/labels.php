@@ -8,6 +8,8 @@ return [
         'basic_info' => 'Basic information',
         'not_selected' => '-- not selected --',
         'saved_success' => 'Zapisano poprawnie',
+        'download_document' => 'Download document',
+        'delete_document' => 'Delete document',
     ],
 
     'languages' => [

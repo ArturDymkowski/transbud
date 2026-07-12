@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
 use App\Models\Driver;
+use Illuminate\Http\Response;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -11,6 +12,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 
 use Illuminate\Validation\Rules\Enum;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DriversForm extends Component
 {
@@ -52,10 +54,10 @@ class DriversForm extends Component
             'driverData.driving_license_expiry_date' => 'required|date',
             'driverData.identity_card_expiry_date' => 'required|date',
 
-            'driverData.driving_license_document_front' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'driverData.driving_license_document_back'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'driverData.identity_card_document_front'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'driverData.identity_card_document_back'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'driverData.driving_license_document_front' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'driverData.driving_license_document_back'  => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'driverData.identity_card_document_front'   => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'driverData.identity_card_document_back'    => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
         ];
     }
 
@@ -107,6 +109,17 @@ class DriversForm extends Component
         return $this->redirect(route('drivers.index'), navigate: true);
     }
 
+    public function updated(string $property): void
+    {
+        $fileKeys = array_keys($this->mediaCollectionsMap());
+
+        foreach ($fileKeys as $key) {
+            if ($property === "driverData.{$key}") {
+                $this->validateOnly($property);
+            }
+        }
+    }
+
     private function attachMedia(mixed $file, string $collection): void
     {
         if (! $file instanceof TemporaryUploadedFile) {
@@ -139,7 +152,12 @@ class DriversForm extends Component
 
         $result = [];
         foreach ($this->mediaCollectionsMap() as $key => $collection) {
-            $result[$key] = $this->driver->getFirstMedia($collection)?->id;
+            $media = $this->driver->getFirstMedia($collection);
+
+            $result[$key] = $media ? [
+                'id' => $media->id,
+                'mime_type' => $media->mime_type,
+            ] : null;
         }
 
         return $result;
@@ -166,6 +184,23 @@ class DriversForm extends Component
 
         $this->driver->unsetRelation('media');
         unset($this->existingMedia);
+    }
+
+    public function downloadDocument(string $key): BinaryFileResponse|null
+    {
+        $collectionsMap = $this->mediaCollectionsMap();
+
+        if (! isset($collectionsMap[$key]) || ! $this->driver?->exists) {
+            return null;
+        }
+
+        $media = $this->driver->getFirstMedia($collectionsMap[$key]);
+
+        if (! $media) {
+            return null;
+        }
+
+        return response()->download($media->getPath(), $media->file_name);
     }
 
     public function render()
