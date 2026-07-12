@@ -99,7 +99,7 @@
                 </div>
 
                 <!-- Search Indicator -->
-                @if(filled($search) || filled($isActive))
+                @if(filled($search) || filled($isActive) || filled($country))
                     <div
                         class="flex flex-wrap items-center justify-between gap-3 px-4 py-2 mb-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800/40 dark:border-gray-700">
 
@@ -128,6 +128,18 @@
                             : __('drivers.inactive_plural')
                         }}
                     <button type="button" wire:click="$set('isActive', '')"
+                            class="hover:text-brand-900 dark:hover:text-brand-200">
+                        <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
+                    </button>
+                </span>
+                            @endif
+
+                            @if(filled($country))
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-brand-700 bg-brand-50 rounded-md border border-brand-200 dark:bg-brand-900/30 dark:text-brand-400 dark:border-brand-800">
+                    {{ __('labels.address.country') }}: "{{ \App\Enums\CountriesEnum::fromId($country)->label() }}"
+
+                    <button type="button" wire:click="$set('country', '')"
                             class="hover:text-brand-900 dark:hover:text-brand-200">
                         <x-heroicon-m-x-mark class="w-3.5 h-3.5"/>
                     </button>
