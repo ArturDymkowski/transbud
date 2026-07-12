@@ -85,11 +85,10 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($drivers as $driver)
-                <tr>
+                <tr wire:key="driver-row-{{ $driver->id }}">
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}"
-                                                   x-model="selected"/>
+                            <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" wire:key="checkbox-{{ $driver->id }}"/>
                         </div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
@@ -119,7 +118,7 @@
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400">
                             <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
-                                                 name="{{ $driver->id }}" :isActive="$driver->is_active"/>
+                                                 name="{{ $driver->id }}" :isActive="$driver->is_active" wire:key="toggle-{{ $driver->id }}"/>
                         </div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">

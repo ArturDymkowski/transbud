@@ -8,6 +8,7 @@ use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
 use App\Models\Driver;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -32,6 +33,7 @@ class DriversTable extends Component
 
     public function render()
     {
+        Log::info("isActive: " . $this->isActive);
         $drivers = Driver::search($this->search)
             ->when(filled($this->isActive), fn ($q) => $q->where('is_active', $this->isActive))
             ->when(filled($this->country), fn ($q) => $q->where('country', $this->country))
