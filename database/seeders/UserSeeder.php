@@ -3,17 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Database\DisableForeignKeys;
-use Database\TruncateTable;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Class UserTableSeeder.
  */
 class UserSeeder extends Seeder
 {
-    use DisableForeignKeys, TruncateTable;
 
     /**
      * Run the database seed.
@@ -22,8 +21,9 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $this->disableForeignKeys();
-        $this->truncate('users');
+        Schema::disableForeignKeyConstraints();
+        DB::table('users')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         User::factory()->create([
             'name' => 'Admin',
@@ -32,7 +32,5 @@ class UserSeeder extends Seeder
             'is_active' => 1,
             'created_at' => now(),
         ]);
-
-        $this->enableForeignKeys();
     }
 }

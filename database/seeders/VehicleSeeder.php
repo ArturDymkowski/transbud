@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Driver;
+use App\Models\Vehicle;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Class UserTableSeeder.
  */
-class DriverSeeder extends Seeder
+class VehicleSeeder extends Seeder
 {
     /**
      * Run the database seed.
@@ -20,9 +21,9 @@ class DriverSeeder extends Seeder
     public function run()
     {
         Schema::disableForeignKeyConstraints();
-        DB::table('drivers')->truncate();
+        DB::table('vehicles')->truncate();
         Schema::enableForeignKeyConstraints();
 
-        Driver::factory()->count(100)->create();
+        Vehicle::factory()->count(40)->create();
     }
 }
