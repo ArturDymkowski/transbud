@@ -10,6 +10,8 @@ return [
         'saved_success' => 'Zapisano poprawnie',
         'download_document' => 'Pobierz dokument',
         'delete_document' => 'Usuń dokument',
+        'from' => 'Od',
+        'to' => 'Do',
     ],
 
     'languages' => [

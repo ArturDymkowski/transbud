@@ -24,19 +24,26 @@ class DriversTable extends Component
 
     public string $search = '';
     public string $isActive = '';
+    public string $drivingLicenseExpiryDateFrom = '';
+    public string $drivingLicenseExpiryDateTo = '';
+    public string $identityCardExpiryDateFrom = '';
+    public string $identityCardExpiryDateTo = '';
     public ?int $country = null;
 
     protected function filterFields(): array
     {
-        return ['search', 'isActive', 'country'];
+        return ['search', 'isActive', 'country', 'driving_license_expiry_date', 'identity_card_expiry_date'];
     }
 
     public function render()
     {
-        Log::info("isActive: " . $this->isActive);
         $drivers = Driver::search($this->search)
             ->when(filled($this->isActive), fn ($q) => $q->where('is_active', $this->isActive))
             ->when(filled($this->country), fn ($q) => $q->where('country', $this->country))
+            ->when(filled($this->drivingLicenseExpiryDateFrom), fn ($q) => $q->where('driving_license_expiry_date', '>=', $this->drivingLicenseExpiryDateFrom))
+            ->when(filled($this->drivingLicenseExpiryDateTo), fn ($q) => $q->where('driving_license_expiry_date', '<=', $this->drivingLicenseExpiryDateTo))
+            ->when(filled($this->identityCardExpiryDateFrom), fn ($q) => $q->where('identity_card_expiry_date', '>=', $this->identityCardExpiryDateFrom))
+            ->when(filled($this->identityCardExpiryDateTo), fn ($q) => $q->where('identity_card_expiry_date', '<=', $this->identityCardExpiryDateTo))
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 

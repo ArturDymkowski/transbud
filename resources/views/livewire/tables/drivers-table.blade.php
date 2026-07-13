@@ -1,13 +1,45 @@
 <x-tables.card :createRoute="route('drivers.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
-            <x-form.input.select wire:model.live="perPage" :label="__('labels.tables.per_page')" :options="$this->optionsPerPage" name="perPage"/>
+            <!-- Active -->
             <x-form.input.select :label="__('labels.tables.active')" :options="[
 				         '' => __('labels.tables.all'),
                          0 => __('labels.tables.no'),
                          1 => __('labels.tables.yes')
 			]" name="isActive" wire:model.live="isActive"/>
+
+            <!-- Country -->
             <x-form.input.select :label="__('labels.address.country')" :options="$this->countryOptions" name="country" wire:model.live="country"/>
+
+            <!-- Driving license expiry date -->
+            <div class="flex flex-col">
+                <x-form.input.date-picker name="drivingLicenseExpiryDateFrom"
+                                          label="{{ __('drivers.driving_license_expiry_date') }}"
+                                          wire:model.live="drivingLicenseExpiryDateFrom"
+                                          placeholder="{{ __('labels.general.from') }}"/>
+
+                <span class="text-center text-gray-700 dark:text-gray-400">-</span>
+
+                <x-form.input.date-picker name="drivingLicenseExpiryDateTo"
+                                          label=""
+                                          wire:model.live="drivingLicenseExpiryDateTo"
+                                          placeholder="{{ __('labels.general.to') }}"/>
+            </div>
+
+            <!-- Identity card expiry date -->
+            <div class="flex flex-col">
+                <x-form.input.date-picker name="identityCardExpiryDateFrom"
+                                          label="{{ __('drivers.identity_card_expiry_date') }}"
+                                          wire:model.live="identityCardExpiryDateFrom"
+                                          placeholder="{{ __('labels.general.from') }}"/>
+
+                <span class="text-center text-gray-700 dark:text-gray-400">-</span>
+
+                <x-form.input.date-picker name="identityCardExpiryDateTo"
+                                          label=""
+                                          wire:model.live="identityCardExpiryDateTo"
+                                          placeholder="{{ __('labels.general.to') }}"/>
+            </div>
         </x-tables.filter-bar>
     </x-slot:header>
 
