@@ -136,7 +136,7 @@
 
             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
-                <x-form.input.select name="driverData.country" label="Kraj" wire:model="driverData.country"
+                <x-form.input.select name="driverData.country" label="{{ __('labels.address.country') }}" wire:model="driverData.country"
                                      :options="\App\Enums\CountriesEnum::getOptions()"/>
 
                 <x-form.input.text-input name="driverData.zipcode" label="{{ __('labels.address.zipcode') }}"

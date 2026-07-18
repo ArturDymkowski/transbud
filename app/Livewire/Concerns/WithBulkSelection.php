@@ -7,7 +7,7 @@ trait WithBulkSelection
     public array $selected = [];
     public array $idsOnPage = [];
 
-    protected function deleteSelectedRecords(string $modelClass, string $label = 'rekordów'): void
+    protected function deleteSelectedRecords(string $modelClass): void
     {
         if (empty($this->selected)) {
             return;
@@ -17,6 +17,8 @@ trait WithBulkSelection
         $modelClass::whereIn('id', $this->selected)->delete();
         $this->selected = [];
 
-        $this->dispatch('notify', message: "Pomyślnie usunięto {$count} {$label}");
+        $this->dispatch('notify', message: trans('labels.general.deleted_success_count', [
+            'count' => $count,
+        ]));
     }
 }

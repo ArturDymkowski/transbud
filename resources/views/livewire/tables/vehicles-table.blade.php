@@ -1,15 +1,15 @@
 <x-tables.card>
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
+            <!-- Trashed -->
+            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>    
+        
             <!-- Active -->
             <x-form.input.select :label="__('labels.tables.active')" :options="[
 				         '' => __('labels.tables.all'),
                          0 => __('labels.tables.no'),
                          1 => __('labels.tables.yes')
 			]" name="isActive" wire:model.live="isActive"/>
-
-            <!-- Trashed -->
-            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
 
             <!-- Technical inspection expiry date -->
             <div class="flex flex-col">

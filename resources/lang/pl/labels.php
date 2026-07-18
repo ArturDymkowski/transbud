@@ -9,10 +9,33 @@ return [
         'not_selected' => '-- nie wybrano --',
         'saved_success' => 'Zapisano poprawnie',
         'updated_success' => 'Zaktualizowano rekord',
+        'deleted_success' => 'Pomyślnie usunięto',
+        'deleted_success_count' => 'Usunięto :count rekordów',
         'download_document' => 'Pobierz dokument',
         'delete_document' => 'Usuń dokument',
         'from' => 'Od',
         'to' => 'Do',
+        'learn_more' => 'Dowiedz się więcej',
+        'no_preview' => 'Brak podglądu',
+        'document_preview' => 'Podgląd dokumentu',
+    ],
+
+    'nav' => [
+        'search_placeholder' => 'Szukaj lub wpisz polecenie...',
+        'toggle_sidebar' => 'Przełącz pasek boczny',
+        'toggle_mobile_menu' => 'Przełącz menu mobilne',
+        'notifications' => 'Powiadomienia',
+        'view_all_notifications' => 'Zobacz wszystkie powiadomienia',
+        'edit_profile' => 'Edytuj profil',
+        'account_settings' => 'Ustawienia konta',
+        'support' => 'Wsparcie',
+        'sign_out' => 'Wyloguj się',
+    ],
+
+    'sidebar_widget' => [
+        'title' => '#1 Panel na Tailwind CSS',
+        'description' => 'Wiodący szablon panelu administracyjnego Tailwind CSS z ponad 500 komponentami i stronami UI.',
+        'purchase_plan' => 'Kup plan',
     ],
 
     'languages' => [

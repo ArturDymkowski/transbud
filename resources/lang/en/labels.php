@@ -7,12 +7,35 @@ return [
         'extra_info' => 'Extra Info',
         'basic_info' => 'Basic information',
         'not_selected' => '-- not selected --',
-        'saved_success' => 'Zapisano poprawnie',
+        'saved_success' => 'Saved successfully',
         'updated_success' => 'Record updated',
+        'deleted_success' => 'Successfully deleted',
+        'deleted_success_count' => 'Deleted :count records',
         'download_document' => 'Download document',
         'delete_document' => 'Delete document',
         'from' => 'From',
         'to' => 'To',
+        'learn_more' => 'Learn more',
+        'no_preview' => 'No preview',
+        'document_preview' => 'Document preview',
+    ],
+
+    'nav' => [
+        'search_placeholder' => 'Search or type command...',
+        'toggle_sidebar' => 'Toggle Sidebar',
+        'toggle_mobile_menu' => 'Toggle Mobile Menu',
+        'notifications' => 'Notification',
+        'view_all_notifications' => 'View All Notification',
+        'edit_profile' => 'Edit profile',
+        'account_settings' => 'Account settings',
+        'support' => 'Support',
+        'sign_out' => 'Sign out',
+    ],
+
+    'sidebar_widget' => [
+        'title' => '#1 Tailwind CSS Dashboard',
+        'description' => 'Leading Tailwind CSS Admin Template with 500+ UI Component and Pages.',
+        'purchase_plan' => 'Purchase Plan',
     ],
 
     'languages' => [

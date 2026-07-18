@@ -3,6 +3,7 @@
 return [
     'sign_in' => 'Sign in',
     'enter_email_password' => 'Enter your email and password to sign in!',
+    'email' => 'Email',
     'password' => 'Password',
     'keep_login' => 'Keep me logged in',
     'enter_password' => 'Enter your password',

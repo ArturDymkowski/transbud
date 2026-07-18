@@ -10,7 +10,7 @@
                 @php
                     $iconUrl = str_starts_with($file->getMimeType(), 'image/') ? $file->temporaryUrl() : asset('images/icons/file-pdf.svg')
                 @endphp
-                <img src="{{ $iconUrl }}" class="w-full h-full" alt="View img">
+                <img src="{{ $iconUrl }}" class="w-full h-full" alt="{{ __('labels.general.document_preview') }}">
 
                 <button type="button"
                         wire:click="removeDocument('{{ $field }}')"
@@ -31,7 +31,7 @@
                     ? asset('images/icons/file-pdf.svg')
                     : ($existingMedia ? route('driver-documents.show', $existingMedia['id']) : null);
             @endphp
-            <img src="{{ $previewUrl }}" class="w-full h-full" alt="Driver document">
+            <img src="{{ $previewUrl }}" class="w-full h-full" alt="{{ __('labels.general.document_preview') }}">
 
             <div class="absolute top-2 right-2 flex items-center gap-1.5">
                 <button type="button"
@@ -58,7 +58,7 @@
         </div>
     @else
         <div class="mt-1 h-12 w-full rounded-lg border border-dashed border-gray-200 dark:border-gray-800 bg-gray-100/50 dark:bg-gray-950/50 flex items-center justify-center">
-            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">Brak podglądu</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">{{ __('labels.general.no_preview') }}</span>
         </div>
     @endif
 

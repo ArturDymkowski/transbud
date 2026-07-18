@@ -9,12 +9,12 @@ class MenuHelper
         return [
             [
                 'icon' => 'heroicon-o-user-group',
-                'name' => 'Kierowcy',
+                'name' => __('drivers.plural_model_label'),
                 'path' => route('drivers.index'),
             ],
             [
                 'icon' => 'heroicon-o-truck',
-                'name' => 'Pojazdy',
+                'name' => __('vehicles.plural_model_label'),
                 'path' => route('vehicles.index'),
             ],
         ];

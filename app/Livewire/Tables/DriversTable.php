@@ -59,13 +59,13 @@ class DriversTable extends Component
 
     public function deleteSelected(): void
     {
-        $this->deleteSelectedRecords(Driver::class, 'kierowców');
+        $this->deleteSelectedRecords(Driver::class);
     }
 
     public function deleteDriver(int $id): void
     {
         Driver::where('id', $id)->delete();
-        $this->dispatch('notify', message: 'Pomyślnie usunięto');
+        $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function toggleActive(int $driverId): void
@@ -74,7 +74,7 @@ class DriversTable extends Component
         $driver->is_active = ! $driver->is_active;
         $driver->save();
 
-        $this->dispatch('notify', message: 'Rekord zaktualizowany');
+        $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
     public function editDriver(int $id): void

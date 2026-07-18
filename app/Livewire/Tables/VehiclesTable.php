@@ -57,7 +57,7 @@ class VehiclesTable extends Component
 
     public function deleteSelected(): void
     {
-        $this->deleteSelectedRecords(Vehicle::class, __('vehicles.plural_model_label'));
+        $this->deleteSelectedRecords(Vehicle::class);
     }
 
     public function toggleActive(int $vehicleId): void
@@ -66,7 +66,7 @@ class VehiclesTable extends Component
         $vehicle->is_active = ! $vehicle->is_active;
         $vehicle->save();
 
-        $this->dispatch('notify', message: 'Rekord zaktualizowany');
+        $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
     public function getTypeOptionsProperty(): array

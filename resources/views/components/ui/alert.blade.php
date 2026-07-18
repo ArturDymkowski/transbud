@@ -6,10 +6,12 @@
     'message' => '',
     'showLink' => false,
     'linkHref' => '#',
-    'linkText' => 'Learn more'
+    'linkText' => null,
 ])
 
 @php
+    $linkText ??= __('labels.general.learn_more');
+
     $variantClasses = [
         'success' => [
             'container' => 'border-green-500 bg-green-50 dark:border-green-500/30 dark:bg-green-500/15',

@@ -1,6 +1,9 @@
 <x-tables.card :createRoute="route('drivers.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
+            <!-- Trashed -->
+            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
+
             <!-- Active -->
             <x-form.input.select :label="__('labels.tables.active')" :options="[
 				         '' => __('labels.tables.all'),
@@ -10,9 +13,6 @@
 
             <!-- Country -->
             <x-form.input.select :label="__('labels.address.country')" :options="$this->countryOptions" name="country" wire:model.live="country"/>
-
-            <!-- Trashed -->
-            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
 
             <!-- Driving license expiry date -->
             <div class="flex flex-col">
