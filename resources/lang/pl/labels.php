@@ -55,6 +55,12 @@ return [
         'create' => 'Utwórz',
     ],
 
+    'dashboard' => [
+        'title' => 'Panel',
+        'empty_title' => 'Brak danych do wyświetlenia',
+        'empty_description' => 'Wkrótce pojawią się tu informacje o kończących się terminach dokumentów kierowców (prawo jazdy, dowód osobisty).',
+    ],
+
     'address' => [
         'address' => 'Adres',
         'zipcode' => 'Kod pocztowy',

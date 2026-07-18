@@ -114,7 +114,6 @@
                                             <!-- Icon -->
                                             <span :class="isSubmenuOpen({{ $groupIndex }}, {{ $itemIndex }}) ?
                                                     'menu-item-icon-active' : 'menu-item-icon-inactive'">
-{{--                                                {!! MenuHelper::getIconSvg($item['icon']) !!}--}}
                                                 <x-dynamic-component :component="$item['icon']" class="w-6 h-6" />
                                             </span>
 

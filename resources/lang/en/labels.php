@@ -55,6 +55,12 @@ return [
         'create' => 'Create',
     ],
 
+    'dashboard' => [
+        'title' => 'Dashboard',
+        'empty_title' => 'Nothing to show yet',
+        'empty_description' => 'Soon you\'ll see alerts here about drivers\' documents nearing their expiry date (driving license, ID card).',
+    ],
+
     'address' => [
         'address' => 'Address',
         'zipcode' => 'Zipcode',
