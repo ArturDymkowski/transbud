@@ -8,6 +8,7 @@ return [
         'basic_info' => 'Basic information',
         'not_selected' => '-- not selected --',
         'saved_success' => 'Zapisano poprawnie',
+        'updated_success' => 'Record updated',
         'download_document' => 'Download document',
         'delete_document' => 'Delete document',
         'from' => 'From',

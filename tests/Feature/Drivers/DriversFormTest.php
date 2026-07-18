@@ -82,6 +82,8 @@ test('a new driver can be created with valid data', function () {
         'pesel' => '12345678901',
         'driving_license_number' => 'ABC123456',
     ]);
+
+    expect(session('success'))->toBe(trans('labels.general.saved_success'));
 });
 
 test('an existing driver can be edited', function () {
@@ -95,6 +97,7 @@ test('an existing driver can be edited', function () {
         ->assertRedirect(route('drivers.index'));
 
     expect($driver->refresh()->name)->toBe('New Name');
+    expect(session('success'))->toBe(trans('labels.general.updated_success'));
 });
 
 test('editing a driver keeps its own pesel valid despite the uniqueness rule', function () {

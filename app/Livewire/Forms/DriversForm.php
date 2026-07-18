@@ -93,7 +93,9 @@ class DriversForm extends Component
         $files = array_intersect_key($this->driverData, array_flip($fileKeys));
         $attributes = array_diff_key($this->driverData, array_flip($fileKeys));
 
-        if ($this->driver->exists) {
+        $isUpdate = $this->driver->exists;
+
+        if ($isUpdate) {
             $this->driver->update($attributes);
         } else {
             $this->driver->fill($attributes);
@@ -104,7 +106,7 @@ class DriversForm extends Component
             $this->attachMedia($files[$key] ?? null, $collection);
         }
 
-        session()->flash('notify', trans('labels.general.saved_success'));
+        session()->flash('success', $isUpdate ? trans('labels.general.updated_success') : trans('labels.general.saved_success'));
 
         return $this->redirect(route('drivers.index'), navigate: true);
     }

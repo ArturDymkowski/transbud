@@ -8,6 +8,7 @@ return [
         'basic_info' => 'Informacje podstawowe',
         'not_selected' => '-- nie wybrano --',
         'saved_success' => 'Zapisano poprawnie',
+        'updated_success' => 'Zaktualizowano rekord',
         'download_document' => 'Pobierz dokument',
         'delete_document' => 'Usuń dokument',
         'from' => 'Od',
