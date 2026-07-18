@@ -23,11 +23,6 @@ Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('langu
 Route::get('/driver-documents/{media}', function (Media $media) {
     abort_unless($media->model_type === \App\Models\Driver::class, 404);
 
-    /** @var \App\Models\Driver $driver */
-    $driver = $media->model;
-
-    abort_unless(auth()->user()?->can('view', $driver), 403);
-
     return response()->file($media->getPath());
 })->middleware('auth')->name('driver-documents.show');
 
