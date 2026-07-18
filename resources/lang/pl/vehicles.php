@@ -9,4 +9,8 @@ return [
         'trailer' => 'Naczepa',
     ],
     'registration_number' => "Nr rejestracyjny",
+    'vin' => 'VIN',
+    'technical_inspection_expiry_date' => 'Data ważności przeglądu technicznego',
+    'insurance_expiry_date' => 'Data ważności ubezpieczenia',
+    'tachograph_inspection_expiry_date' => 'Data ważności legalizacji tachografu',
 ];

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Page\DriverController;
+use App\Http\Controllers\Page\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -31,4 +32,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create']);
+    Route::resource('/vehicles', VehicleController::class)->only(['index']);
 });

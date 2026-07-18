@@ -12,6 +12,11 @@ class MenuHelper
                 'name' => 'Kierowcy',
                 'path' => route('drivers.index'),
             ],
+            [
+                'icon' => 'heroicon-o-truck',
+                'name' => 'Pojazdy',
+                'path' => route('vehicles.index'),
+            ],
         ];
     }
 

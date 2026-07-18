@@ -27,4 +27,15 @@ class Vehicle extends Model
         'is_active' => 'boolean',
         'type' => VehicleTypeEnum::class,
     ];
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->when($search, function ($q) use ($search) {
+            $search = trim($search);
+            $q->where(function ($q) use ($search) {
+                $q->orWhere('registration_number', 'like', '%' . $search . '%')
+                    ->orWhere('vin', 'like', '%' . $search . '%');
+            });
+        });
+    }
 }
