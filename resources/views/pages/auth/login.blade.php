@@ -25,12 +25,8 @@
                                     <x-form.input.text-input type="text" name="email" required="true" placeholder="info@gmail.com" label="email" />
                                     <x-form.input.text-input type="password" name="password" required="true" placeholder="{{ __('auth.enter_password') }}" label="password" />
 
-                                    <div class="flex items-center justify-between">
-                                        <x-form.input.checkbox name="remember" value="true"> {{ __('auth.keep_login') }} </x-form.input.checkbox>
-                                        <x-form.input.link href="/reset-password">{{ __('auth.forgot_password') }}</x-form.input.link>
-                                    </div>
+                                    <x-form.input.checkbox name="remember" value="true"> {{ __('auth.keep_login') }} </x-form.input.checkbox>
 
-{{--                                    <x-form.input.button>{{ __('auth.sign_in') }}</x-form.input.button>--}}
                                     <x-ui.button type="submit" class="w-full" size="sm" variant="primary">{{ __('auth.sign_in') }}</x-ui.button>
                                 </div>
                             </form>
