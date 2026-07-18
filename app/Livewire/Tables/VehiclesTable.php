@@ -60,6 +60,15 @@ class VehiclesTable extends Component
         $this->deleteSelectedRecords(Vehicle::class, __('vehicles.plural_model_label'));
     }
 
+    public function toggleActive(int $vehicleId): void
+    {
+        $vehicle = Vehicle::findOrFail($vehicleId);
+        $vehicle->is_active = ! $vehicle->is_active;
+        $vehicle->save();
+
+        $this->dispatch('notify', message: 'Rekord zaktualizowany');
+    }
+
     public function getTypeOptionsProperty(): array
     {
         return collect(VehicleTypeEnum::cases())
@@ -100,6 +109,48 @@ class VehiclesTable extends Component
             $filters[] = [
                 'label' => $this->trashedOptions[$this->trashed],
                 'property' => 'trashed',
+            ];
+        }
+
+        if (filled($this->technicalInspectionExpiryDateFrom)) {
+            $filters[] = [
+                'label' => __('vehicles.technical_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->technicalInspectionExpiryDateFrom,
+                'property' => 'technicalInspectionExpiryDateFrom',
+            ];
+        }
+
+        if (filled($this->technicalInspectionExpiryDateTo)) {
+            $filters[] = [
+                'label' => __('vehicles.technical_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->technicalInspectionExpiryDateTo,
+                'property' => 'technicalInspectionExpiryDateTo',
+            ];
+        }
+
+        if (filled($this->insuranceExpiryDateFrom)) {
+            $filters[] = [
+                'label' => __('vehicles.insurance_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->insuranceExpiryDateFrom,
+                'property' => 'insuranceExpiryDateFrom',
+            ];
+        }
+
+        if (filled($this->insuranceExpiryDateTo)) {
+            $filters[] = [
+                'label' => __('vehicles.insurance_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->insuranceExpiryDateTo,
+                'property' => 'insuranceExpiryDateTo',
+            ];
+        }
+
+        if (filled($this->tachographInspectionExpiryDateFrom)) {
+            $filters[] = [
+                'label' => __('vehicles.tachograph_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->tachographInspectionExpiryDateFrom,
+                'property' => 'tachographInspectionExpiryDateFrom',
+            ];
+        }
+
+        if (filled($this->tachographInspectionExpiryDateTo)) {
+            $filters[] = [
+                'label' => __('vehicles.tachograph_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->tachographInspectionExpiryDateTo,
+                'property' => 'tachographInspectionExpiryDateTo',
             ];
         }
 

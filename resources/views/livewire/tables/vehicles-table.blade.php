@@ -162,7 +162,10 @@
                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->tachograph_inspection_expiry_date ?? '-' }}</div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->is_active ? __('labels.tables.yes') : __('labels.tables.no') }}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <x-form.input.toggle wire:change="toggleActive({{ $vehicle->id }})"
+                                                 name="{{ $vehicle->id }}" :isActive="$vehicle->is_active" wire:key="toggle-{{ $vehicle->id }}"/>
+                        </div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">

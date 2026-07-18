@@ -74,6 +74,14 @@ test('trashed filter shows only soft deleted vehicles', function () {
         ->assertDontSee('KEEPME1');
 });
 
+test('toggleActive flips the is_active flag', function () {
+    $vehicle = Vehicle::factory()->create(['is_active' => true]);
+
+    Livewire::test(VehiclesTable::class)->call('toggleActive', $vehicle->id);
+
+    expect($vehicle->refresh()->is_active)->toBeFalse();
+});
+
 test('deleteSelected soft deletes all selected vehicles', function () {
     $vehicles = Vehicle::factory()->count(3)->create();
 
@@ -82,4 +90,15 @@ test('deleteSelected soft deletes all selected vehicles', function () {
         ->call('deleteSelected');
 
     $vehicles->each(fn (Vehicle $vehicle) => $this->assertSoftDeleted($vehicle));
+});
+
+test('date range filters show a labeled badge above the table', function () {
+    $component = Livewire::test(VehiclesTable::class)
+        ->set('insuranceExpiryDateFrom', '2026-01-01')
+        ->set('tachographInspectionExpiryDateTo', '2026-12-31');
+
+    $labels = collect($component->get('activeFilters'))->pluck('label');
+
+    expect($labels)->toContain('Data ważności ubezpieczenia od: 2026-01-01')
+        ->toContain('Data ważności legalizacji tachografu do: 2026-12-31');
 });

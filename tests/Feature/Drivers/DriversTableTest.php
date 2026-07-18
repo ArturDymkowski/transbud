@@ -77,3 +77,14 @@ test('deleteSelected removes all selected drivers', function () {
 
     $drivers->each(fn (Driver $driver) => $this->assertSoftDeleted($driver));
 });
+
+test('date range filters show a labeled badge above the table', function () {
+    $component = Livewire::test(DriversTable::class)
+        ->set('drivingLicenseExpiryDateFrom', '2026-01-01')
+        ->set('identityCardExpiryDateTo', '2026-12-31');
+
+    $labels = collect($component->get('activeFilters'))->pluck('label');
+
+    expect($labels)->toContain('Data wygaśnięcia prawa jazdy od: 2026-01-01')
+        ->toContain('Data wygaśnięcia dowodu osobistego do: 2026-12-31');
+});

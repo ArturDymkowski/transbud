@@ -136,6 +136,34 @@ class DriversTable extends Component
             ];
         }
 
+        if (filled($this->drivingLicenseExpiryDateFrom)) {
+            $filters[] = [
+                'label' => __('drivers.driving_license_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->drivingLicenseExpiryDateFrom,
+                'property' => 'drivingLicenseExpiryDateFrom',
+            ];
+        }
+
+        if (filled($this->drivingLicenseExpiryDateTo)) {
+            $filters[] = [
+                'label' => __('drivers.driving_license_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->drivingLicenseExpiryDateTo,
+                'property' => 'drivingLicenseExpiryDateTo',
+            ];
+        }
+
+        if (filled($this->identityCardExpiryDateFrom)) {
+            $filters[] = [
+                'label' => __('drivers.identity_card_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->identityCardExpiryDateFrom,
+                'property' => 'identityCardExpiryDateFrom',
+            ];
+        }
+
+        if (filled($this->identityCardExpiryDateTo)) {
+            $filters[] = [
+                'label' => __('drivers.identity_card_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->identityCardExpiryDateTo,
+                'property' => 'identityCardExpiryDateTo',
+            ];
+        }
+
         return $filters;
     }
 }
