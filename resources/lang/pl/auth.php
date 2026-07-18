@@ -7,4 +7,6 @@ return [
     'forgot_password' => 'Zapomniałeś hasła?',
     'keep_login' => 'Pozostań zalogowany',
     'enter_password' => 'Wprowadź swoje hasło',
+    'failed' => 'Podane dane logowania nie pasują do naszych rekordów.',
+    'throttle' => 'Zbyt wiele prób logowania. Spróbuj ponownie za :seconds sekund.',
 ];
