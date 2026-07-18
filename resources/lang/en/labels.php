@@ -53,6 +53,10 @@ return [
         'list' => 'List',
         'no_results' => 'No results found',
         'create' => 'Create',
+        'trashed' => 'Deleted records',
+        'without_trashed' => 'Without deleted records',
+        'with_trashed' => 'Include deleted records',
+        'only_trashed' => 'Only deleted records',
     ],
 
     'dashboard' => [

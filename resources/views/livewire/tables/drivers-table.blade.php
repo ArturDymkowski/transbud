@@ -11,6 +11,9 @@
             <!-- Country -->
             <x-form.input.select :label="__('labels.address.country')" :options="$this->countryOptions" name="country" wire:model.live="country"/>
 
+            <!-- Trashed -->
+            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
+
             <!-- Driving license expiry date -->
             <div class="flex flex-col">
                 <x-form.input.date-picker name="drivingLicenseExpiryDateFrom"

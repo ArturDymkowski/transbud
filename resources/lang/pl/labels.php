@@ -53,6 +53,10 @@ return [
         'list' => 'Lista',
         'no_results' => 'Nie znaleziono żadnych pozycji',
         'create' => 'Utwórz',
+        'trashed' => 'Usunięte rekordy',
+        'without_trashed' => 'Bez usuniętych rekordów',
+        'with_trashed' => 'Uwzględnij usunięte rekordy',
+        'only_trashed' => 'Tylko usunięte rekordy',
     ],
 
     'dashboard' => [

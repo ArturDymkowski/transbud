@@ -29,10 +29,11 @@ class DriversTable extends Component
     public string $identityCardExpiryDateFrom = '';
     public string $identityCardExpiryDateTo = '';
     public ?int $country = null;
+    public string $trashed = '';
 
     protected function filterFields(): array
     {
-        return ['search', 'isActive', 'country', 'driving_license_expiry_date', 'identity_card_expiry_date'];
+        return ['search', 'isActive', 'country', 'driving_license_expiry_date', 'identity_card_expiry_date', 'trashed'];
     }
 
     public function render()
@@ -44,6 +45,8 @@ class DriversTable extends Component
             ->when(filled($this->drivingLicenseExpiryDateTo), fn ($q) => $q->where('driving_license_expiry_date', '<=', $this->drivingLicenseExpiryDateTo))
             ->when(filled($this->identityCardExpiryDateFrom), fn ($q) => $q->where('identity_card_expiry_date', '>=', $this->identityCardExpiryDateFrom))
             ->when(filled($this->identityCardExpiryDateTo), fn ($q) => $q->where('identity_card_expiry_date', '<=', $this->identityCardExpiryDateTo))
+            ->when($this->trashed === 'with', fn ($q) => $q->withTrashed())
+            ->when($this->trashed === 'only', fn ($q) => $q->onlyTrashed())
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
@@ -90,6 +93,15 @@ class DriversTable extends Component
         return ['' => __('labels.tables.all')] + CountriesEnum::getOptions();
     }
 
+    public function getTrashedOptionsProperty(): array
+    {
+        return [
+            '' => __('labels.tables.without_trashed'),
+            'with' => __('labels.tables.with_trashed'),
+            'only' => __('labels.tables.only_trashed'),
+        ];
+    }
+
     public function getActiveFiltersProperty(): array
     {
         $filters = [];
@@ -114,6 +126,13 @@ class DriversTable extends Component
             $filters[] = [
                 'label' => __('labels.address.country') . ': ' . CountriesEnum::fromId($this->country)->label(),
                 'property' => 'country',
+            ];
+        }
+
+        if (filled($this->trashed)) {
+            $filters[] = [
+                'label' => $this->trashedOptions[$this->trashed],
+                'property' => 'trashed',
             ];
         }
 
