@@ -3,6 +3,7 @@
 use App\Livewire\Forms\DriversForm;
 use App\Models\Driver;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -123,6 +124,64 @@ test('uploading a document attaches it to the correct media collection', functio
     $driver = Driver::where('pesel', '12345678901')->firstOrFail();
 
     expect($driver->getFirstMedia(Driver::MEDIA_DRIVING_LICENSE_FRONT))->not->toBeNull();
+});
+
+test('tractor and trailer fields are optional', function () {
+    Livewire::test(DriversForm::class)
+        ->set(validDriverPayload())
+        ->call('save')
+        ->assertHasNoErrors(['driverData.tractor_id', 'driverData.trailer_id'])
+        ->assertRedirect(route('drivers.index'));
+
+    $driver = Driver::where('pesel', '12345678901')->firstOrFail();
+    expect($driver->vehicles)->toBeEmpty();
+});
+
+test('a driver can be assigned a tractor and a trailer', function () {
+    $tractor = Vehicle::factory()->create(['type' => 0]);
+    $trailer = Vehicle::factory()->create(['type' => 1]);
+
+    Livewire::test(DriversForm::class)
+        ->set(validDriverPayload())
+        ->set('driverData.tractor_id', $tractor->id)
+        ->set('driverData.trailer_id', $trailer->id)
+        ->call('save')
+        ->assertRedirect(route('drivers.index'));
+
+    $driver = Driver::where('pesel', '12345678901')->firstOrFail();
+    expect($driver->vehicles->pluck('id')->sort()->values()->all())
+        ->toBe([$tractor->id, $trailer->id]);
+});
+
+test('a vehicle of the wrong type is rejected for tractor and trailer fields', function () {
+    $trailer = Vehicle::factory()->create(['type' => 1]);
+    $tractor = Vehicle::factory()->create(['type' => 0]);
+
+    Livewire::test(DriversForm::class)
+        ->set(validDriverPayload())
+        ->set('driverData.tractor_id', $trailer->id)
+        ->set('driverData.trailer_id', $tractor->id)
+        ->call('save')
+        ->assertHasErrors(['driverData.tractor_id' => 'exists', 'driverData.trailer_id' => 'exists']);
+});
+
+test('editing a driver can change and unassign its vehicles', function () {
+    $tractor = Vehicle::factory()->create(['type' => 0]);
+    $newTractor = Vehicle::factory()->create(['type' => 0]);
+    $trailer = Vehicle::factory()->create(['type' => 1]);
+
+    $driver = Driver::factory()->create()->fresh();
+    $driver->vehicles()->sync([$tractor->id, $trailer->id]);
+
+    Livewire::test(DriversForm::class, ['driver' => $driver])
+        ->assertSet('driverData.tractor_id', $tractor->id)
+        ->assertSet('driverData.trailer_id', $trailer->id)
+        ->set('driverData.tractor_id', $newTractor->id)
+        ->set('driverData.trailer_id', '')
+        ->call('save')
+        ->assertRedirect(route('drivers.index'));
+
+    expect($driver->fresh()->vehicles->pluck('id')->all())->toBe([$newTractor->id]);
 });
 
 test('removing a saved document deletes the media', function () {

@@ -3,8 +3,10 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
+use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Driver;
+use App\Models\Vehicle;
 use Illuminate\Http\Response;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -12,6 +14,7 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -36,6 +39,13 @@ class DriversForm extends Component
             'driving_license_number', 'driving_license_expiry_date',
             'identity_card_number', 'identity_card_expiry_date',
         ]);
+
+        $this->driverData['tractor_id'] = $this->driver->exists
+            ? $this->driver->vehicles()->where('type', VehicleTypeEnum::TRACTOR->value)->value('vehicles.id')
+            : null;
+        $this->driverData['trailer_id'] = $this->driver->exists
+            ? $this->driver->vehicles()->where('type', VehicleTypeEnum::TRAILER->value)->value('vehicles.id')
+            : null;
     }
 
     protected function rules(): array
@@ -59,6 +69,9 @@ class DriversForm extends Component
             'driverData.driving_license_document_back'  => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
             'driverData.identity_card_document_front'   => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
             'driverData.identity_card_document_back'    => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+
+            'driverData.tractor_id' => ['nullable', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value)],
+            'driverData.trailer_id' => ['nullable', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value)],
         ];
     }
 
@@ -83,6 +96,9 @@ class DriversForm extends Component
             'driverData.driving_license_document_back' => __('drivers.document_back'),
             'driverData.identity_card_document_front' => __('drivers.document_front'),
             'driverData.identity_card_document_back' => __('drivers.document_back'),
+
+            'driverData.tractor_id' => __('vehicles.type.tractor'),
+            'driverData.trailer_id' => __('vehicles.type.trailer'),
         ];
     }
 
@@ -92,7 +108,7 @@ class DriversForm extends Component
 
         $fileKeys = array_keys($this->mediaCollectionsMap());
         $files = array_intersect_key($this->driverData, array_flip($fileKeys));
-        $attributes = array_diff_key($this->driverData, array_flip($fileKeys));
+        $attributes = array_diff_key($this->driverData, array_flip($fileKeys), ['tractor_id' => null, 'trailer_id' => null]);
 
         $isUpdate = $this->driver->exists;
 
@@ -106,6 +122,11 @@ class DriversForm extends Component
         foreach ($this->mediaCollectionsMap() as $key => $collection) {
             $this->attachMedia($files[$key] ?? null, $collection);
         }
+
+        $this->driver->vehicles()->sync(array_filter([
+            $this->driverData['tractor_id'] ?? null,
+            $this->driverData['trailer_id'] ?? null,
+        ]));
 
         return $this->flashSavedAndRedirect($isUpdate, 'drivers.index');
     }
@@ -142,6 +163,29 @@ class DriversForm extends Component
             'identity_card_document_front'   => Driver::MEDIA_IDENTITY_CARD_FRONT,
             'identity_card_document_back'    => Driver::MEDIA_IDENTITY_CARD_BACK,
         ];
+    }
+
+    #[Computed]
+    public function tractorOptions(): array
+    {
+        return $this->vehicleOptions(VehicleTypeEnum::TRACTOR);
+    }
+
+    #[Computed]
+    public function trailerOptions(): array
+    {
+        return $this->vehicleOptions(VehicleTypeEnum::TRAILER);
+    }
+
+    private function vehicleOptions(VehicleTypeEnum $type): array
+    {
+        $options = ['' => __('labels.general.not_selected')];
+
+        foreach (Vehicle::where('type', $type->value)->orderBy('registration_number')->get() as $vehicle) {
+            $options[$vehicle->id] = $vehicle->registration_number;
+        }
+
+        return $options;
     }
 
     #[Computed]

@@ -102,6 +102,19 @@
             </div>
         </x-form.section>
 
+        <!-- SEKCJA PRZYPISANE POJAZDY -->
+        <x-form.section title="{{ __('drivers.assigned_vehicles') }}">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <x-form.input.select name="driverData.tractor_id" label="{{ __('vehicles.type.tractor') }}"
+                                     wire:model="driverData.tractor_id"
+                                     :options="$this->tractorOptions"/>
+
+                <x-form.input.select name="driverData.trailer_id" label="{{ __('vehicles.type.trailer') }}"
+                                     wire:model="driverData.trailer_id"
+                                     :options="$this->trailerOptions"/>
+            </div>
+        </x-form.section>
+
         <!-- Sekcja: Adres -->
         <x-form.section title="{{ __('labels.address.address') }}">
             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\VehicleTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vehicle extends Model
@@ -27,6 +28,11 @@ class Vehicle extends Model
         'is_active' => 'boolean',
         'type' => VehicleTypeEnum::class,
     ];
+
+    public function drivers(): BelongsToMany
+    {
+        return $this->belongsToMany(Driver::class)->withTimestamps();
+    }
 
     public function scopeSearch($query, $search)
     {
