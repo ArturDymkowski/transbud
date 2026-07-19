@@ -29,7 +29,8 @@
                     <x-form.input.select name="vehicleData.type"
                                          label="{{ __('vehicles.type.type') }}"
                                          wire:model="vehicleData.type"
-                                         :options="\App\Enums\VehicleTypeEnum::getOptions()"/>
+                                         :options="\App\Enums\VehicleTypeEnum::getOptions()"
+                                         required="true"/>
                 </div>
 
             </div>
