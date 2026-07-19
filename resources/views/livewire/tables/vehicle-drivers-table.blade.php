@@ -1,0 +1,52 @@
+<x-tables.card>
+    <div class="max-w-full px-5 overflow-x-auto">
+        <table class="min-w-full">
+            <thead>
+            <tr class="border-gray-200 border-y dark:border-gray-700">
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('vehicles.driver_name') }}
+                </th>
+
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('vehicles.assigned_at') }}
+                </th>
+
+                <th scope="col"
+                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {{ __('labels.tables.actions') }}
+                </th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            @foreach($drivers as $driver)
+                <tr wire:key="assigned-driver-row-{{ $driver->id }}">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pivot->created_at?->format('Y-m-d') ?? '-' }}</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
+                            <x-ui.tooltip :text="__('vehicles.remove_driver_assignment')">
+                                <button type="button"
+                                        wire:click="removeAssignment({{ $driver->id }})"
+                                        wire:confirm="{{ __('vehicles.confirm_remove_driver_assignment') }}"
+                                >
+                                    <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                                </button>
+                            </x-ui.tooltip>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <x-slot:footer>
+        <x-tables.pagination-footer :paginator="$drivers"/>
+    </x-slot:footer>
+</x-tables.card>

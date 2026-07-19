@@ -17,7 +17,7 @@
             <livewire:forms.vehicles-form :vehicle="$vehicle"/>
         </x-slot:edit>
         <x-slot:drivers>
-            @include('pages.vehicles.partials.assigned-drivers-placeholder')
+            <livewire:tables.vehicle-drivers-table :vehicle="$vehicle"/>
         </x-slot:drivers>
     </x-common.tabs>
 @endsection

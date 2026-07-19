@@ -19,6 +19,9 @@ return [
     'create_title' => 'Create vehicle',
     'confirm_delete_vehicle' => 'Are you sure you want to delete the vehicle?',
     'assigned_drivers' => 'Assigned drivers',
-    'assigned_drivers_empty_title' => 'No data to display',
-    'assigned_drivers_empty_description' => 'The list of drivers assigned to this vehicle will appear here.',
+    'driver_name' => 'Driver name',
+    'assigned_at' => 'Assignment date',
+    'remove_driver_assignment' => 'Remove assignment',
+    'confirm_remove_driver_assignment' => 'Are you sure you want to remove this assignment?',
+    'driver_assignment_removed' => 'Driver assignment removed',
 ];

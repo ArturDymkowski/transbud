@@ -26,7 +26,7 @@ test('vehicle edit page renders the edit and assigned drivers tabs', function ()
         ->assertOk()
         ->assertSee(trans('labels.tables.edit'))
         ->assertSee(trans('vehicles.assigned_drivers'))
-        ->assertSee(trans('vehicles.assigned_drivers_empty_title'));
+        ->assertSee(trans('vehicles.driver_name'));
 });
 
 test('required fields are validated on create', function () {
