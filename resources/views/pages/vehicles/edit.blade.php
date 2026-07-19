@@ -9,5 +9,15 @@
         __('labels.tables.edit') => null
     ]"
     />
-    <livewire:forms.vehicles-form :vehicle="$vehicle"/>
+    <x-common.tabs :tabs="[
+        'edit' => __('labels.tables.edit'),
+        'drivers' => __('vehicles.assigned_drivers'),
+    ]">
+        <x-slot:edit>
+            <livewire:forms.vehicles-form :vehicle="$vehicle"/>
+        </x-slot:edit>
+        <x-slot:drivers>
+            @include('pages.vehicles.partials.assigned-drivers-placeholder')
+        </x-slot:drivers>
+    </x-common.tabs>
 @endsection

@@ -18,4 +18,7 @@ return [
     'inspections' => 'Terminy ważności',
     'create_title' => 'Utwórz pojazd',
     'confirm_delete_vehicle' => 'Czy na pewno chcesz usunąć pojazd?',
+    'assigned_drivers' => 'Przypisani kierowcy',
+    'assigned_drivers_empty_title' => 'Brak danych do wyświetlenia',
+    'assigned_drivers_empty_description' => 'Tutaj pojawi się lista kierowców przypisanych do tego pojazdu.',
 ];

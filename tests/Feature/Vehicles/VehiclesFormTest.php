@@ -19,6 +19,16 @@ function validVehiclePayload(): array
     ];
 }
 
+test('vehicle edit page renders the edit and assigned drivers tabs', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    $this->get(route('vehicles.edit', $vehicle))
+        ->assertOk()
+        ->assertSee(trans('labels.tables.edit'))
+        ->assertSee(trans('vehicles.assigned_drivers'))
+        ->assertSee(trans('vehicles.assigned_drivers_empty_title'));
+});
+
 test('required fields are validated on create', function () {
     Livewire::test(VehiclesForm::class)
         ->set('vehicleData.registration_number', '')
