@@ -51,6 +51,7 @@ return [
         'showing_to' => 'do',
         'showing_of' => 'z',
         'showing_total' => 'łącznie',
+        'no_results' => 'Brak wyników'
     ],
 
     'tables' => [
