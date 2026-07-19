@@ -99,6 +99,21 @@ test('editing a vehicle keeps its own registration number and vin valid despite 
         ->assertRedirect(route('vehicles.index'));
 });
 
+test('type defaults to the first option so creating without touching the field succeeds', function () {
+    Livewire::test(VehiclesForm::class)
+        ->assertSet('vehicleData.type', VehicleTypeEnum::TRACTOR->value)
+        ->set('vehicleData.registration_number', 'WA12345')
+        ->set('vehicleData.vin', '1HGCM82633A004352')
+        ->call('save')
+        ->assertHasNoErrors('vehicleData.type')
+        ->assertRedirect(route('vehicles.index'));
+
+    $this->assertDatabaseHas('vehicles', [
+        'registration_number' => 'WA12345',
+        'type' => VehicleTypeEnum::TRACTOR->value,
+    ]);
+});
+
 test('type must be a valid vehicle type', function () {
     Livewire::test(VehiclesForm::class)
         ->set(validVehiclePayload())

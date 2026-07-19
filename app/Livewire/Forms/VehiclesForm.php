@@ -28,6 +28,10 @@ class VehiclesForm extends Component
             'technical_inspection_expiry_date', 'insurance_expiry_date', 'tachograph_inspection_expiry_date',
             'additional_notes',
         ]);
+
+        if (! $this->vehicle->exists) {
+            $this->vehicleData['type'] = array_key_first(VehicleTypeEnum::getOptions());
+        }
     }
 
     protected function rules(): array
