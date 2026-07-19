@@ -38,6 +38,31 @@ test('it shows the assignment date from the pivot record', function () {
         ->assertSee('2026-01-15');
 });
 
+test('search filters assigned drivers by name', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    $vehicle->drivers()->attach(Driver::factory()->create(['name' => 'Jan Kowalski']));
+    $vehicle->drivers()->attach(Driver::factory()->create(['name' => 'Adam Nowak']));
+
+    Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->set('search', 'Kowalski')
+        ->assertSee('Jan Kowalski')
+        ->assertDontSee('Adam Nowak');
+});
+
+test('search does not match drivers assigned to other vehicles', function () {
+    $vehicle = Vehicle::factory()->create();
+    $otherVehicle = Vehicle::factory()->create();
+
+    $vehicle->drivers()->attach(Driver::factory()->create(['name' => 'Jan Kowalski']));
+    $otherVehicle->drivers()->attach(Driver::factory()->create(['name' => 'Jan Nowicki']));
+
+    Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->set('search', 'Jan')
+        ->assertSee('Jan Kowalski')
+        ->assertDontSee('Jan Nowicki');
+});
+
 test('removeAssignment detaches the driver from the vehicle without deleting the driver', function () {
     $vehicle = Vehicle::factory()->create();
     $driver = Driver::factory()->create();

@@ -1,5 +1,11 @@
 <x-tables.card>
+    <x-slot:header>
+        <x-tables.filter-bar searchModel="search"/>
+    </x-slot:header>
+
     <div class="max-w-full px-5 overflow-x-auto">
+        <x-tables.filter-badges :filters="$this->activeFilters"/>
+
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
