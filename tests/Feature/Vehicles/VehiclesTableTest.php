@@ -82,6 +82,14 @@ test('toggleActive flips the is_active flag', function () {
     expect($vehicle->refresh()->is_active)->toBeFalse();
 });
 
+test('deleteVehicle removes a single vehicle', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    Livewire::test(VehiclesTable::class)->call('deleteVehicle', $vehicle->id);
+
+    $this->assertSoftDeleted($vehicle);
+});
+
 test('deleteSelected soft deletes all selected vehicles', function () {
     $vehicles = Vehicle::factory()->count(3)->create();
 

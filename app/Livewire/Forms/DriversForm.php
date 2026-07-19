@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
+use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Driver;
 use Illuminate\Http\Response;
 use Livewire\Component;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DriversForm extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithSavedRedirect;
 
     public array $driverData = [];
     public ?\App\Models\Driver $driver = null;
@@ -106,9 +107,7 @@ class DriversForm extends Component
             $this->attachMedia($files[$key] ?? null, $collection);
         }
 
-        session()->flash('success', $isUpdate ? trans('labels.general.updated_success') : trans('labels.general.saved_success'));
-
-        return $this->redirect(route('drivers.index'), navigate: true);
+        return $this->flashSavedAndRedirect($isUpdate, 'drivers.index');
     }
 
     public function updated(string $property): void

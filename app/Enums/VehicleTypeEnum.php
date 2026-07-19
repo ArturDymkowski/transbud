@@ -15,4 +15,15 @@ enum VehicleTypeEnum: int
             self::TRAILER => __('vehicles.type.trailer'),
         };
     }
+
+    public static function getOptions(): array
+    {
+        $options = ['' => trans('labels.general.not_selected')];
+
+        foreach (self::cases() as $case) {
+            $options[$case->value] = $case->label();
+        }
+
+        return $options;
+    }
 }

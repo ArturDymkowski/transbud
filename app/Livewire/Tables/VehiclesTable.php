@@ -60,6 +60,12 @@ class VehiclesTable extends Component
         $this->deleteSelectedRecords(Vehicle::class);
     }
 
+    public function deleteVehicle(int $id): void
+    {
+        Vehicle::where('id', $id)->delete();
+        $this->dispatch('notify', message: __('labels.general.deleted_success'));
+    }
+
     public function toggleActive(int $vehicleId): void
     {
         $vehicle = Vehicle::findOrFail($vehicleId);

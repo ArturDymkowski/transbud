@@ -1,30 +1,12 @@
 <!-- Formularz -->
 <form wire:submit="save">
 
-    @if ($errors->any())
-        <div
-            wire:key="errors-{{ uniqid() }}"
-            x-data
-            x-init="$el.scrollIntoView({ behavior: 'smooth', block: 'start' })"
-            class="scroll-mt-24 p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg dark:bg-red-900 dark:text-red-200">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <x-form.errors-summary/>
 
     <div class="grid grid-cols-1 gap-6">
 
         <!-- Sekcja: Informacje podstawowe -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-                    {{ __('labels.general.basic_info') }}
-                </h2>
-            </div>
-
+        <x-form.section title="{{ __('labels.general.basic_info') }}">
             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
 
                 <div class="col-span-1">
@@ -52,13 +34,10 @@
                 </div>
 
             </div>
-        </div>
+        </x-form.section>
 
         <!-- SEKCJA PRAWO JAZDY -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950 mb-6">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ __('drivers.driving_license') }}</h2>
-            </div>
+        <x-form.section title="{{ __('drivers.driving_license') }}">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                     <x-form.input.text-input name="driverData.driving_license_number"
@@ -88,13 +67,10 @@
                     :file="$driverData['driving_license_document_back'] ?? null"
                     :existing-media-id="$this->existingMedia['driving_license_document_back'] ?? null"/>
             </div>
-        </div>
+        </x-form.section>
 
         <!-- SEKCJA DOWÓD OSOBISTY -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950 mb-6">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ __('drivers.identity_card') }}</h2>
-            </div>
+        <x-form.section title="{{ __('drivers.identity_card') }}">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                     <x-form.input.text-input name="driverData.identity_card_number"
@@ -124,16 +100,10 @@
                     :file="$driverData['identity_card_document_back'] ?? null"
                     :existing-media-id="$this->existingMedia['identity_card_document_back'] ?? null"/>
             </div>
-        </div>
+        </x-form.section>
 
         <!-- Sekcja: Adres -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-                    {{ __('labels.address.address') }}
-                </h2>
-            </div>
-
+        <x-form.section title="{{ __('labels.address.address') }}">
             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
 
                 <x-form.input.select name="driverData.country" label="{{ __('labels.address.country') }}" wire:model="driverData.country"
@@ -150,24 +120,16 @@
                                          wire:model="driverData.apartment_nr"/>
 
             </div>
-        </div>
+        </x-form.section>
 
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-                    {{ __('labels.general.extra_info') }}
-                </h2>
-            </div>
-
+        <!-- Sekcja: Informacje dodatkowe -->
+        <x-form.section title="{{ __('labels.general.extra_info') }}">
             <x-form.input.text-input type="textarea" name="driverData.extra_info"
                                      wire:model="driverData.extra_info"/>
-        </div>
+        </x-form.section>
 
     </div>
 
-    <div class="flex items-center justify-end w-full gap-3 mt-6">
-        <x-ui.button @click="open = false" class="w-full" size="sm" variant="outline">{{ __('labels.general.close') }}</x-ui.button>
-        <x-ui.button type="submit" class="w-full" size="sm" variant="primary">{{ __('labels.general.save') }}</x-ui.button>
-    </div>
+    <x-form.actions/>
 
 </form>

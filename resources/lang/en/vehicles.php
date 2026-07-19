@@ -13,4 +13,9 @@ return [
     'technical_inspection_expiry_date' => 'Technical inspection expiry date',
     'insurance_expiry_date' => 'Insurance expiry date',
     'tachograph_inspection_expiry_date' => 'Tachograph inspection expiry date',
+    'additional_notes' => 'Additional notes',
+    'basic_info' => 'Basic information',
+    'inspections' => 'Expiry dates',
+    'create_title' => 'Create vehicle',
+    'confirm_delete_vehicle' => 'Are you sure you want to delete the vehicle?',
 ];

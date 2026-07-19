@@ -1,4 +1,4 @@
-<x-tables.card>
+<x-tables.card :createRoute="route('vehicles.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed -->
@@ -96,6 +96,7 @@
                     :label="__('vehicles.type.type')"
                     :sortField="$sortField"
                     :sortDirection="$sortDirection"
+                    required="true"
                 />
 
                 <x-tables.th-sort
@@ -170,12 +171,15 @@
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
                             <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="#" wire:navigate>
+                                <a href="{{ route('vehicles.edit', $vehicle->id) }}" wire:navigate>
                                     <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
                                 </a>
                             </x-ui.tooltip>
                             <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button">
+                                <button type="button"
+                                        wire:click="deleteVehicle({{ $vehicle->id }})"
+                                        wire:confirm="{{ __('vehicles.confirm_delete_vehicle') }}"
+                                >
                                     <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
                                 </button>
                             </x-ui.tooltip>

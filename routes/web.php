@@ -32,5 +32,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create']);
-    Route::resource('/vehicles', VehicleController::class)->only(['index']);
+    Route::resource('/vehicles', VehicleController::class)->only(['index', 'edit', 'create']);
 });
