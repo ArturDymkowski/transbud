@@ -59,7 +59,7 @@
                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->name }}</div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pivot->created_at?->format('Y-m-d') ?? '-' }}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $driver->pivot->created_at?->format('Y-m-d H:i:s') ?? '-' }}</div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
