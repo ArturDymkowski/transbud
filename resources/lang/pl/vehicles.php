@@ -24,4 +24,6 @@ return [
     'remove_driver_assignment' => 'Usuń przypisanie',
     'confirm_remove_driver_assignment' => 'Czy na pewno chcesz usunąć to przypisanie?',
     'driver_assignment_removed' => 'Przypisanie kierowcy zostało usunięte',
+    'assign_driver' => 'Przypisz kierowcę',
+    'driver_assigned' => 'Kierowca został przypisany',
 ];

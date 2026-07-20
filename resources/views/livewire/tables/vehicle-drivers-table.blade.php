@@ -1,3 +1,30 @@
+<div>
+    <div class="flex w-full justify-end mb-4">
+        <x-ui.button wire:click="openAssignModal" size="sm" variant="primary">
+            {{ __('vehicles.assign_driver') }}
+        </x-ui.button>
+    </div>
+
+    <x-ui.modal wire:model="showAssignModal" class="max-w-md p-6 lg:p-8">
+        <h4 class="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">
+            {{ __('vehicles.assign_driver') }}
+        </h4>
+
+        <form wire:submit="assignDriver">
+            <x-form.errors-summary/>
+
+            <x-form.input.select
+                name="selectedDriverId"
+                label="{{ __('drivers.singular_model_label') }}"
+                wire:model="selectedDriverId"
+                :options="$this->assignableDriverOptions"
+                required="true"
+            />
+
+            <x-form.actions/>
+        </form>
+    </x-ui.modal>
+
 <x-tables.card>
     <x-slot:header>
         <x-tables.filter-bar searchModel="search"/>
@@ -56,3 +83,4 @@
         <x-tables.pagination-footer :paginator="$drivers"/>
     </x-slot:footer>
 </x-tables.card>
+</div>

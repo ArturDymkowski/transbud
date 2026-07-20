@@ -21,8 +21,8 @@ test('it lists only drivers assigned to the given vehicle', function () {
     $otherVehicle->drivers()->attach($otherDriver);
 
     Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
-        ->assertSee('Jan Kowalski')
-        ->assertDontSee('Adam Nowak');
+        ->assertSeeHtml('assigned-driver-row-'.$assignedDriver->id)
+        ->assertDontSeeHtml('assigned-driver-row-'.$otherDriver->id);
 });
 
 test('it shows the assignment date from the pivot record', function () {
@@ -54,13 +54,16 @@ test('search does not match drivers assigned to other vehicles', function () {
     $vehicle = Vehicle::factory()->create();
     $otherVehicle = Vehicle::factory()->create();
 
-    $vehicle->drivers()->attach(Driver::factory()->create(['name' => 'Jan Kowalski']));
-    $otherVehicle->drivers()->attach(Driver::factory()->create(['name' => 'Jan Nowicki']));
+    $matchingDriver = Driver::factory()->create(['name' => 'Jan Kowalski']);
+    $otherVehicleDriver = Driver::factory()->create(['name' => 'Jan Nowicki']);
+
+    $vehicle->drivers()->attach($matchingDriver);
+    $otherVehicle->drivers()->attach($otherVehicleDriver);
 
     Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
         ->set('search', 'Jan')
-        ->assertSee('Jan Kowalski')
-        ->assertDontSee('Jan Nowicki');
+        ->assertSeeHtml('assigned-driver-row-'.$matchingDriver->id)
+        ->assertDontSeeHtml('assigned-driver-row-'.$otherVehicleDriver->id);
 });
 
 test('removeAssignment detaches the driver from the vehicle without deleting the driver', function () {
@@ -71,8 +74,69 @@ test('removeAssignment detaches the driver from the vehicle without deleting the
 
     Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
         ->call('removeAssignment', $driver->id)
-        ->assertDontSee($driver->name);
+        ->assertDontSeeHtml('assigned-driver-row-'.$driver->id);
 
     expect($vehicle->drivers()->where('drivers.id', $driver->id)->exists())->toBeFalse();
     expect(Driver::find($driver->id))->not->toBeNull();
+});
+
+test('assignable driver options exclude drivers already assigned to the vehicle', function () {
+    $vehicle = Vehicle::factory()->create();
+    $assigned = Driver::factory()->create(['name' => 'Jan Kowalski']);
+    $unassigned = Driver::factory()->create(['name' => 'Adam Nowak']);
+
+    $vehicle->drivers()->attach($assigned);
+
+    $options = Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->get('assignableDriverOptions');
+
+    expect($options)->toHaveKey($unassigned->id)
+        ->and($options)->not->toHaveKey($assigned->id);
+});
+
+test('openAssignModal opens the modal', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->assertSet('showAssignModal', false)
+        ->call('openAssignModal')
+        ->assertSet('showAssignModal', true);
+});
+
+test('assignDriver requires a driver to be selected', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->set('selectedDriverId', '')
+        ->call('assignDriver')
+        ->assertHasErrors(['selectedDriverId' => 'required']);
+});
+
+test('assignDriver attaches the selected driver and closes the modal', function () {
+    $vehicle = Vehicle::factory()->create();
+    $driver = Driver::factory()->create();
+
+    Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->call('openAssignModal')
+        ->set('selectedDriverId', (string) $driver->id)
+        ->call('assignDriver')
+        ->assertHasNoErrors()
+        ->assertSet('showAssignModal', false)
+        ->assertSet('selectedDriverId', '')
+        ->assertSee($driver->name);
+
+    expect($vehicle->drivers()->where('drivers.id', $driver->id)->exists())->toBeTrue();
+});
+
+test('assignDriver does not create a duplicate pivot row when called twice', function () {
+    $vehicle = Vehicle::factory()->create();
+    $driver = Driver::factory()->create();
+
+    $vehicle->drivers()->attach($driver);
+
+    Livewire::test(VehicleDriversTable::class, ['vehicle' => $vehicle])
+        ->set('selectedDriverId', (string) $driver->id)
+        ->call('assignDriver');
+
+    expect($vehicle->drivers()->where('drivers.id', $driver->id)->count())->toBe(1);
 });

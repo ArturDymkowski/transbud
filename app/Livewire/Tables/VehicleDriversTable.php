@@ -4,6 +4,7 @@ namespace App\Livewire\Tables;
 
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
+use App\Models\Driver;
 use App\Models\Vehicle;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,6 +17,10 @@ class VehicleDriversTable extends Component
 
     public string $search = '';
 
+    public bool $showAssignModal = false;
+
+    public string $selectedDriverId = '';
+
     public function mount(Vehicle $vehicle): void
     {
         $this->vehicle = $vehicle;
@@ -24,6 +29,11 @@ class VehicleDriversTable extends Component
     public function updatedPerPage(): void
     {
         $this->resetPage();
+    }
+
+    public function openAssignModal(): void
+    {
+        $this->showAssignModal = true;
     }
 
     public function render()
@@ -57,5 +67,34 @@ class VehicleDriversTable extends Component
         $this->vehicle->drivers()->detach($driverId);
 
         $this->dispatch('notify', message: __('vehicles.driver_assignment_removed'));
+    }
+
+    public function getAssignableDriverOptionsProperty(): array
+    {
+        $assignedIds = $this->vehicle->drivers()->pluck('drivers.id');
+
+        $options = Driver::query()
+            ->whereNotIn('id', $assignedIds)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return ['' => __('labels.general.not_selected')] + $options;
+    }
+
+    public function assignDriver(): void
+    {
+        $this->validate([
+            'selectedDriverId' => 'required|exists:drivers,id',
+        ], [], [
+            'selectedDriverId' => __('drivers.singular_model_label'),
+        ]);
+
+        $this->vehicle->drivers()->syncWithoutDetaching([$this->selectedDriverId]);
+
+        $this->reset('selectedDriverId');
+        $this->showAssignModal = false;
+
+        $this->dispatch('notify', message: __('vehicles.driver_assigned'));
     }
 }

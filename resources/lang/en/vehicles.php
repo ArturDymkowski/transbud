@@ -24,4 +24,6 @@ return [
     'remove_driver_assignment' => 'Remove assignment',
     'confirm_remove_driver_assignment' => 'Are you sure you want to remove this assignment?',
     'driver_assignment_removed' => 'Driver assignment removed',
+    'assign_driver' => 'Assign driver',
+    'driver_assigned' => 'Driver assigned',
 ];
