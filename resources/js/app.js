@@ -30,4 +30,44 @@ document.addEventListener('alpine:init', () => {
             }
         },
     }));
+
+    Alpine.data('searchableSelect', (options, selected) => ({
+        options,
+        selected,
+        open: false,
+        search: '',
+
+        get filteredOptions() {
+            const term = this.search.trim().toLowerCase();
+
+            if (!term) {
+                return this.options;
+            }
+
+            return this.options.filter(option => option.label.toLowerCase().includes(term));
+        },
+
+        get selectedOption() {
+            return this.options.find(option => String(option.value) === String(this.selected));
+        },
+
+        toggle() {
+            this.open ? this.close() : this.openList();
+        },
+
+        openList() {
+            this.open = true;
+            this.search = '';
+            this.$nextTick(() => this.$refs.search && this.$refs.search.focus());
+        },
+
+        close() {
+            this.open = false;
+        },
+
+        choose(option) {
+            this.selected = option.value;
+            this.close();
+        },
+    }));
 });

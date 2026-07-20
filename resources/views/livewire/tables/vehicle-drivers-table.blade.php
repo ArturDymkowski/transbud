@@ -13,7 +13,7 @@
         <form wire:submit="assignDriver">
             <x-form.errors-summary/>
 
-            <x-form.input.select
+            <x-form.input.searchable-select
                 name="selectedDriverId"
                 label="{{ __('drivers.singular_model_label') }}"
                 wire:model="selectedDriverId"
