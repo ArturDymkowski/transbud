@@ -17,6 +17,11 @@ class MenuHelper
                 'name' => __('vehicles.plural_model_label'),
                 'path' => route('vehicles.index'),
             ],
+            [
+                'icon' => 'heroicon-o-building-office',
+                'name' => __('contractors.plural_model_label'),
+                'path' => route('contractors.index'),
+            ],
         ];
     }
 
