@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CountriesEnum;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Concerns\HasFullAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Driver extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, SoftDeletes, InteractsWithMedia, HasFullAddress;
 
     public const MEDIA_DRIVING_LICENSE_FRONT = 'driving_license_front';
     public const MEDIA_DRIVING_LICENSE_BACK  = 'driving_license_back';
@@ -63,54 +63,6 @@ class Driver extends Model implements HasMedia
                     ->orWhere('street', 'like', '%' . $search . '%');
             });
         });
-    }
-
-    protected function fullAddress(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                $parts = [];
-
-                // Ulica nr_domu/nr_mieszkania
-                $streetPart = trim($this->street ?? '');
-                if ($this->house_nr) {
-                    $streetPart .= ' ' . $this->house_nr;
-                    if ($this->apartment_nr) {
-                        $streetPart .= '/' . $this->apartment_nr;
-                    }
-                }
-                if ($streetPart) {
-                    $parts[] = $streetPart . '<br>';
-                }
-
-                // Kod pocztowy miasto
-                $cityPart = '';
-                if ($this->zipcode) {
-                    $cityPart = $this->zipcode;
-                }
-                if ($this->city) {
-                    $cityPart .= ($cityPart ? ' ' : '') . $this->city;
-                }
-                if ($cityPart) {
-                    $parts[] = $cityPart;
-                }
-
-                // Kraj
-                if ($this->country) {
-                    if (!empty($parts)) {
-                        $parts[] = ', ' . CountriesEnum::fromId($this->country->value)->label();
-                    } else {
-                        $parts[] = CountriesEnum::fromId($this->country->value)->label();
-                    }
-                }
-
-                if (empty($parts)) {
-                    return '-';
-                }
-
-                return implode('', $parts);
-            }
-        );
     }
 
     public function registerMediaCollections(): void

@@ -22,6 +22,11 @@ class MenuHelper
                 'name' => __('contractors.plural_model_label'),
                 'path' => route('contractors.index'),
             ],
+            [
+                'icon' => 'heroicon-o-book-open',
+                'name' => __('address_book.plural_model_label'),
+                'path' => route('contractor-addresses.index'),
+            ],
         ];
     }
 
