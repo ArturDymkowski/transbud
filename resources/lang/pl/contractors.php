@@ -9,4 +9,7 @@ return [
     'phone' => 'Telefon',
     'email' => 'E-mail',
     'notes' => 'Notatki',
+    'registration_data' => 'Dane rejestrowe',
+    'contact_data' => 'Dane kontaktowe',
+    'create_title' => 'Utwórz kontrahenta',
 ];
