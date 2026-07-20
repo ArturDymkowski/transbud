@@ -47,7 +47,11 @@
             return this.openSubmenus[key] || false;
         },
         isActive(path) {
-            return window.location.pathname === path || '{{ $currentPath }}' === path.replace(/^\//, '');
+            try {
+                return window.location.pathname === new URL(path, window.location.origin).pathname;
+            } catch (e) {
+                return false;
+            }
         }
     }"
     :class="{
