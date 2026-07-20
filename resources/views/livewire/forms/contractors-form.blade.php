@@ -49,6 +49,6 @@
 
     </div>
 
-    <x-form.actions/>
+    <x-form.actions :cancelRoute="route('contractors.index')"/>
 
 </form>

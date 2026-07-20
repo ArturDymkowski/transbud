@@ -49,6 +49,14 @@ test('toggleActive flips the active flag', function () {
     expect($contractor->refresh()->active)->toBeFalse();
 });
 
+test('deleteContractor removes a single contractor', function () {
+    $contractor = Contractor::factory()->create();
+
+    Livewire::test(ContractorsTable::class)->call('deleteContractor', $contractor->id);
+
+    $this->assertSoftDeleted($contractor);
+});
+
 test('deleteSelected removes all selected contractors', function () {
     $contractors = Contractor::factory()->count(3)->create();
 

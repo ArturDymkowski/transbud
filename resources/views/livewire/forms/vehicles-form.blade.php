@@ -64,6 +64,6 @@
 
     </div>
 
-    <x-form.actions/>
+    <x-form.actions :cancelRoute="route('vehicles.index')"/>
 
 </form>

@@ -46,6 +46,12 @@ class ContractorsTable extends Component
         $this->deleteSelectedRecords(Contractor::class);
     }
 
+    public function deleteContractor(int $id): void
+    {
+        Contractor::where('id', $id)->delete();
+        $this->dispatch('notify', message: __('labels.general.deleted_success'));
+    }
+
     public function toggleActive(int $contractorId): void
     {
         $contractor = Contractor::findOrFail($contractorId);

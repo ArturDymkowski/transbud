@@ -116,9 +116,12 @@
                                 </a>
                             </x-ui.tooltip>
                             <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <a href="#">
+                                <button type="button"
+                                        wire:click="deleteContractor({{ $contractor->id }})"
+                                        wire:confirm="{{ __('contractors.confirm_delete_contractor') }}"
+                                >
                                     <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </a>
+                                </button>
                             </x-ui.tooltip>
                         </div>
                     </td>
