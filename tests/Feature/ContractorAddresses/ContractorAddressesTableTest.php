@@ -105,3 +105,19 @@ test('deleteSelected removes all selected addresses', function () {
 
     $addresses->each(fn (ContractorAddress $address) => $this->assertSoftDeleted($address));
 });
+
+test('deleteAddress removes a single address', function () {
+    $address = ContractorAddress::factory()->create();
+
+    Livewire::test(ContractorAddressesTable::class)->call('deleteAddress', $address->id);
+
+    $this->assertSoftDeleted($address);
+});
+
+test('toggleActive flips the is_active flag', function () {
+    $address = ContractorAddress::factory()->create(['is_active' => true]);
+
+    Livewire::test(ContractorAddressesTable::class)->call('toggleActive', $address->id);
+
+    expect($address->refresh()->is_active)->toBeFalse();
+});

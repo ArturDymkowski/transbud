@@ -1,4 +1,4 @@
-<x-tables.card>
+<x-tables.card :createRoute="route('contractor-addresses.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed -->
@@ -51,6 +51,13 @@
                     {{ __('labels.address.address') }}
                 </th>
 
+                <x-tables.th-sort
+                    field="is_active"
+                    :label="__('labels.tables.active')"
+                    :sortField="$sortField"
+                    :sortDirection="$sortDirection"
+                />
+
                 <th scope="col"
                     class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {{ __('labels.tables.actions') }}
@@ -79,16 +86,25 @@
                         <div class="text-sm text-gray-500 dark:text-gray-400">{!! $address->fullAddress ?? '-' !!}</div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <x-form.input.toggle wire:change="toggleActive({{ $address->id }})"
+                                                 name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
                             <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="#">
+                                <a href="{{ route('contractor-addresses.edit', $address->id) }}" wire:navigate>
                                     <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
                                 </a>
                             </x-ui.tooltip>
                             <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <a href="#">
+                                <button type="button"
+                                        wire:click="deleteAddress({{ $address->id }})"
+                                        wire:confirm="{{ __('address_book.confirm_delete_address') }}"
+                                >
                                     <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </a>
+                                </button>
                             </x-ui.tooltip>
                         </div>
                     </td>

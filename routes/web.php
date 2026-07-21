@@ -36,5 +36,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create']);
     Route::resource('/vehicles', VehicleController::class)->only(['index', 'edit', 'create']);
     Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create']);
-    Route::resource('/contractor-addresses', ContractorAddressController::class)->only(['index']);
+    Route::resource('/contractor-addresses', ContractorAddressController::class)->only(['index', 'edit', 'create']);
 });

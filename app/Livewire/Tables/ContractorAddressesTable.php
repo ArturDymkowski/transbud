@@ -15,7 +15,7 @@ class ContractorAddressesTable extends Component
 {
     use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
 
-    public array $allowedSortFields = ['id', 'contractor_name'];
+    public array $allowedSortFields = ['id', 'contractor_name', 'is_active'];
 
     public string $search = '';
     public string $isActive = '';
@@ -56,6 +56,21 @@ class ContractorAddressesTable extends Component
     public function deleteSelected(): void
     {
         $this->deleteSelectedRecords(ContractorAddress::class);
+    }
+
+    public function deleteAddress(int $id): void
+    {
+        ContractorAddress::where('id', $id)->delete();
+        $this->dispatch('notify', message: __('labels.general.deleted_success'));
+    }
+
+    public function toggleActive(int $addressId): void
+    {
+        $address = ContractorAddress::findOrFail($addressId);
+        $address->is_active = ! $address->is_active;
+        $address->save();
+
+        $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
     public function getCountryOptionsProperty(): array
