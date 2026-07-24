@@ -13,6 +13,7 @@
 @endphp
 
 <div
+    wire:key="searchable-select-{{ $name }}-{{ md5($jsOptions->toJson()) }}"
     x-data="searchableSelect(@js($jsOptions), @entangle($attributes->wire('model')))"
     @click.outside="close()"
     @keydown.escape.window="close()"
