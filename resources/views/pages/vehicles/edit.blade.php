@@ -17,7 +17,7 @@
             <livewire:forms.vehicles-form :vehicle="$vehicle"/>
         </x-slot:edit>
         <x-slot:drivers>
-            <livewire:tables.vehicle-drivers-table :vehicle="$vehicle"/>
+            <livewire:tables.drivers-table :vehicle="$vehicle"/>
         </x-slot:drivers>
     </x-common.tabs>
 @endsection
