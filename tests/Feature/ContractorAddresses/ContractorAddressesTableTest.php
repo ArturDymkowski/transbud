@@ -121,3 +121,25 @@ test('toggleActive flips the is_active flag', function () {
 
     expect($address->refresh()->is_active)->toBeFalse();
 });
+
+test('scoping to a contractor only shows that contractor\'s addresses', function () {
+    $acme = Contractor::factory()->create(['name' => 'Acme Sp. z o.o.']);
+    $globex = Contractor::factory()->create(['name' => 'Globex S.A.']);
+    ContractorAddress::factory()->create(['contractor_id' => $acme->id, 'street' => 'Acme Street']);
+    ContractorAddress::factory()->create(['contractor_id' => $globex->id, 'street' => 'Globex Street']);
+
+    Livewire::test(ContractorAddressesTable::class, ['contractor' => $acme])
+        ->assertSee('Acme Street')
+        ->assertDontSee('Globex Street')
+        ->assertDontSee('Kontrahent');
+});
+
+test('contractor edit page shows an address book tab scoped to that contractor', function () {
+    $contractor = Contractor::factory()->create(['name' => 'Acme Sp. z o.o.']);
+    ContractorAddress::factory()->create(['contractor_id' => $contractor->id, 'street' => 'Acme Street']);
+
+    $this->get(route('contractors.edit', $contractor))
+        ->assertOk()
+        ->assertSee(__('address_book.plural_model_label'))
+        ->assertSee('Acme Street');
+});

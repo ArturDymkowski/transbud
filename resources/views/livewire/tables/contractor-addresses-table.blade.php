@@ -39,12 +39,14 @@
                     :sortDirection="$sortDirection"
                 />
 
-                <x-tables.th-sort
-                    field="contractor_name"
-                    :label="__('address_book.contractor')"
-                    :sortField="$sortField"
-                    :sortDirection="$sortDirection"
-                />
+                @unless($contractor)
+                    <x-tables.th-sort
+                        field="contractor_name"
+                        :label="__('address_book.contractor')"
+                        :sortField="$sortField"
+                        :sortDirection="$sortDirection"
+                    />
+                @endunless
 
                 <th scope="col"
                     class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -75,13 +77,15 @@
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ $address->id }}</div>
                     </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <a href="{{ route('contractors.edit', $address->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
-                                {{ $address->contractor->name ?? '-' }}
-                            </a>
-                        </div>
-                    </td>
+                    @unless($contractor)
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                <a href="{{ route('contractors.edit', $address->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
+                                    {{ $address->contractor->name ?? '-' }}
+                                </a>
+                            </div>
+                        </td>
+                    @endunless
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400">{!! $address->fullAddress ?? '-' !!}</div>
                     </td>

@@ -7,6 +7,7 @@ use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
+use App\Models\Contractor;
 use App\Models\ContractorAddress;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,10 +18,17 @@ class ContractorAddressesTable extends Component
 
     public array $allowedSortFields = ['id', 'contractor_name', 'is_active'];
 
+    public ?Contractor $contractor = null;
+
     public string $search = '';
     public string $isActive = '';
     public ?int $country = null;
     public string $trashed = '';
+
+    public function mount(?Contractor $contractor = null): void
+    {
+        $this->contractor = ($contractor && $contractor->exists) ? $contractor : null;
+    }
 
     protected function filterFields(): array
     {
@@ -30,6 +38,7 @@ class ContractorAddressesTable extends Component
     public function render()
     {
         $query = ContractorAddress::with('contractor')
+            ->when($this->contractor, fn ($q) => $q->where('contractor_id', $this->contractor->id))
             ->search($this->search)
             ->when(filled($this->isActive), fn ($q) => $q->where('is_active', $this->isActive))
             ->when(filled($this->country), fn ($q) => $q->where('country', $this->country))
