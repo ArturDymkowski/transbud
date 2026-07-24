@@ -143,3 +143,43 @@ test('contractor edit page shows an address book tab scoped to that contractor',
         ->assertSee(__('address_book.plural_model_label'))
         ->assertSee('Acme Street');
 });
+
+test('createAddress requires the address fields when scoped to a contractor', function () {
+    $contractor = Contractor::factory()->create();
+
+    Livewire::test(ContractorAddressesTable::class, ['contractor' => $contractor])
+        ->call('openCreateModal')
+        ->set('createAddressData.country', '')
+        ->set('createAddressData.zipcode', '')
+        ->set('createAddressData.city', '')
+        ->set('createAddressData.street', '')
+        ->call('createAddress')
+        ->assertHasErrors([
+            'createAddressData.country' => 'required',
+            'createAddressData.zipcode' => 'required',
+            'createAddressData.city' => 'required',
+            'createAddressData.street' => 'required',
+        ]);
+
+    $this->assertDatabaseCount('contractor_addresses', 0);
+});
+
+test('createAddress assigns the new address to the scoped contractor and closes the modal', function () {
+    $contractor = Contractor::factory()->create();
+
+    Livewire::test(ContractorAddressesTable::class, ['contractor' => $contractor])
+        ->call('openCreateModal')
+        ->set('createAddressData.country', CountriesEnum::POLAND->value)
+        ->set('createAddressData.zipcode', '00-001')
+        ->set('createAddressData.city', 'Warszawa')
+        ->set('createAddressData.street', 'Marszałkowska')
+        ->call('createAddress')
+        ->assertSet('showCreateModal', false)
+        ->assertSee('Marszałkowska');
+
+    $this->assertDatabaseHas('contractor_addresses', [
+        'contractor_id' => $contractor->id,
+        'city' => 'Warszawa',
+        'street' => 'Marszałkowska',
+    ]);
+});

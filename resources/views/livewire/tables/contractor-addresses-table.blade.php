@@ -1,4 +1,47 @@
-<x-tables.card :createRoute="route('contractor-addresses.create')">
+<div>
+    @if($contractor)
+        <div class="flex w-full justify-end mb-4">
+            <x-ui.button wire:click="openCreateModal" size="sm" variant="primary">
+                {{ __('labels.tables.create') }}
+            </x-ui.button>
+        </div>
+
+        <x-ui.modal wire:model="showCreateModal" class="max-w-lg p-6 lg:p-8">
+            <h4 class="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">
+                {{ __('address_book.create_title') }}
+            </h4>
+
+            <form wire:submit="createAddress">
+                <x-form.errors-summary/>
+
+                <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+                    <x-form.input.select name="createAddressData.country" label="{{ __('labels.address.country') }}"
+                                         wire:model="createAddressData.country"
+                                         required="true"
+                                         :options="\App\Enums\CountriesEnum::getOptions()"/>
+
+                    <x-form.input.text-input name="createAddressData.zipcode" label="{{ __('labels.address.zipcode') }}"
+                                             required="true"
+                                             wire:model="createAddressData.zipcode"/>
+
+                    <x-form.input.text-input name="createAddressData.city" label="{{ __('labels.address.city') }}"
+                                             required="true"
+                                             wire:model="createAddressData.city"/>
+                    <x-form.input.text-input name="createAddressData.street" label="{{ __('labels.address.street') }}"
+                                             required="true"
+                                             wire:model="createAddressData.street"/>
+                    <x-form.input.text-input name="createAddressData.house_nr" label="{{ __('labels.address.house_nr') }}"
+                                             wire:model="createAddressData.house_nr"/>
+                    <x-form.input.text-input name="createAddressData.apartment_nr" label="{{ __('labels.address.apartment_nr') }}"
+                                             wire:model="createAddressData.apartment_nr"/>
+                </div>
+
+                <x-form.actions/>
+            </form>
+        </x-ui.modal>
+    @endif
+
+    <x-tables.card :createRoute="$contractor ? null : route('contractor-addresses.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed -->
@@ -122,3 +165,4 @@
         <x-tables.pagination-footer :paginator="$addresses"/>
     </x-slot:footer>
 </x-tables.card>
+</div>

@@ -9,6 +9,7 @@ use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
+use Illuminate\Validation\Rules\Enum;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -24,6 +25,9 @@ class ContractorAddressesTable extends Component
     public string $isActive = '';
     public ?int $country = null;
     public string $trashed = '';
+
+    public bool $showCreateModal = false;
+    public array $createAddressData = [];
 
     public function mount(?Contractor $contractor = null): void
     {
@@ -80,6 +84,53 @@ class ContractorAddressesTable extends Component
         $address->save();
 
         $this->dispatch('notify', message: __('labels.general.updated_success'));
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->createAddressData = [
+            'country' => null,
+            'zipcode' => '',
+            'city' => '',
+            'street' => '',
+            'house_nr' => '',
+            'apartment_nr' => '',
+        ];
+        $this->resetValidation();
+        $this->showCreateModal = true;
+    }
+
+    public function createAddress(): void
+    {
+        if (! $this->contractor) {
+            return;
+        }
+
+        $validated = $this->validate([
+            'createAddressData.country' => ['required', new Enum(CountriesEnum::class)],
+            'createAddressData.zipcode' => 'required|string|max:20',
+            'createAddressData.city' => 'required|string|max:100',
+            'createAddressData.street' => 'required|string|max:100',
+            'createAddressData.house_nr' => 'nullable|string|max:20',
+            'createAddressData.apartment_nr' => 'nullable|string|max:20',
+        ], [], [
+            'createAddressData.country' => __('labels.address.country'),
+            'createAddressData.zipcode' => __('labels.address.zipcode'),
+            'createAddressData.city' => __('labels.address.city'),
+            'createAddressData.street' => __('labels.address.street'),
+            'createAddressData.house_nr' => __('labels.address.house_nr'),
+            'createAddressData.apartment_nr' => __('labels.address.apartment_nr'),
+        ]);
+
+        ContractorAddress::create([
+            ...$validated['createAddressData'],
+            'contractor_id' => $this->contractor->id,
+        ]);
+
+        $this->showCreateModal = false;
+        $this->reset('createAddressData');
+
+        $this->dispatch('notify', message: __('labels.general.saved_success'));
     }
 
     public function getCountryOptionsProperty(): array
