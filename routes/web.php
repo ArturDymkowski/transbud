@@ -6,6 +6,8 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Page\ContractorAddressController;
 use App\Http\Controllers\Page\ContractorController;
 use App\Http\Controllers\Page\DriverController;
+use App\Http\Controllers\Page\GoodController;
+use App\Http\Controllers\Page\UnitController;
 use App\Http\Controllers\Page\VehicleController;
 use Illuminate\Support\Facades\Route;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -37,4 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('/vehicles', VehicleController::class)->only(['index', 'edit', 'create']);
     Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create']);
     Route::resource('/contractor-addresses', ContractorAddressController::class)->only(['index', 'edit', 'create']);
+    Route::resource('/goods', GoodController::class)->only(['index', 'edit', 'create']);
+    Route::resource('/units', UnitController::class)->only(['index', 'edit', 'create']);
 });

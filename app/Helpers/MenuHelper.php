@@ -27,6 +27,16 @@ class MenuHelper
                 'name' => __('address_book.plural_model_label'),
                 'path' => route('contractor-addresses.index'),
             ],
+            [
+                'icon' => 'heroicon-o-cube',
+                'name' => __('goods.plural_model_label'),
+                'path' => route('goods.index'),
+            ],
+            [
+                'icon' => 'heroicon-o-scale',
+                'name' => __('units.plural_model_label'),
+                'path' => route('units.index'),
+            ],
         ];
     }
 
