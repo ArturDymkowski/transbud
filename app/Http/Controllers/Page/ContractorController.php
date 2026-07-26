@@ -20,7 +20,15 @@ class ContractorController extends Controller
      */
     public function create()
     {
-        return view('pages.contractors.create', ['contractor' => new Contractor()]);
+        return view('pages.contractors.create', ['contractor' => new Contractor]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Contractor $contractor)
+    {
+        return view('pages.contractors.show', ['contractor' => $contractor]);
     }
 
     /**

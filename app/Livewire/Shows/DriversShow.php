@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Forms;
+namespace App\Livewire\Shows;
 
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithDriverDocuments;
@@ -33,6 +33,6 @@ class DriversShow extends Component
 
     public function render()
     {
-        return view('livewire.forms.drivers-show');
+        return view('livewire.shows.drivers-show');
     }
 }

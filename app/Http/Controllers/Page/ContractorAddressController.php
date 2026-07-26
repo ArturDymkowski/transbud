@@ -20,7 +20,15 @@ class ContractorAddressController extends Controller
      */
     public function create()
     {
-        return view('pages.contractor-addresses.create', ['contractorAddress' => new ContractorAddress()]);
+        return view('pages.contractor-addresses.create', ['contractorAddress' => new ContractorAddress]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(ContractorAddress $contractorAddress)
+    {
+        return view('pages.contractor-addresses.show', ['contractorAddress' => $contractorAddress]);
     }
 
     /**

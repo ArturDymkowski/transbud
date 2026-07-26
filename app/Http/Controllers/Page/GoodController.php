@@ -20,7 +20,15 @@ class GoodController extends Controller
      */
     public function create()
     {
-        return view('pages.goods.create', ['good' => new Good()]);
+        return view('pages.goods.create', ['good' => new Good]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Good $good)
+    {
+        return view('pages.goods.show', ['good' => $good]);
     }
 
     /**

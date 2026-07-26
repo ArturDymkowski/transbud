@@ -170,6 +170,11 @@
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
+                            <x-ui.tooltip :text="__('labels.tables.show')">
+                                <a href="{{ route('vehicles.show', $vehicle->id) }}" wire:navigate>
+                                    <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
+                                </a>
+                            </x-ui.tooltip>
                             <x-ui.tooltip :text="__('labels.tables.edit')">
                                 <a href="{{ route('vehicles.edit', $vehicle->id) }}" wire:navigate>
                                     <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>

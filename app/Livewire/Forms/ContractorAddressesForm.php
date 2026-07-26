@@ -3,17 +3,18 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
+use App\Livewire\Concerns\WithContractorOptions;
 use App\Livewire\Concerns\WithSavedRedirect;
-use App\Models\Contractor;
 use App\Models\ContractorAddress;
 use Illuminate\Validation\Rules\Enum;
 use Livewire\Component;
 
 class ContractorAddressesForm extends Component
 {
-    use WithSavedRedirect;
+    use WithContractorOptions, WithSavedRedirect;
 
     public array $addressData = [];
+
     public ?ContractorAddress $contractorAddress = null;
 
     public function mount(?ContractorAddress $contractorAddress = null)
@@ -21,7 +22,7 @@ class ContractorAddressesForm extends Component
         if ($contractorAddress && $contractorAddress->exists) {
             $this->contractorAddress = $contractorAddress;
         } else {
-            $this->contractorAddress = new ContractorAddress();
+            $this->contractorAddress = new ContractorAddress;
         }
 
         $this->addressData = $this->contractorAddress->only([
@@ -69,17 +70,6 @@ class ContractorAddressesForm extends Component
         }
 
         return $this->flashSavedAndRedirect($isUpdate, 'contractor-addresses.index');
-    }
-
-    public function getContractorOptionsProperty(): array
-    {
-        $options = ['' => __('labels.general.not_selected')];
-
-        foreach (Contractor::orderBy('name')->get() as $contractor) {
-            $options[$contractor->id] = $contractor->name;
-        }
-
-        return $options;
     }
 
     public function render()

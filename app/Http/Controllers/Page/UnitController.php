@@ -20,7 +20,15 @@ class UnitController extends Controller
      */
     public function create()
     {
-        return view('pages.units.create', ['unit' => new Unit()]);
+        return view('pages.units.create', ['unit' => new Unit]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Unit $unit)
+    {
+        return view('pages.units.show', ['unit' => $unit]);
     }
 
     /**

@@ -20,7 +20,15 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('pages.users.create', ['user' => new User()]);
+        return view('pages.users.create', ['user' => new User]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(User $user)
+    {
+        return view('pages.users.show', ['user' => $user]);
     }
 
     /**

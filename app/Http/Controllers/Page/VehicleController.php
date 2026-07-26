@@ -20,7 +20,15 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        return view('pages.vehicles.create', ['vehicle' => new Vehicle()]);
+        return view('pages.vehicles.create', ['vehicle' => new Vehicle]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Vehicle $vehicle)
+    {
+        return view('pages.vehicles.show', ['vehicle' => $vehicle]);
     }
 
     /**

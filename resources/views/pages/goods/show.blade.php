@@ -2,11 +2,11 @@
 
 @section('content')
     <x-common.page-breadcrumb
-        pageTitle="{!! $driver->name !!}"
+        pageTitle="{!! $good->name !!}"
         :breadcrumbs="[
-        __('drivers.plural_model_label') => route('drivers.index'),
+        __('goods.plural_model_label') => route('goods.index'),
         __('labels.tables.show') => null
     ]"
     />
-    <livewire:shows.drivers-show :driver="$driver"/>
+    <livewire:shows.goods-show :good="$good"/>
 @endsection

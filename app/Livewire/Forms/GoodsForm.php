@@ -3,15 +3,16 @@
 namespace App\Livewire\Forms;
 
 use App\Livewire\Concerns\WithSavedRedirect;
+use App\Livewire\Concerns\WithUnitOptions;
 use App\Models\Good;
-use App\Models\Unit;
 use Livewire\Component;
 
 class GoodsForm extends Component
 {
-    use WithSavedRedirect;
+    use WithSavedRedirect, WithUnitOptions;
 
     public array $goodData = [];
+
     public ?Good $good = null;
 
     public function mount(?Good $good = null)
@@ -19,7 +20,7 @@ class GoodsForm extends Component
         if ($good && $good->exists) {
             $this->good = $good;
         } else {
-            $this->good = new Good();
+            $this->good = new Good;
         }
 
         $this->goodData = $this->good->only(['name', 'description', 'default_unit_id']);
@@ -45,14 +46,6 @@ class GoodsForm extends Component
             'goodData.description' => __('goods.description'),
             'goodData.default_unit_id' => __('goods.default_unit'),
         ];
-    }
-
-    public function getUnitOptionsProperty(): array
-    {
-        return Unit::query()
-            ->orderBy('name')
-            ->pluck('name', 'id')
-            ->toArray();
     }
 
     public function save()
