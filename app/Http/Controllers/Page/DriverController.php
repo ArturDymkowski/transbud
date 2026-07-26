@@ -20,7 +20,15 @@ class DriverController extends Controller
      */
     public function create()
     {
-        return view('pages.drivers.create', ['driver' => new Driver()]);
+        return view('pages.drivers.create', ['driver' => new Driver]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Driver $driver)
+    {
+        return view('pages.drivers.show', ['driver' => $driver]);
     }
 
     /**

@@ -10,14 +10,15 @@ use App\Http\Controllers\Page\GoodController;
 use App\Http\Controllers\Page\UnitController;
 use App\Http\Controllers\Page\UserController;
 use App\Http\Controllers\Page\VehicleController;
+use App\Models\Driver;
 use Illuminate\Support\Facades\Route;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 // Auth
-Route::get("/", function() {
+Route::get('/', function () {
     return Auth::check()
-        ? redirect()->route("dashboard")
-        : redirect()->route("login");
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 });
 
 Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -27,7 +28,7 @@ Route::get('/lang/{locale}', [LanguageController::class, 'switch'])->name('langu
 
 // Documents
 Route::get('/driver-documents/{media}', function (Media $media) {
-    abort_unless($media->model_type === \App\Models\Driver::class, 404);
+    abort_unless($media->model_type === Driver::class, 404);
 
     return response()->file($media->getPath());
 })->middleware('auth')->name('driver-documents.show');
@@ -36,7 +37,7 @@ Route::get('/driver-documents/{media}', function (Media $media) {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create']);
+    Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create', 'show']);
     Route::resource('/vehicles', VehicleController::class)->only(['index', 'edit', 'create']);
     Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create']);
     Route::resource('/contractor-addresses', ContractorAddressController::class)->only(['index', 'edit', 'create']);

@@ -73,6 +73,7 @@ return [
         'confirm_delete_selected' => 'Are you sure you want to delete the selected records?',
         'clear_all' => 'Clear all',
         'actions' => 'Actions',
+        'show' => 'Preview',
         'edit' => 'Edit',
         'delete' => 'Delete',
         'list' => 'List',

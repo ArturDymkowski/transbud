@@ -73,6 +73,7 @@ return [
         'confirm_delete_selected' => 'Czy na pewno chcesz usunąć zaznaczone rekordy?',
         'clear_all' => 'Wyczyść wszystko',
         'actions' => 'Akcje',
+        'show' => 'Podgląd',
         'edit' => 'Edytuj',
         'delete' => 'Usuń',
         'list' => 'Lista',
