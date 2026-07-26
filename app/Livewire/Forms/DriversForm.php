@@ -4,33 +4,30 @@ namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
 use App\Enums\VehicleTypeEnum;
+use App\Livewire\Concerns\WithDriverDocuments;
+use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Driver;
-use App\Models\Vehicle;
-use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\Validate;
-
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DriversForm extends Component
 {
-    use WithFileUploads, WithSavedRedirect;
+    use WithDriverDocuments, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
 
     public array $driverData = [];
-    public ?\App\Models\Driver $driver = null;
 
-    public function mount(\App\Models\Driver $driver = null)
+    public ?Driver $driver = null;
+
+    public function mount(?Driver $driver = null)
     {
         if ($driver && $driver->exists) {
             $this->driver = $driver;
         } else {
-            $this->driver = new \App\Models\Driver();
+            $this->driver = new Driver;
         }
 
         $this->driverData = $this->driver->only([
@@ -53,7 +50,7 @@ class DriversForm extends Component
         return [
             'driverData.name' => 'required|string|max:255',
             'driverData.phone' => 'required|string|max:30',
-            'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,' . ($this->driver?->id ?? 'NULL'),
+            'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,'.($this->driver?->id ?? 'NULL'),
             'driverData.country' => ['nullable', new Enum(CountriesEnum::class)],
             'driverData.zipcode' => 'nullable|string|max:20',
             'driverData.city' => 'nullable|string|max:100',
@@ -61,14 +58,14 @@ class DriversForm extends Component
             'driverData.house_nr' => 'nullable|string|max:20',
             'driverData.apartment_nr' => 'nullable|string|max:20',
             'driverData.extra_info' => 'nullable|string',
-            'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,' . ($this->driver?->id ?? 'NULL'),
+            'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,'.($this->driver?->id ?? 'NULL'),
             'driverData.driving_license_expiry_date' => 'required|date',
             'driverData.identity_card_expiry_date' => 'required|date',
 
             'driverData.driving_license_document_front' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
-            'driverData.driving_license_document_back'  => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
-            'driverData.identity_card_document_front'   => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
-            'driverData.identity_card_document_back'    => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'driverData.driving_license_document_back' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'driverData.identity_card_document_front' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+            'driverData.identity_card_document_back' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
 
             'driverData.tractor_id' => ['nullable', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value)],
             'driverData.trailer_id' => ['nullable', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value)],
@@ -155,65 +152,13 @@ class DriversForm extends Component
             ->toMediaCollection($collection);
     }
 
-    private function mediaCollectionsMap(): array
-    {
-        return [
-            'driving_license_document_front' => Driver::MEDIA_DRIVING_LICENSE_FRONT,
-            'driving_license_document_back'  => Driver::MEDIA_DRIVING_LICENSE_BACK,
-            'identity_card_document_front'   => Driver::MEDIA_IDENTITY_CARD_FRONT,
-            'identity_card_document_back'    => Driver::MEDIA_IDENTITY_CARD_BACK,
-        ];
-    }
-
-    #[Computed]
-    public function tractorOptions(): array
-    {
-        return $this->vehicleOptions(VehicleTypeEnum::TRACTOR);
-    }
-
-    #[Computed]
-    public function trailerOptions(): array
-    {
-        return $this->vehicleOptions(VehicleTypeEnum::TRAILER);
-    }
-
-    private function vehicleOptions(VehicleTypeEnum $type): array
-    {
-        $options = ['' => __('labels.general.not_selected')];
-
-        foreach (Vehicle::where('type', $type->value)->orderBy('registration_number')->get() as $vehicle) {
-            $options[$vehicle->id] = $vehicle->registration_number;
-        }
-
-        return $options;
-    }
-
-    #[Computed]
-    public function existingMedia(): array
-    {
-        if (! $this->driver?->exists) {
-            return [];
-        }
-
-        $result = [];
-        foreach ($this->mediaCollectionsMap() as $key => $collection) {
-            $media = $this->driver->getFirstMedia($collection);
-
-            $result[$key] = $media ? [
-                'id' => $media->id,
-                'mime_type' => $media->mime_type,
-            ] : null;
-        }
-
-        return $result;
-    }
-
     public function removeDocument(string $key): void
     {
         // nie zapisany plik
         if (isset($this->driverData[$key]) && $this->driverData[$key] instanceof TemporaryUploadedFile) {
             unset($this->driverData[$key]);
             $this->resetValidation("driverData.{$key}");
+
             return;
         }
 
@@ -229,23 +174,6 @@ class DriversForm extends Component
 
         $this->driver->unsetRelation('media');
         unset($this->existingMedia);
-    }
-
-    public function downloadDocument(string $key): BinaryFileResponse|null
-    {
-        $collectionsMap = $this->mediaCollectionsMap();
-
-        if (! isset($collectionsMap[$key]) || ! $this->driver?->exists) {
-            return null;
-        }
-
-        $media = $this->driver->getFirstMedia($collectionsMap[$key]);
-
-        if (! $media) {
-            return null;
-        }
-
-        return response()->download($media->getPath(), $media->file_name);
     }
 
     public function render()
