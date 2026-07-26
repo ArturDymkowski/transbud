@@ -32,5 +32,7 @@ class UserSeeder extends Seeder
             'is_active' => 1,
             'created_at' => now(),
         ]);
+
+        User::factory()->count(9)->create();
     }
 }

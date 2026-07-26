@@ -1,0 +1,15 @@
+<?php
+
+return [
+    'plural_model_label' => 'Użytkownicy',
+    'singular_model_label' => 'Użytkownik',
+    'name' => 'Imię i nazwisko',
+    'email' => 'Email',
+    'password' => 'Hasło',
+    'password_confirmation' => 'Powtórz hasło',
+    'password_section' => 'Hasło',
+    'password_keep_hint' => 'Pozostaw puste, aby nie zmieniać hasła',
+    'basic_info' => 'Informacje podstawowe',
+    'create_title' => 'Utwórz użytkownika',
+    'confirm_delete_user' => 'Czy na pewno chcesz usunąć użytkownika?',
+];

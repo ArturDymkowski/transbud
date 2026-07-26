@@ -37,6 +37,11 @@ class MenuHelper
                 'name' => __('units.plural_model_label'),
                 'path' => route('units.index'),
             ],
+            [
+                'icon' => 'heroicon-o-users',
+                'name' => __('users.plural_model_label'),
+                'path' => route('users.index'),
+            ],
         ];
     }
 
