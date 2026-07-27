@@ -47,41 +47,31 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @forelse($permissions as $permission)
                 <tr wire:key="permission-row-{{ $permission->id }}">
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $permission->id }}" value="{{ $permission->id }}" x-model="selected" wire:key="checkbox-{{ $permission->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $permission->id }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $permission->name }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $permission->roles_count }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                            @can('permissions.edit')
-                                <x-ui.tooltip :text="__('labels.tables.edit')">
-                                    <a href="{{ route('permissions.edit', $permission->id) }}" wire:navigate>
-                                        <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                    </a>
-                                </x-ui.tooltip>
-                            @endcan
-                            @can('permissions.delete')
-                                <x-ui.tooltip :text="__('labels.tables.delete')">
-                                    <button type="button"
-                                            wire:click="deletePermission({{ $permission->id }})"
-                                            wire:confirm="{{ __('permissions.confirm_delete_permission') }}"
-                                    >
-                                        <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                    </button>
-                                </x-ui.tooltip>
-                            @endcan
-                        </div>
-                    </td>
+                    <x-tables.td>
+                        <x-form.input.checkbox name="check_{{ $permission->id }}" value="{{ $permission->id }}" x-model="selected" wire:key="checkbox-{{ $permission->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td>{{ $permission->id }}</x-tables.td>
+                    <x-tables.td>{{ $permission->name }}</x-tables.td>
+                    <x-tables.td>{{ $permission->roles_count }}</x-tables.td>
+                    <x-tables.td class="flex space-x-2">
+                        @can('permissions.edit')
+                            <x-ui.tooltip :text="__('labels.tables.edit')">
+                                <a href="{{ route('permissions.edit', $permission->id) }}" wire:navigate>
+                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                                </a>
+                            </x-ui.tooltip>
+                        @endcan
+                        @can('permissions.delete')
+                            <x-ui.tooltip :text="__('labels.tables.delete')">
+                                <button type="button"
+                                        wire:click="deletePermission({{ $permission->id }})"
+                                        wire:confirm="{{ __('permissions.confirm_delete_permission') }}"
+                                >
+                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                                </button>
+                            </x-ui.tooltip>
+                        @endcan
+                    </x-tables.td>
                 </tr>
             @empty
                 <tr>

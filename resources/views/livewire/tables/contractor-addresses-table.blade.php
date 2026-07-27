@@ -112,54 +112,42 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($addresses as $address)
                 <tr wire:key="address-row-{{ $address->id }}">
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $address->id }}" value="{{ $address->id }}" x-model="selected" wire:key="checkbox-{{ $address->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $address->id }}</div>
-                    </td>
+                    <x-tables.td>
+                        <x-form.input.checkbox name="check_{{ $address->id }}" value="{{ $address->id }}" x-model="selected" wire:key="checkbox-{{ $address->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td>{{ $address->id }}</x-tables.td>
                     @unless($contractor)
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">
-                                <a href="{{ route('contractors.edit', $address->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
-                                    {{ $address->contractor->name ?? '-' }}
-                                </a>
-                            </div>
-                        </td>
+                        <x-tables.td>
+                            <a href="{{ route('contractors.edit', $address->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
+                                {{ $address->contractor->name ?? '-' }}
+                            </a>
+                        </x-tables.td>
                     @endunless
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{!! $address->fullAddress ?? '-' !!}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.toggle wire:change="toggleActive({{ $address->id }})"
-                                                 name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                            <x-ui.tooltip :text="__('labels.tables.show')">
-                                <a href="{{ route('contractor-addresses.show', $address->id) }}" wire:navigate>
-                                    <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('contractor-addresses.edit', $address->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deleteAddress({{ $address->id }})"
-                                        wire:confirm="{{ __('address_book.confirm_delete_address') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
-                        </div>
-                    </td>
+                    <x-tables.td>{!! $address->fullAddress ?? '-' !!}</x-tables.td>
+                    <x-tables.td>
+                        <x-form.input.toggle wire:change="toggleActive({{ $address->id }})"
+                                             name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td class="flex space-x-2">
+                        <x-ui.tooltip :text="__('labels.tables.show')">
+                            <a href="{{ route('contractor-addresses.show', $address->id) }}" wire:navigate>
+                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.edit')">
+                            <a href="{{ route('contractor-addresses.edit', $address->id) }}" wire:navigate>
+                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.delete')">
+                            <button type="button"
+                                    wire:click="deleteAddress({{ $address->id }})"
+                                    wire:confirm="{{ __('address_book.confirm_delete_address') }}"
+                            >
+                                <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                            </button>
+                        </x-ui.tooltip>
+                    </x-tables.td>
                 </tr>
             @endforeach
             </tbody>

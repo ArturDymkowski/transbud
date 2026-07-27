@@ -79,57 +79,39 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($contractors as $contractor)
                 <tr wire:key="contractor-row-{{ $contractor->id }}">
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $contractor->id }}" value="{{ $contractor->id }}" x-model="selected" wire:key="checkbox-{{ $contractor->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $contractor->id }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $contractor->name ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $contractor->email ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $contractor->phone ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $contractor->nip ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $contractor->regon ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.toggle wire:change="toggleActive({{ $contractor->id }})"
-                                                 name="{{ $contractor->id }}" :isActive="$contractor->active" wire:key="toggle-{{ $contractor->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                            <x-ui.tooltip :text="__('labels.tables.show')">
-                                <a href="{{ route('contractors.show', $contractor->id) }}" wire:navigate>
-                                    <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('contractors.edit', $contractor->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deleteContractor({{ $contractor->id }})"
-                                        wire:confirm="{{ __('contractors.confirm_delete_contractor') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
-                        </div>
-                    </td>
+                    <x-tables.td>
+                        <x-form.input.checkbox name="check_{{ $contractor->id }}" value="{{ $contractor->id }}" x-model="selected" wire:key="checkbox-{{ $contractor->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td>{{ $contractor->id }}</x-tables.td>
+                    <x-tables.td>{{ $contractor->name ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $contractor->email ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $contractor->phone ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $contractor->nip ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $contractor->regon ?? '-' }}</x-tables.td>
+                    <x-tables.td>
+                        <x-form.input.toggle wire:change="toggleActive({{ $contractor->id }})"
+                                             name="{{ $contractor->id }}" :isActive="$contractor->active" wire:key="toggle-{{ $contractor->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td class="flex space-x-2">
+                        <x-ui.tooltip :text="__('labels.tables.show')">
+                            <a href="{{ route('contractors.show', $contractor->id) }}" wire:navigate>
+                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.edit')">
+                            <a href="{{ route('contractors.edit', $contractor->id) }}" wire:navigate>
+                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.delete')">
+                            <button type="button"
+                                    wire:click="deleteContractor({{ $contractor->id }})"
+                                    wire:confirm="{{ __('contractors.confirm_delete_contractor') }}"
+                            >
+                                <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                            </button>
+                        </x-ui.tooltip>
+                    </x-tables.td>
                 </tr>
             @endforeach
             </tbody>

@@ -66,48 +66,36 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($users as $user)
                 <tr wire:key="user-row-{{ $user->id }}">
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $user->id }}" value="{{ $user->id }}" x-model="selected" wire:key="checkbox-{{ $user->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->id }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->name }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.toggle wire:change="toggleActive({{ $user->id }})"
-                                                 name="{{ $user->id }}" :isActive="$user->is_active" wire:key="toggle-{{ $user->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                            <x-ui.tooltip :text="__('labels.tables.show')">
-                                <a href="{{ route('users.show', $user->id) }}" wire:navigate>
-                                    <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('users.edit', $user->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deleteUser({{ $user->id }})"
-                                        wire:confirm="{{ __('users.confirm_delete_user') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
-                        </div>
-                    </td>
+                    <x-tables.td>
+                        <x-form.input.checkbox name="check_{{ $user->id }}" value="{{ $user->id }}" x-model="selected" wire:key="checkbox-{{ $user->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td>{{ $user->id }}</x-tables.td>
+                    <x-tables.td>{{ $user->name }}</x-tables.td>
+                    <x-tables.td>{{ $user->email }}</x-tables.td>
+                    <x-tables.td>
+                        <x-form.input.toggle wire:change="toggleActive({{ $user->id }})"
+                                             name="{{ $user->id }}" :isActive="$user->is_active" wire:key="toggle-{{ $user->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td class="flex space-x-2">
+                        <x-ui.tooltip :text="__('labels.tables.show')">
+                            <a href="{{ route('users.show', $user->id) }}" wire:navigate>
+                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.edit')">
+                            <a href="{{ route('users.edit', $user->id) }}" wire:navigate>
+                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.delete')">
+                            <button type="button"
+                                    wire:click="deleteUser({{ $user->id }})"
+                                    wire:confirm="{{ __('users.confirm_delete_user') }}"
+                            >
+                                <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                            </button>
+                        </x-ui.tooltip>
+                    </x-tables.td>
                 </tr>
             @endforeach
             </tbody>

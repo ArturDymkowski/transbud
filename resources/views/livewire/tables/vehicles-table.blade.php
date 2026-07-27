@@ -136,60 +136,40 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($vehicles as $vehicle)
                 <tr wire:key="vehicle-row-{{ $vehicle->id }}">
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $vehicle->id }}" value="{{ $vehicle->id }}" x-model="selected" wire:key="checkbox-{{ $vehicle->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->id }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->registration_number }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->vin }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->type?->label() ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->technical_inspection_expiry_date ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->insurance_expiry_date ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $vehicle->tachograph_inspection_expiry_date ?? '-' }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.toggle wire:change="toggleActive({{ $vehicle->id }})"
-                                                 name="{{ $vehicle->id }}" :isActive="$vehicle->is_active" wire:key="toggle-{{ $vehicle->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                            <x-ui.tooltip :text="__('labels.tables.show')">
-                                <a href="{{ route('vehicles.show', $vehicle->id) }}" wire:navigate>
-                                    <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('vehicles.edit', $vehicle->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
-                            </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deleteVehicle({{ $vehicle->id }})"
-                                        wire:confirm="{{ __('vehicles.confirm_delete_vehicle') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
-                        </div>
-                    </td>
+                    <x-tables.td>
+                        <x-form.input.checkbox name="check_{{ $vehicle->id }}" value="{{ $vehicle->id }}" x-model="selected" wire:key="checkbox-{{ $vehicle->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td>{{ $vehicle->id }}</x-tables.td>
+                    <x-tables.td>{{ $vehicle->registration_number }}</x-tables.td>
+                    <x-tables.td>{{ $vehicle->vin }}</x-tables.td>
+                    <x-tables.td>{{ $vehicle->type?->label() ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $vehicle->technical_inspection_expiry_date ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $vehicle->insurance_expiry_date ?? '-' }}</x-tables.td>
+                    <x-tables.td>{{ $vehicle->tachograph_inspection_expiry_date ?? '-' }}</x-tables.td>
+                    <x-tables.td>
+                        <x-form.input.toggle wire:change="toggleActive({{ $vehicle->id }})"
+                                             name="{{ $vehicle->id }}" :isActive="$vehicle->is_active" wire:key="toggle-{{ $vehicle->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td class="flex space-x-2">
+                        <x-ui.tooltip :text="__('labels.tables.show')">
+                            <a href="{{ route('vehicles.show', $vehicle->id) }}" wire:navigate>
+                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.edit')">
+                            <a href="{{ route('vehicles.edit', $vehicle->id) }}" wire:navigate>
+                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.delete')">
+                            <button type="button"
+                                    wire:click="deleteVehicle({{ $vehicle->id }})"
+                                    wire:confirm="{{ __('vehicles.confirm_delete_vehicle') }}"
+                            >
+                                <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                            </button>
+                        </x-ui.tooltip>
+                    </x-tables.td>
                 </tr>
             @endforeach
             </tbody>

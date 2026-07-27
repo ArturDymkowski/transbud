@@ -90,58 +90,48 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($units as $unit)
                 <tr wire:key="unit-row-{{ $unit->id }}">
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <x-form.input.checkbox name="check_{{ $unit->id }}" value="{{ $unit->id }}" x-model="selected" wire:key="checkbox-{{ $unit->id }}"/>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $unit->id }}</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $unit->name }}</div>
-                    </td>
+                    <x-tables.td>
+                        <x-form.input.checkbox name="check_{{ $unit->id }}" value="{{ $unit->id }}" x-model="selected" wire:key="checkbox-{{ $unit->id }}"/>
+                    </x-tables.td>
+                    <x-tables.td>{{ $unit->id }}</x-tables.td>
+                    <x-tables.td>{{ $unit->name }}</x-tables.td>
                     @unless($good)
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">
-                                <x-form.input.toggle wire:change="toggleActive({{ $unit->id }})"
-                                                     name="{{ $unit->id }}" :isActive="$unit->is_active" wire:key="toggle-{{ $unit->id }}"/>
-                            </div>
-                        </td>
+                        <x-tables.td>
+                            <x-form.input.toggle wire:change="toggleActive({{ $unit->id }})"
+                                                 name="{{ $unit->id }}" :isActive="$unit->is_active" wire:key="toggle-{{ $unit->id }}"/>
+                        </x-tables.td>
                     @endunless
-                    <td class="px-4 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 flex space-x-2">
-                            <x-ui.tooltip :text="__('labels.tables.show')">
-                                <a href="{{ route('units.show', $unit->id) }}" wire:navigate>
-                                    <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                                </a>
+                    <x-tables.td class="flex space-x-2">
+                        <x-ui.tooltip :text="__('labels.tables.show')">
+                            <a href="{{ route('units.show', $unit->id) }}" wire:navigate>
+                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        <x-ui.tooltip :text="__('labels.tables.edit')">
+                            <a href="{{ route('units.edit', $unit->id) }}" wire:navigate>
+                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
+                            </a>
+                        </x-ui.tooltip>
+                        @if($good)
+                            <x-ui.tooltip :text="__('goods.remove_unit_assignment')">
+                                <button type="button"
+                                        wire:click="deleteUnit({{ $unit->id }})"
+                                        wire:confirm="{{ __('goods.confirm_remove_unit_assignment') }}"
+                                >
+                                    <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                                </button>
                             </x-ui.tooltip>
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('units.edit', $unit->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
+                        @else
+                            <x-ui.tooltip :text="__('labels.tables.delete')">
+                                <button type="button"
+                                        wire:click="deleteUnit({{ $unit->id }})"
+                                        wire:confirm="{{ __('units.confirm_delete_unit') }}"
+                                >
+                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
+                                </button>
                             </x-ui.tooltip>
-                            @if($good)
-                                <x-ui.tooltip :text="__('goods.remove_unit_assignment')">
-                                    <button type="button"
-                                            wire:click="deleteUnit({{ $unit->id }})"
-                                            wire:confirm="{{ __('goods.confirm_remove_unit_assignment') }}"
-                                    >
-                                        <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
-                                    </button>
-                                </x-ui.tooltip>
-                            @else
-                                <x-ui.tooltip :text="__('labels.tables.delete')">
-                                    <button type="button"
-                                            wire:click="deleteUnit({{ $unit->id }})"
-                                            wire:confirm="{{ __('units.confirm_delete_unit') }}"
-                                    >
-                                        <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                    </button>
-                                </x-ui.tooltip>
-                            @endif
-                        </div>
-                    </td>
+                        @endif
+                    </x-tables.td>
                 </tr>
             @endforeach
             </tbody>
