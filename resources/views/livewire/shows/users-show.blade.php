@@ -26,13 +26,6 @@
 
     </div>
 
-    <div class="flex items-center justify-end w-full gap-3 mt-6">
-        <x-ui.button class="w-full" size="sm" variant="outline">
-            <a href="{{ route('users.index') }}" wire:navigate>{{ __('labels.general.close') }}</a>
-        </x-ui.button>
-        <x-ui.button class="w-full" size="sm" variant="primary">
-            <a href="{{ route('users.edit', $user) }}" wire:navigate>{{ __('labels.tables.edit') }}</a>
-        </x-ui.button>
-    </div>
+    <x-tables.show-footer-actions :indexRoute="route('users.index')" :editRoute="route('users.edit', $user)"/>
 
 </div>

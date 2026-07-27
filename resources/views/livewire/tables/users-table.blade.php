@@ -1,15 +1,8 @@
 <x-tables.card :createRoute="route('users.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
-            <!-- Trashed -->
-            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
-
-            <!-- Active -->
-            <x-form.input.select :label="__('labels.tables.active')" :options="[
-				         '' => __('labels.tables.all'),
-                         0 => __('labels.tables.no'),
-                         1 => __('labels.tables.yes')
-			]" name="isActive" wire:model.live="isActive"/>
+            <!-- Trashed & Active -->
+            <x-tables.filter-trashed-active :trashedOptions="$this->trashedOptions"/>
         </x-tables.filter-bar>
     </x-slot:header>
 
@@ -20,14 +13,13 @@
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <x-tables.th>
                     <x-form.input.checkbox
                         name="selectAll"
                         @click="togglePage"
                         x-bind:checked="isAllPageSelected()"
                     />
-                </th>
+                </x-tables.th>
 
                 <x-tables.th-sort
                     field="id"
@@ -57,10 +49,7 @@
                     :sortDirection="$sortDirection"
                 />
 
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('labels.tables.actions') }}
-                </th>
+                <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -77,24 +66,12 @@
                                              name="{{ $user->id }}" :isActive="$user->is_active" wire:key="toggle-{{ $user->id }}"/>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
-                        <x-ui.tooltip :text="__('labels.tables.show')">
-                            <a href="{{ route('users.show', $user->id) }}" wire:navigate>
-                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                            </a>
-                        </x-ui.tooltip>
-                        <x-ui.tooltip :text="__('labels.tables.edit')">
-                            <a href="{{ route('users.edit', $user->id) }}" wire:navigate>
-                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                            </a>
-                        </x-ui.tooltip>
-                        <x-ui.tooltip :text="__('labels.tables.delete')">
-                            <button type="button"
-                                    wire:click="deleteUser({{ $user->id }})"
-                                    wire:confirm="{{ __('users.confirm_delete_user') }}"
-                            >
-                                <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                            </button>
-                        </x-ui.tooltip>
+                        <x-tables.action-show :route="route('users.show', $user->id)"/>
+                        <x-tables.action-edit :route="route('users.edit', $user->id)"/>
+                        <x-tables.action-delete
+                            wire:click="deleteUser({{ $user->id }})"
+                            :confirm="__('users.confirm_delete_user')"
+                        />
                     </x-tables.td>
                 </tr>
             @endforeach

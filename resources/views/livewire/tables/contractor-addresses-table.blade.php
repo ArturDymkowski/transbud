@@ -44,15 +44,8 @@
     <x-tables.card :createRoute="$contractor ? null : route('contractor-addresses.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
-            <!-- Trashed -->
-            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
-
-            <!-- Active -->
-            <x-form.input.select :label="__('labels.tables.active')" :options="[
-			         '' => __('labels.tables.all'),
-                         0 => __('labels.tables.no'),
-                         1 => __('labels.tables.yes')
-			]" name="isActive" wire:model.live="isActive"/>
+            <!-- Trashed & Active -->
+            <x-tables.filter-trashed-active :trashedOptions="$this->trashedOptions"/>
 
             <!-- Country -->
             <x-form.input.select :label="__('labels.address.country')" :options="$this->countryOptions" name="country" wire:model.live="country"/>
@@ -66,14 +59,13 @@
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <x-tables.th>
                     <x-form.input.checkbox
                         name="selectAll"
                         @click="togglePage"
                         x-bind:checked="isAllPageSelected()"
                     />
-                </th>
+                </x-tables.th>
 
                 <x-tables.th-sort
                     field="id"
@@ -91,10 +83,7 @@
                     />
                 @endunless
 
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('labels.address.address') }}
-                </th>
+                <x-tables.th>{{ __('labels.address.address') }}</x-tables.th>
 
                 <x-tables.th-sort
                     field="is_active"
@@ -103,10 +92,7 @@
                     :sortDirection="$sortDirection"
                 />
 
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('labels.tables.actions') }}
-                </th>
+                <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -129,24 +115,12 @@
                                              name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
-                        <x-ui.tooltip :text="__('labels.tables.show')">
-                            <a href="{{ route('contractor-addresses.show', $address->id) }}" wire:navigate>
-                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                            </a>
-                        </x-ui.tooltip>
-                        <x-ui.tooltip :text="__('labels.tables.edit')">
-                            <a href="{{ route('contractor-addresses.edit', $address->id) }}" wire:navigate>
-                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                            </a>
-                        </x-ui.tooltip>
-                        <x-ui.tooltip :text="__('labels.tables.delete')">
-                            <button type="button"
-                                    wire:click="deleteAddress({{ $address->id }})"
-                                    wire:confirm="{{ __('address_book.confirm_delete_address') }}"
-                            >
-                                <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                            </button>
-                        </x-ui.tooltip>
+                        <x-tables.action-show :route="route('contractor-addresses.show', $address->id)"/>
+                        <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
+                        <x-tables.action-delete
+                            wire:click="deleteAddress({{ $address->id }})"
+                            :confirm="__('address_book.confirm_delete_address')"
+                        />
                     </x-tables.td>
                 </tr>
             @endforeach

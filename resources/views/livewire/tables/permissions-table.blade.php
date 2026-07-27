@@ -10,14 +10,13 @@
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <x-tables.th>
                     <x-form.input.checkbox
                         name="selectAll"
                         @click="togglePage"
                         x-bind:checked="isAllPageSelected()"
                     />
-                </th>
+                </x-tables.th>
 
                 <x-tables.th-sort
                     field="id"
@@ -26,10 +25,7 @@
                     :sortDirection="$sortDirection"
                 />
 
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('permissions.name') }}
-                </th>
+                <x-tables.th>{{ __('permissions.name') }}</x-tables.th>
 
                 <x-tables.th-sort
                     field="roles_count"
@@ -38,10 +34,7 @@
                     :sortDirection="$sortDirection"
                 />
 
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('labels.tables.actions') }}
-                </th>
+                <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -55,21 +48,13 @@
                     <x-tables.td>{{ $permission->roles_count }}</x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         @can('permissions.edit')
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('permissions.edit', $permission->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
-                            </x-ui.tooltip>
+                            <x-tables.action-edit :route="route('permissions.edit', $permission->id)"/>
                         @endcan
                         @can('permissions.delete')
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deletePermission({{ $permission->id }})"
-                                        wire:confirm="{{ __('permissions.confirm_delete_permission') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
+                            <x-tables.action-delete
+                                wire:click="deletePermission({{ $permission->id }})"
+                                :confirm="__('permissions.confirm_delete_permission')"
+                            />
                         @endcan
                     </x-tables.td>
                 </tr>

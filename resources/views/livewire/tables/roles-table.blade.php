@@ -5,30 +5,17 @@
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <x-tables.th>
                     <x-form.input.checkbox
                         name="selectAll"
                         @click="togglePage"
                         x-bind:checked="isAllPageSelected()"
                     />
-                </th>
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    ID
-                </th>
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('roles.name') }}
-                </th>
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('roles.permissions_count') }}
-                </th>
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('labels.tables.actions') }}
-                </th>
+                </x-tables.th>
+                <x-tables.th>ID</x-tables.th>
+                <x-tables.th>{{ __('roles.name') }}</x-tables.th>
+                <x-tables.th>{{ __('roles.permissions_count') }}</x-tables.th>
+                <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -42,21 +29,13 @@
                     <x-tables.td>{{ $role->permissions_count }}</x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         @can('roles.edit')
-                            <x-ui.tooltip :text="__('labels.tables.edit')">
-                                <a href="{{ route('roles.edit', $role->id) }}" wire:navigate>
-                                    <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                                </a>
-                            </x-ui.tooltip>
+                            <x-tables.action-edit :route="route('roles.edit', $role->id)"/>
                         @endcan
                         @can('roles.delete')
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deleteRole({{ $role->id }})"
-                                        wire:confirm="{{ __('roles.confirm_delete_role') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
+                            <x-tables.action-delete
+                                wire:click="deleteRole({{ $role->id }})"
+                                :confirm="__('roles.confirm_delete_role')"
+                            />
                         @endcan
                     </x-tables.td>
                 </tr>

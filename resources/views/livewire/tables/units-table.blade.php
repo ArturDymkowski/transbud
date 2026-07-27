@@ -30,15 +30,8 @@
     <x-tables.card :createRoute="$good ? null : route('units.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
-            <!-- Trashed -->
-            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
-
-            <!-- Active -->
-            <x-form.input.select :label="__('labels.tables.active')" :options="[
-				         '' => __('labels.tables.all'),
-                         0 => __('labels.tables.no'),
-                         1 => __('labels.tables.yes')
-			]" name="isActive" wire:model.live="isActive"/>
+            <!-- Trashed & Active -->
+            <x-tables.filter-trashed-active :trashedOptions="$this->trashedOptions"/>
         </x-tables.filter-bar>
     </x-slot:header>
 
@@ -49,14 +42,13 @@
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <x-tables.th>
                     <x-form.input.checkbox
                         name="selectAll"
                         @click="togglePage"
                         x-bind:checked="isAllPageSelected()"
                     />
-                </th>
+                </x-tables.th>
 
                 <x-tables.th-sort
                     field="id"
@@ -81,10 +73,7 @@
                     />
                 @endunless
 
-                <th scope="col"
-                    class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {{ __('labels.tables.actions') }}
-                </th>
+                <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -102,34 +91,21 @@
                         </x-tables.td>
                     @endunless
                     <x-tables.td class="flex space-x-2">
-                        <x-ui.tooltip :text="__('labels.tables.show')">
-                            <a href="{{ route('units.show', $unit->id) }}" wire:navigate>
-                                <x-heroicon-o-eye class="w-6 h-6 hover:text-brand-500"/>
-                            </a>
-                        </x-ui.tooltip>
-                        <x-ui.tooltip :text="__('labels.tables.edit')">
-                            <a href="{{ route('units.edit', $unit->id) }}" wire:navigate>
-                                <x-heroicon-o-pencil-square class="w-6 h-6 hover:text-green-500"/>
-                            </a>
-                        </x-ui.tooltip>
+                        <x-tables.action-show :route="route('units.show', $unit->id)"/>
+                        <x-tables.action-edit :route="route('units.edit', $unit->id)"/>
                         @if($good)
-                            <x-ui.tooltip :text="__('goods.remove_unit_assignment')">
-                                <button type="button"
-                                        wire:click="deleteUnit({{ $unit->id }})"
-                                        wire:confirm="{{ __('goods.confirm_remove_unit_assignment') }}"
-                                >
-                                    <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
+                            <x-tables.action-delete
+                                wire:click="deleteUnit({{ $unit->id }})"
+                                :confirm="__('goods.confirm_remove_unit_assignment')"
+                                :label="__('goods.remove_unit_assignment')"
+                            >
+                                <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                            </x-tables.action-delete>
                         @else
-                            <x-ui.tooltip :text="__('labels.tables.delete')">
-                                <button type="button"
-                                        wire:click="deleteUnit({{ $unit->id }})"
-                                        wire:confirm="{{ __('units.confirm_delete_unit') }}"
-                                >
-                                    <x-heroicon-o-trash class="w-6 h-6 hover:text-red-500"/>
-                                </button>
-                            </x-ui.tooltip>
+                            <x-tables.action-delete
+                                wire:click="deleteUnit({{ $unit->id }})"
+                                :confirm="__('units.confirm_delete_unit')"
+                            />
                         @endif
                     </x-tables.td>
                 </tr>
