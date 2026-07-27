@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -47,4 +50,20 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Creates a user with the "Admin" role (all permissions) and acts as them.
+ * Seeds permissions/roles on the fly so it works under RefreshDatabase without DatabaseSeeder.
+ */
+function actingAsAdmin(): User
+{
+    test()->seed([PermissionSeeder::class, RoleSeeder::class]);
+
+    $user = User::factory()->create();
+    $user->assignRole('Admin');
+
+    test()->actingAs($user);
+
+    return $user;
 }

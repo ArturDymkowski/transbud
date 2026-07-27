@@ -13,6 +13,8 @@ class UsersShow extends Component
 
     public function mount(User $user)
     {
+        $this->authorize('users.view');
+
         $this->user = $user;
 
         $this->userData = $this->user->only(['name', 'email']);

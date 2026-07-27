@@ -101,6 +101,8 @@ class DriversForm extends Component
 
     public function save()
     {
+        $this->authorize($this->driver->exists ? 'drivers.edit' : 'drivers.create');
+
         $this->validate();
 
         $fileKeys = array_keys($this->mediaCollectionsMap());
@@ -154,6 +156,8 @@ class DriversForm extends Component
 
     public function removeDocument(string $key): void
     {
+        $this->authorize($this->driver->exists ? 'drivers.edit' : 'drivers.create');
+
         // nie zapisany plik
         if (isset($this->driverData[$key]) && $this->driverData[$key] instanceof TemporaryUploadedFile) {
             unset($this->driverData[$key]);

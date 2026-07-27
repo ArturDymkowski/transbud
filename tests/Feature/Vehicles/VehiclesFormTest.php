@@ -2,12 +2,11 @@
 
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Forms\VehiclesForm;
-use App\Models\User;
 use App\Models\Vehicle;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 function validVehiclePayload(): array

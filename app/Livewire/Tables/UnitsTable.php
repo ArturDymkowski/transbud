@@ -55,6 +55,8 @@ class UnitsTable extends Component
     public function deleteSelected(): void
     {
         if ($this->good) {
+            $this->authorize('goods.edit');
+
             if (empty($this->selected)) {
                 return;
             }
@@ -67,17 +69,23 @@ class UnitsTable extends Component
             return;
         }
 
+        $this->authorize('units.delete');
+
         $this->deleteSelectedRecords(Unit::class);
     }
 
     public function deleteUnit(int $id): void
     {
         if ($this->good) {
+            $this->authorize('goods.edit');
+
             $this->good->units()->detach($id);
             $this->dispatch('notify', message: __('goods.unit_assignment_removed'));
 
             return;
         }
+
+        $this->authorize('units.delete');
 
         Unit::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
@@ -93,6 +101,8 @@ class UnitsTable extends Component
         if (! $this->good) {
             return;
         }
+
+        $this->authorize('goods.edit');
 
         $this->validate([
             'selectedUnitId' => 'required|exists:units,id',
@@ -127,6 +137,8 @@ class UnitsTable extends Component
 
     public function toggleActive(int $unitId): void
     {
+        $this->authorize('units.edit');
+
         $unit = Unit::findOrFail($unitId);
         $unit->is_active = ! $unit->is_active;
         $unit->save();

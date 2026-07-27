@@ -13,6 +13,8 @@ class UnitsShow extends Component
 
     public function mount(Unit $unit)
     {
+        $this->authorize('units.view');
+
         $this->unit = $unit;
 
         $this->unitData = $this->unit->only(['name']);

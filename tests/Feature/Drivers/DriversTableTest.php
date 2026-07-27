@@ -3,12 +3,11 @@
 use App\Enums\CountriesEnum;
 use App\Livewire\Tables\DriversTable;
 use App\Models\Driver;
-use App\Models\User;
 use App\Models\Vehicle;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 test('guest is redirected from the drivers list', function () {

@@ -42,17 +42,23 @@ class GoodsTable extends Component
 
     public function deleteSelected(): void
     {
+        $this->authorize('goods.delete');
+
         $this->deleteSelectedRecords(Good::class);
     }
 
     public function deleteGood(int $id): void
     {
+        $this->authorize('goods.delete');
+
         Good::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function toggleActive(int $goodId): void
     {
+        $this->authorize('goods.edit');
+
         $good = Good::findOrFail($goodId);
         $good->is_active = ! $good->is_active;
         $good->save();

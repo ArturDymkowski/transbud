@@ -50,6 +50,8 @@ class GoodsForm extends Component
 
     public function save()
     {
+        $this->authorize($this->good->exists ? 'goods.edit' : 'goods.create');
+
         $this->validate();
 
         $isUpdate = $this->good->exists;

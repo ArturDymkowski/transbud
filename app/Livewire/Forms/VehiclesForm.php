@@ -62,6 +62,8 @@ class VehiclesForm extends Component
 
     public function save()
     {
+        $this->authorize($this->vehicle->exists ? 'vehicles.edit' : 'vehicles.create');
+
         $this->validate();
 
         $isUpdate = $this->vehicle->exists;

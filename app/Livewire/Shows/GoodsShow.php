@@ -16,6 +16,8 @@ class GoodsShow extends Component
 
     public function mount(Good $good)
     {
+        $this->authorize('goods.view');
+
         $this->good = $good;
 
         $this->goodData = $this->good->only(['name', 'description', 'default_unit_id']);

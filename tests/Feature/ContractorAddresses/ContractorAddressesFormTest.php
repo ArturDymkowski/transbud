@@ -4,11 +4,10 @@ use App\Enums\CountriesEnum;
 use App\Livewire\Forms\ContractorAddressesForm;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
-use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 function validContractorAddressPayload(int $contractorId): array

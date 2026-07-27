@@ -57,17 +57,23 @@ class VehiclesTable extends Component
 
     public function deleteSelected(): void
     {
+        $this->authorize('vehicles.delete');
+
         $this->deleteSelectedRecords(Vehicle::class);
     }
 
     public function deleteVehicle(int $id): void
     {
+        $this->authorize('vehicles.delete');
+
         Vehicle::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function toggleActive(int $vehicleId): void
     {
+        $this->authorize('vehicles.edit');
+
         $vehicle = Vehicle::findOrFail($vehicleId);
         $vehicle->is_active = ! $vehicle->is_active;
         $vehicle->save();

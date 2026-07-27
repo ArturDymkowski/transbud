@@ -58,6 +58,8 @@ class ContractorAddressesForm extends Component
 
     public function save()
     {
+        $this->authorize($this->contractorAddress->exists ? 'contractor-addresses.edit' : 'contractor-addresses.create');
+
         $this->validate();
 
         $isUpdate = $this->contractorAddress->exists;

@@ -68,17 +68,23 @@ class ContractorAddressesTable extends Component
 
     public function deleteSelected(): void
     {
+        $this->authorize('contractor-addresses.delete');
+
         $this->deleteSelectedRecords(ContractorAddress::class);
     }
 
     public function deleteAddress(int $id): void
     {
+        $this->authorize('contractor-addresses.delete');
+
         ContractorAddress::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function toggleActive(int $addressId): void
     {
+        $this->authorize('contractor-addresses.edit');
+
         $address = ContractorAddress::findOrFail($addressId);
         $address->is_active = ! $address->is_active;
         $address->save();
@@ -105,6 +111,8 @@ class ContractorAddressesTable extends Component
         if (! $this->contractor) {
             return;
         }
+
+        $this->authorize('contractor-addresses.create');
 
         $validated = $this->validate([
             'createAddressData.country' => ['required', new Enum(CountriesEnum::class)],

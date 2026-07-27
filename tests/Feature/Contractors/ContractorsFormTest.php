@@ -2,11 +2,10 @@
 
 use App\Livewire\Forms\ContractorsForm;
 use App\Models\Contractor;
-use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 function validContractorPayload(): array

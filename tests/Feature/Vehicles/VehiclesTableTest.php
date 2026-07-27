@@ -2,12 +2,11 @@
 
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Tables\VehiclesTable;
-use App\Models\User;
 use App\Models\Vehicle;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 test('guest is redirected from the vehicles list', function () {

@@ -13,6 +13,8 @@ class VehiclesShow extends Component
 
     public function mount(Vehicle $vehicle)
     {
+        $this->authorize('vehicles.view');
+
         $this->vehicle = $vehicle;
 
         $this->vehicleData = $this->vehicle->only([

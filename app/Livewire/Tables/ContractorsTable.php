@@ -43,17 +43,23 @@ class ContractorsTable extends Component
 
     public function deleteSelected(): void
     {
+        $this->authorize('contractors.delete');
+
         $this->deleteSelectedRecords(Contractor::class);
     }
 
     public function deleteContractor(int $id): void
     {
+        $this->authorize('contractors.delete');
+
         Contractor::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function toggleActive(int $contractorId): void
     {
+        $this->authorize('contractors.edit');
+
         $contractor = Contractor::findOrFail($contractorId);
         $contractor->active = ! $contractor->active;
         $contractor->save();

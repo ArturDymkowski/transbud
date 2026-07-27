@@ -48,6 +48,8 @@ class UsersForm extends Component
 
     public function save()
     {
+        $this->authorize($this->user->exists ? 'users.edit' : 'users.create');
+
         $this->validate();
 
         $isUpdate = $this->user->exists;

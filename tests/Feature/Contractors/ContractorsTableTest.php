@@ -2,11 +2,10 @@
 
 use App\Livewire\Tables\ContractorsTable;
 use App\Models\Contractor;
-use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 test('guest is redirected from the contractors list', function () {

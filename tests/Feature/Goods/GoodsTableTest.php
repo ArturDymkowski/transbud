@@ -2,11 +2,10 @@
 
 use App\Livewire\Tables\GoodsTable;
 use App\Models\Good;
-use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 test('guest is redirected from the goods list', function () {

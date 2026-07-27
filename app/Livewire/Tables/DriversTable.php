@@ -73,6 +73,8 @@ class DriversTable extends Component
     public function deleteSelected(): void
     {
         if ($this->vehicle) {
+            $this->authorize('vehicles.edit');
+
             if (empty($this->selected)) {
                 return;
             }
@@ -85,17 +87,23 @@ class DriversTable extends Component
             return;
         }
 
+        $this->authorize('drivers.delete');
+
         $this->deleteSelectedRecords(Driver::class);
     }
 
     public function deleteDriver(int $id): void
     {
         if ($this->vehicle) {
+            $this->authorize('vehicles.edit');
+
             $this->vehicle->drivers()->detach($id);
             $this->dispatch('notify', message: __('vehicles.driver_assignment_removed'));
 
             return;
         }
+
+        $this->authorize('drivers.delete');
 
         Driver::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
@@ -111,6 +119,8 @@ class DriversTable extends Component
         if (! $this->vehicle) {
             return;
         }
+
+        $this->authorize('vehicles.edit');
 
         $this->validate([
             'selectedDriverId' => 'required|exists:drivers,id',
@@ -145,6 +155,8 @@ class DriversTable extends Component
 
     public function toggleActive(int $driverId): void
     {
+        $this->authorize('drivers.edit');
+
         $driver = Driver::findOrFail($driverId);
         $driver->is_active = ! $driver->is_active;
         $driver->save();

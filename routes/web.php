@@ -7,6 +7,8 @@ use App\Http\Controllers\Page\ContractorAddressController;
 use App\Http\Controllers\Page\ContractorController;
 use App\Http\Controllers\Page\DriverController;
 use App\Http\Controllers\Page\GoodController;
+use App\Http\Controllers\Page\PermissionController;
+use App\Http\Controllers\Page\RoleController;
 use App\Http\Controllers\Page\UnitController;
 use App\Http\Controllers\Page\UserController;
 use App\Http\Controllers\Page\VehicleController;
@@ -37,11 +39,47 @@ Route::get('/driver-documents/{media}', function (Media $media) {
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create', 'show']);
-    Route::resource('/vehicles', VehicleController::class)->only(['index', 'edit', 'create', 'show']);
-    Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create', 'show']);
-    Route::resource('/contractor-addresses', ContractorAddressController::class)->only(['index', 'edit', 'create', 'show']);
-    Route::resource('/goods', GoodController::class)->only(['index', 'edit', 'create', 'show']);
-    Route::resource('/units', UnitController::class)->only(['index', 'edit', 'create', 'show']);
-    Route::resource('/users', UserController::class)->only(['index', 'edit', 'create', 'show']);
+    Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:drivers.view')
+        ->middlewareFor('create', 'can:drivers.create')
+        ->middlewareFor('edit', 'can:drivers.edit');
+
+    Route::resource('/vehicles', VehicleController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:vehicles.view')
+        ->middlewareFor('create', 'can:vehicles.create')
+        ->middlewareFor('edit', 'can:vehicles.edit');
+
+    Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:contractors.view')
+        ->middlewareFor('create', 'can:contractors.create')
+        ->middlewareFor('edit', 'can:contractors.edit');
+
+    Route::resource('/contractor-addresses', ContractorAddressController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:contractor-addresses.view')
+        ->middlewareFor('create', 'can:contractor-addresses.create')
+        ->middlewareFor('edit', 'can:contractor-addresses.edit');
+
+    Route::resource('/goods', GoodController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:goods.view')
+        ->middlewareFor('create', 'can:goods.create')
+        ->middlewareFor('edit', 'can:goods.edit');
+
+    Route::resource('/units', UnitController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:units.view')
+        ->middlewareFor('create', 'can:units.create')
+        ->middlewareFor('edit', 'can:units.edit');
+
+    Route::resource('/users', UserController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:users.view')
+        ->middlewareFor('create', 'can:users.create')
+        ->middlewareFor('edit', 'can:users.edit');
+
+    Route::resource('/roles', RoleController::class)->only(['index', 'edit', 'create'])
+        ->middlewareFor('index', 'can:roles.view')
+        ->middlewareFor('create', 'can:roles.create')
+        ->middlewareFor('edit', 'can:roles.edit');
+
+    Route::resource('/permissions', PermissionController::class)->only(['index', 'edit'])
+        ->middlewareFor('index', 'can:permissions.view')
+        ->middlewareFor('edit', 'can:permissions.edit');
 });

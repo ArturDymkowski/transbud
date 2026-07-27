@@ -13,6 +13,8 @@ class ContractorsShow extends Component
 
     public function mount(Contractor $contractor)
     {
+        $this->authorize('contractors.view');
+
         $this->contractor = $contractor;
 
         $this->contractorData = $this->contractor->only([

@@ -2,14 +2,13 @@
 
 use App\Livewire\Forms\DriversForm;
 use App\Models\Driver;
-use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 function validDriverPayload(): array

@@ -18,6 +18,8 @@ class DriversShow extends Component
 
     public function mount(Driver $driver)
     {
+        $this->authorize('drivers.view');
+
         $this->driver = $driver;
 
         $this->driverData = $this->driver->only([

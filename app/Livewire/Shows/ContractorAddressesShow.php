@@ -16,6 +16,8 @@ class ContractorAddressesShow extends Component
 
     public function mount(ContractorAddress $contractorAddress)
     {
+        $this->authorize('contractor-addresses.view');
+
         $this->contractorAddress = $contractorAddress;
 
         $this->addressData = $this->contractorAddress->only([

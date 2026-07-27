@@ -3,11 +3,10 @@
 use App\Livewire\Tables\UnitsTable;
 use App\Models\Good;
 use App\Models\Unit;
-use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 test('guest is redirected from the units list', function () {

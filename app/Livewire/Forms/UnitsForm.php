@@ -40,6 +40,8 @@ class UnitsForm extends Component
 
     public function save()
     {
+        $this->authorize($this->unit->exists ? 'units.edit' : 'units.create');
+
         $this->validate();
 
         $isUpdate = $this->unit->exists;

@@ -25,14 +25,17 @@ class UserSeeder extends Seeder
         DB::table('users')->truncate();
         Schema::enableForeignKeyConstraints();
 
-        User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'password' => Hash::make('admin'),
             'is_active' => 1,
             'created_at' => now(),
         ]);
+        $admin->assignRole('Admin');
 
-        User::factory()->count(9)->create();
+        User::factory()->count(3)->create()->each(function (User $user) {
+            $user->assignRole('User');
+        });
     }
 }

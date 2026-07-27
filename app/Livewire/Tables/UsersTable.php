@@ -41,17 +41,23 @@ class UsersTable extends Component
 
     public function deleteSelected(): void
     {
+        $this->authorize('users.delete');
+
         $this->deleteSelectedRecords(User::class);
     }
 
     public function deleteUser(int $id): void
     {
+        $this->authorize('users.delete');
+
         User::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function toggleActive(int $userId): void
     {
+        $this->authorize('users.edit');
+
         $user = User::findOrFail($userId);
         $user->is_active = ! $user->is_active;
         $user->save();

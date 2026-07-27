@@ -3,11 +3,10 @@
 use App\Livewire\Forms\GoodsForm;
 use App\Models\Good;
 use App\Models\Unit;
-use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    actingAsAdmin();
 });
 
 function validGoodPayload(): array
