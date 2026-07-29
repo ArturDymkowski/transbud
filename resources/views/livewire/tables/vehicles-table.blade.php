@@ -5,49 +5,13 @@
             <x-tables.filter-trashed-active :trashedOptions="$this->trashedOptions"/>
 
             <!-- Technical inspection expiry date -->
-            <div class="flex flex-col">
-                <x-form.input.date-picker name="technicalInspectionExpiryDateFrom"
-                                          label="{{ __('vehicles.technical_inspection_expiry_date') }}"
-                                          wire:model.live="technicalInspectionExpiryDateFrom"
-                                          placeholder="{{ __('labels.general.from') }}"/>
-
-                <span class="text-center text-gray-700 dark:text-gray-400">-</span>
-
-                <x-form.input.date-picker name="technicalInspectionExpiryDateTo"
-                                          label=""
-                                          wire:model.live="technicalInspectionExpiryDateTo"
-                                          placeholder="{{ __('labels.general.to') }}"/>
-            </div>
+            <x-tables.filter-date-range prefix="technicalInspectionExpiryDate" :label="__('vehicles.technical_inspection_expiry_date')"/>
 
             <!-- Insurance expiry date -->
-            <div class="flex flex-col">
-                <x-form.input.date-picker name="insuranceExpiryDateFrom"
-                                          label="{{ __('vehicles.insurance_expiry_date') }}"
-                                          wire:model.live="insuranceExpiryDateFrom"
-                                          placeholder="{{ __('labels.general.from') }}"/>
-
-                <span class="text-center text-gray-700 dark:text-gray-400">-</span>
-
-                <x-form.input.date-picker name="insuranceExpiryDateTo"
-                                          label=""
-                                          wire:model.live="insuranceExpiryDateTo"
-                                          placeholder="{{ __('labels.general.to') }}"/>
-            </div>
+            <x-tables.filter-date-range prefix="insuranceExpiryDate" :label="__('vehicles.insurance_expiry_date')"/>
 
             <!-- Tachograph inspection expiry date -->
-            <div class="flex flex-col">
-                <x-form.input.date-picker name="tachographInspectionExpiryDateFrom"
-                                          label="{{ __('vehicles.tachograph_inspection_expiry_date') }}"
-                                          wire:model.live="tachographInspectionExpiryDateFrom"
-                                          placeholder="{{ __('labels.general.from') }}"/>
-
-                <span class="text-center text-gray-700 dark:text-gray-400">-</span>
-
-                <x-form.input.date-picker name="tachographInspectionExpiryDateTo"
-                                          label=""
-                                          wire:model.live="tachographInspectionExpiryDateTo"
-                                          placeholder="{{ __('labels.general.to') }}"/>
-            </div>
+            <x-tables.filter-date-range prefix="tachographInspectionExpiryDate" :label="__('vehicles.tachograph_inspection_expiry_date')"/>
         </x-tables.filter-bar>
     </x-slot:header>
 

@@ -108,26 +108,7 @@
 
         <!-- Sekcja: Adres -->
         <x-form.section title="{{ __('labels.address.address') }}">
-            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-
-                <x-form.input.select name="driverData.country" label="{{ __('labels.address.country') }}"
-                                     :default="$driverData['country']?->value ?? ''"
-                                     :options="\App\Enums\CountriesEnum::getOptions()"
-                                     disabled/>
-
-                <x-form.input.text-input name="driverData.zipcode" label="{{ __('labels.address.zipcode') }}"
-                                         :value="$driverData['zipcode'] ?? ''" disabled/>
-
-                <x-form.input.text-input name="driverData.city" label="{{ __('labels.address.city') }}"
-                                         :value="$driverData['city'] ?? ''" disabled/>
-                <x-form.input.text-input name="driverData.street" label="{{ __('labels.address.street') }}"
-                                         :value="$driverData['street'] ?? ''" disabled/>
-                <x-form.input.text-input name="driverData.house_nr" label="{{ __('labels.address.house_nr') }}"
-                                         :value="$driverData['house_nr'] ?? ''" disabled/>
-                <x-form.input.text-input name="driverData.apartment_nr" label="{{ __('labels.address.apartment_nr') }}"
-                                         :value="$driverData['apartment_nr'] ?? ''" disabled/>
-
-            </div>
+            <x-form.address-fields prefix="driverData" :data="$driverData" disabled/>
         </x-form.section>
 
         <!-- Sekcja: Informacje dodatkowe -->
