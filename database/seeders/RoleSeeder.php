@@ -31,6 +31,7 @@ class RoleSeeder extends Seeder
                 'contractor-addresses.view',
                 'goods.view',
                 'units.view',
+                'deliveries.view',
             ])->get()
         );
 

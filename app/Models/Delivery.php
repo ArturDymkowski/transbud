@@ -20,7 +20,7 @@ class Delivery extends Model implements HasMedia
     public const MEDIA_DOCUMENTS = 'documents';
 
     protected $fillable = [
-        'delivery_number',
+        'number',
         'contractor_id',
         'contractor_address_id',
         'loading_address',
@@ -56,7 +56,7 @@ class Delivery extends Model implements HasMedia
         return $query->when($search, function ($q) use ($search) {
             $search = trim($search);
             $q->where(function ($q) use ($search) {
-                $q->orWhere('delivery_number', 'like', '%'.$search.'%')
+                $q->orWhere('number', 'like', '%'.$search.'%')
                     ->orWhere('loading_address', 'like', '%'.$search.'%')
                     ->orWhereHas('contractor', fn ($q2) => $q2->where('name', 'like', '%'.$search.'%'));
             });

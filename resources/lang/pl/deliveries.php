@@ -4,10 +4,11 @@ return [
     'plural_model_label' => 'Dostawy',
     'singular_model_label' => 'Dostawa',
 
-    'delivery_number' => 'Numer dostawy',
+    'number' => 'Numer dostawy',
     'contractor' => 'Kontrahent',
     'contractor_address' => 'Adres kontrahenta',
     'loading_address' => 'Adres załadunku',
+    'confirm_delete_delivery' => 'Czy na pewno chcesz usunąć dostawę?',
 
     'status' => [
         'status' => 'Status',

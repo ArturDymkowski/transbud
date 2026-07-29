@@ -32,6 +32,17 @@ enum DeliveryStatusEnum: int
         };
     }
 
+    public function badgeClasses(): string
+    {
+        return match ($this->color()) {
+            'gray' => 'bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-gray-400',
+            'blue' => 'bg-blue-light-100 text-blue-light-700 dark:bg-blue-light-500/15 dark:text-blue-light-400',
+            'yellow' => 'bg-warning-100 text-warning-700 dark:bg-warning-500/15 dark:text-warning-400',
+            'green' => 'bg-success-100 text-success-700 dark:bg-success-500/15 dark:text-success-400',
+            'red' => 'bg-error-100 text-error-700 dark:bg-error-500/15 dark:text-error-400',
+        };
+    }
+
     public static function getOptions(): array
     {
         $options = [];

@@ -20,6 +20,12 @@ class MenuHelper
                 'path' => route('vehicles.index'),
             ],
             [
+                'permission' => 'deliveries.view',
+                'icon' => 'heroicon-o-clipboard-document-list',
+                'name' => __('deliveries.plural_model_label'),
+                'path' => route('deliveries.index'),
+            ],
+            [
                 'permission' => 'contractors.view',
                 'icon' => 'heroicon-o-building-office',
                 'name' => __('contractors.plural_model_label'),

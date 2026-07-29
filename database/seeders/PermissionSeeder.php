@@ -20,6 +20,7 @@ class PermissionSeeder extends Seeder
         'contractor-addresses',
         'goods',
         'units',
+        'deliveries',
         'users',
         'roles',
     ];

@@ -4,10 +4,11 @@ return [
     'plural_model_label' => 'Deliveries',
     'singular_model_label' => 'Delivery',
 
-    'delivery_number' => 'Delivery number',
+    'number' => 'Delivery number',
     'contractor' => 'Contractor',
     'contractor_address' => 'Contractor address',
     'loading_address' => 'Loading address',
+    'confirm_delete_delivery' => 'Are you sure you want to delete the delivery?',
 
     'status' => [
         'status' => 'Status',

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
-            $table->string('delivery_number')->unique();
+            $table->string('number')->unique();
             $table->foreignId('contractor_id')->constrained()->cascadeOnDelete();
             $table->foreignId('contractor_address_id')->constrained()->cascadeOnDelete();
             $table->string('loading_address');

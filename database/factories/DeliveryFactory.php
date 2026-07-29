@@ -21,7 +21,7 @@ class DeliveryFactory extends Factory
     public function definition(): array
     {
         return [
-            'delivery_number' => strtoupper($this->faker->unique()->bothify('DEL-####-???')),
+            'number' => strtoupper($this->faker->unique()->bothify('DEL-####-???')),
             'contractor_id' => Contractor::factory(),
             'contractor_address_id' => ContractorAddress::factory(),
             'loading_address' => $this->faker->address(),

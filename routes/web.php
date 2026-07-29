@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Page\ContractorAddressController;
 use App\Http\Controllers\Page\ContractorController;
+use App\Http\Controllers\Page\DeliveryController;
 use App\Http\Controllers\Page\DriverController;
 use App\Http\Controllers\Page\GoodController;
 use App\Http\Controllers\Page\PermissionController;
@@ -48,6 +49,9 @@ Route::middleware('auth')->group(function () {
         ->middlewareFor(['index', 'show'], 'can:vehicles.view')
         ->middlewareFor('create', 'can:vehicles.create')
         ->middlewareFor('edit', 'can:vehicles.edit');
+
+    Route::resource('/deliveries', DeliveryController::class)->only(['index'])
+        ->middlewareFor('index', 'can:deliveries.view');
 
     Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create', 'show'])
         ->middlewareFor(['index', 'show'], 'can:contractors.view')
