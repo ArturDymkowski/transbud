@@ -67,6 +67,13 @@ return [
             'visibility' => 'private',
             'throw' => false,
         ],
+
+        'delivery_documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/delivery-documents'),
+            'visibility' => 'private',
+            'throw' => false,
+        ],
     ],
 
     /*
