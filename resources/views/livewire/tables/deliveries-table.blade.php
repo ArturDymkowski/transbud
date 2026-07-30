@@ -1,4 +1,4 @@
-<x-tables.card>
+<x-tables.card :createRoute="route('deliveries.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed -->

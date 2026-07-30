@@ -6,7 +6,8 @@
     'placeholder' => 'Select date',
     'name' => null,
     'dateFormat' => 'Y-m-d',
-    'required' => false
+    'required' => false,
+    'enableTime' => false,
 ])
 
 <div wire:ignore x-data="{
@@ -18,6 +19,8 @@
                 allowInput: true,
                 monthSelectorType: 'static',
                 dateFormat: '{{ $dateFormat }}',
+                enableTime: @js($enableTime),
+                time_24hr: true,
                 onChange: (selectedDates, dateStr, instance) => {
                     const finalValue = dateStr === '' ? null : dateStr;
                     this.$refs.dateInput.value = dateStr;

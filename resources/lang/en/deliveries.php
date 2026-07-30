@@ -9,6 +9,8 @@ return [
     'contractor_address' => 'Contractor address',
     'loading_address' => 'Loading address',
     'confirm_delete_delivery' => 'Are you sure you want to delete the delivery?',
+    'create_title' => 'Create delivery',
+    'basic_info' => 'Basic information',
 
     'status' => [
         'status' => 'Status',
@@ -24,6 +26,8 @@ return [
         'good' => 'Good',
         'unit' => 'Unit',
         'quantity' => 'Quantity',
+        'add' => 'Add good',
+        'remove' => 'Remove good',
     ],
 
     'transport_set' => [
@@ -34,6 +38,8 @@ return [
         'trailer' => 'Trailer',
         'loading_at' => 'Loading date and time',
         'unloading_at' => 'Unloading date and time',
+        'add' => 'Add transport set',
+        'remove' => 'Remove transport set',
     ],
 
     'transport_set_status' => [

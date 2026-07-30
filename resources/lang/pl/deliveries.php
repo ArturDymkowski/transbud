@@ -9,6 +9,8 @@ return [
     'contractor_address' => 'Adres kontrahenta',
     'loading_address' => 'Adres załadunku',
     'confirm_delete_delivery' => 'Czy na pewno chcesz usunąć dostawę?',
+    'create_title' => 'Utwórz dostawę',
+    'basic_info' => 'Informacje podstawowe',
 
     'status' => [
         'status' => 'Status',
@@ -24,6 +26,8 @@ return [
         'good' => 'Towar',
         'unit' => 'Jednostka',
         'quantity' => 'Ilość',
+        'add' => 'Dodaj towar',
+        'remove' => 'Usuń towar',
     ],
 
     'transport_set' => [
@@ -34,6 +38,8 @@ return [
         'trailer' => 'Naczepa',
         'loading_at' => 'Data i godzina załadunku',
         'unloading_at' => 'Data i godzina rozładunku',
+        'add' => 'Dodaj zestaw transportowy',
+        'remove' => 'Usuń zestaw transportowy',
     ],
 
     'transport_set_status' => [

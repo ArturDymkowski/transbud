@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
+use App\Models\Delivery;
 
 class DeliveryController extends Controller
 {
@@ -12,5 +13,13 @@ class DeliveryController extends Controller
     public function index()
     {
         return view('pages.deliveries.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('pages.deliveries.create', ['delivery' => new Delivery]);
     }
 }
