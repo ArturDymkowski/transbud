@@ -4,16 +4,18 @@ namespace App\Enums;
 
 enum DeliveryTransportSetStatusEnum: int
 {
-    case ASSIGNED = 0;
-    case LOADING = 1;
-    case UNLOADING = 2;
-    case IN_TRANSIT = 3;
-    case COMPLETED = 4;
-    case CANCELLED = 5;
+    case DRAFT = 0;
+    case ASSIGNED = 1;
+    case LOADING = 2;
+    case UNLOADING = 3;
+    case IN_TRANSIT = 4;
+    case COMPLETED = 5;
+    case CANCELLED = 6;
 
     public function label(): string
     {
         return match ($this) {
+            self::DRAFT => __('deliveries.transport_set_status.draft'),
             self::ASSIGNED => __('deliveries.transport_set_status.assigned'),
             self::LOADING => __('deliveries.transport_set_status.loading'),
             self::UNLOADING => __('deliveries.transport_set_status.unloading'),

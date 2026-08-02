@@ -7,6 +7,7 @@ use Database\Factories\DeliveryTransportSetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DeliveryTransportSet extends Model
@@ -48,5 +49,10 @@ class DeliveryTransportSet extends Model
     public function trailer(): BelongsTo
     {
         return $this->belongsTo(Vehicle::class, 'trailer_id');
+    }
+
+    public function goods(): HasMany
+    {
+        return $this->hasMany(DeliveryGood::class);
     }
 }

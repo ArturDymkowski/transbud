@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Delivery;
 use App\Models\DeliveryGood;
+use App\Models\DeliveryTransportSet;
 use App\Models\Good;
 use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +21,7 @@ class DeliveryGoodFactory extends Factory
     public function definition(): array
     {
         return [
-            'delivery_id' => Delivery::factory(),
+            'delivery_transport_set_id' => DeliveryTransportSet::factory(),
             'good_id' => Good::factory(),
             'unit_id' => Unit::factory(),
             'quantity' => $this->faker->randomFloat(2, 1, 1000),

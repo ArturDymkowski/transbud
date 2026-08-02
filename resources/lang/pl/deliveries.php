@@ -44,6 +44,7 @@ return [
 
     'transport_set_status' => [
         'status' => 'Status',
+        'draft' => 'Szkic',
         'assigned' => 'Przypisany',
         'loading' => 'Załadunek',
         'unloading' => 'Rozładunek',

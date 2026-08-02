@@ -4,11 +4,11 @@ namespace App\Enums;
 
 enum DeliveryStatusEnum: int
 {
-    case PLANNED = 0;
-    case ASSIGNED = 1;
-    case IN_PROGRESS = 2;
-    case COMPLETED = 3;
-    case CANCELLED = 4;
+    case PLANNED = 0; // brak przypisanych zestawów transportowych
+    case ASSIGNED = 1; // wszystkie przypisane
+    case IN_PROGRESS = 2; // chociaż jeden w trasie
+    case COMPLETED = 3; // wszystkie dostarczone
+    case CANCELLED = 4; // anulowane
 
     public function label(): string
     {

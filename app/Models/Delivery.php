@@ -41,11 +41,6 @@ class Delivery extends Model implements HasMedia
         return $this->belongsTo(ContractorAddress::class);
     }
 
-    public function goods(): HasMany
-    {
-        return $this->hasMany(DeliveryGood::class);
-    }
-
     public function transportSets(): HasMany
     {
         return $this->hasMany(DeliveryTransportSet::class);

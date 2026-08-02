@@ -44,6 +44,7 @@ return [
 
     'transport_set_status' => [
         'status' => 'Status',
+        'draft' => 'Draft',
         'assigned' => 'Assigned',
         'loading' => 'Loading',
         'unloading' => 'Unloading',

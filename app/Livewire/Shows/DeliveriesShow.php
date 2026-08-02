@@ -15,8 +15,8 @@ class DeliveriesShow extends Component
 
         $this->delivery = $delivery->load([
             'contractor', 'contractorAddress',
-            'goods.good', 'goods.unit',
             'transportSets.driver', 'transportSets.vehicle', 'transportSets.trailer',
+            'transportSets.goods.good', 'transportSets.goods.unit',
         ]);
     }
 

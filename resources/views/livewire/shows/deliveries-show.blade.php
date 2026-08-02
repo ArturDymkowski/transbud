@@ -47,65 +47,73 @@
             </div>
         </x-form.section>
 
-        <!-- Sekcja: Towary -->
-        <x-form.section title="{{ __('deliveries.goods.goods') }}">
-            <div class="max-w-full overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                    <tr class="border-gray-200 border-y dark:border-gray-700">
-                        <x-tables.th>{{ __('deliveries.goods.good') }}</x-tables.th>
-                        <x-tables.th>{{ __('deliveries.goods.unit') }}</x-tables.th>
-                        <x-tables.th>{{ __('deliveries.goods.quantity') }}</x-tables.th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($delivery->goods as $good)
-                        <tr wire:key="show-good-{{ $good->id }}">
-                            <x-tables.td>{{ $good->good->name ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $good->unit->name ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $good->quantity }}</x-tables.td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <x-tables.td>-</x-tables.td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </x-form.section>
-
         <!-- Sekcja: Zestawy transportowe -->
         <x-form.section title="{{ __('deliveries.transport_set.transport_sets') }}">
-            <div class="max-w-full overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                    <tr class="border-gray-200 border-y dark:border-gray-700">
-                        <x-tables.th>{{ __('deliveries.transport_set.driver') }}</x-tables.th>
-                        <x-tables.th>{{ __('vehicles.type.tractor') }}</x-tables.th>
-                        <x-tables.th>{{ __('vehicles.type.trailer') }}</x-tables.th>
-                        <x-tables.th>{{ __('deliveries.transport_set.loading_at') }}</x-tables.th>
-                        <x-tables.th>{{ __('deliveries.transport_set.unloading_at') }}</x-tables.th>
-                        <x-tables.th>{{ __('deliveries.transport_set_status.status') }}</x-tables.th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($delivery->transportSets as $transportSet)
-                        <tr wire:key="show-transport-set-{{ $transportSet->id }}">
-                            <x-tables.td>{{ $transportSet->driver->name ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $transportSet->vehicle->registration_number ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $transportSet->trailer->registration_number ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $transportSet->loading_at?->format('Y-m-d H:i') ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $transportSet->unloading_at?->format('Y-m-d H:i') ?? '-' }}</x-tables.td>
-                            <x-tables.td>{{ $transportSet->status->label() }}</x-tables.td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <x-tables.td>-</x-tables.td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+            <div class="flex flex-col gap-4">
+                @forelse($delivery->transportSets as $transportSet)
+                    <div wire:key="show-transport-set-{{ $transportSet->id }}" class="flex flex-col gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+                        <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
+                            <div class="col-span-1">
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    {{ __('deliveries.transport_set_status.status') }}
+                                </label>
+                                {{ $transportSet->status->label() }}
+                            </div>
+
+                            <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_driver"
+                                                     label="{{ __('deliveries.transport_set.driver') }}"
+                                                     :value="$transportSet->driver->name ?? '-'"
+                                                     disabled/>
+
+                            <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_vehicle"
+                                                     label="{{ __('vehicles.type.tractor') }}"
+                                                     :value="$transportSet->vehicle->registration_number ?? '-'"
+                                                     disabled/>
+
+                            <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_trailer"
+                                                     label="{{ __('vehicles.type.trailer') }}"
+                                                     :value="$transportSet->trailer->registration_number ?? '-'"
+                                                     disabled/>
+
+                            <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_loading_at"
+                                                     label="{{ __('deliveries.transport_set.loading_at') }}"
+                                                     :value="$transportSet->loading_at?->format('Y-m-d H:i') ?? '-'"
+                                                     disabled/>
+
+                            <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_unloading_at"
+                                                     label="{{ __('deliveries.transport_set.unloading_at') }}"
+                                                     :value="$transportSet->unloading_at?->format('Y-m-d H:i') ?? '-'"
+                                                     disabled/>
+                        </div>
+
+                        <div class="max-w-full overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                <tr class="border-gray-200 border-y dark:border-gray-700">
+                                    <x-tables.th>{{ __('deliveries.goods.good') }}</x-tables.th>
+                                    <x-tables.th>{{ __('deliveries.goods.unit') }}</x-tables.th>
+                                    <x-tables.th>{{ __('deliveries.goods.quantity') }}</x-tables.th>
+                                </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @forelse($transportSet->goods as $good)
+                                    <tr wire:key="show-good-{{ $good->id }}">
+                                        <x-tables.td>{{ $good->good->name ?? '-' }}</x-tables.td>
+                                        <x-tables.td>{{ $good->unit->name ?? '-' }}</x-tables.td>
+                                        <x-tables.td>{{ $good->quantity }}</x-tables.td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <x-tables.td>-</x-tables.td>
+                                    </tr>
+                                @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-gray-500 dark:text-gray-400">-</p>
+                @endforelse
             </div>
         </x-form.section>
 

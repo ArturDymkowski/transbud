@@ -11,6 +11,8 @@ use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
 use App\Models\Delivery;
+use App\Models\DeliveryGood;
+use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
 use App\Models\Good;
 use Illuminate\Support\Facades\DB;
@@ -28,8 +30,6 @@ class DeliveriesForm extends Component
     private const NUMBER_PREFIX = 'DOS-';
 
     public array $deliveryData = [];
-
-    public array $goodsData = [];
 
     public array $transportSetsData = [];
 
@@ -50,13 +50,6 @@ class DeliveriesForm extends Component
                 'number', 'contractor_id', 'contractor_address_id', 'loading_address',
             ]);
 
-            $this->goodsData = $this->delivery->goods->map(fn ($good) => [
-                'id' => $good->id,
-                'good_id' => $good->good_id,
-                'unit_id' => $good->unit_id,
-                'quantity' => (string) $good->quantity,
-            ])->all();
-
             $this->transportSetsData = $this->delivery->transportSets->map(fn ($transportSet) => [
                 'id' => $transportSet->id,
                 'driver_id' => $transportSet->driver_id,
@@ -65,6 +58,12 @@ class DeliveriesForm extends Component
                 'loading_at' => $transportSet->loading_at?->format('Y-m-d H:i'),
                 'unloading_at' => $transportSet->unloading_at?->format('Y-m-d H:i'),
                 'status' => $transportSet->status->value,
+                'goods' => $transportSet->goods->map(fn ($good) => [
+                    'id' => $good->id,
+                    'good_id' => $good->good_id,
+                    'unit_id' => $good->unit_id,
+                    'quantity' => (string) $good->quantity,
+                ])->all(),
             ])->all();
         } else {
             $this->deliveryData = [
@@ -78,6 +77,8 @@ class DeliveriesForm extends Component
 
     protected function rules(): array
     {
+        $draft = DeliveryTransportSetStatusEnum::DRAFT->value;
+
         return [
             'deliveryData.number' => 'required|string|max:255|unique:deliveries,number,'.($this->delivery?->id ?? 'NULL'),
             'deliveryData.contractor_id' => 'required|exists:contractors,id',
@@ -87,18 +88,39 @@ class DeliveriesForm extends Component
             ],
             'deliveryData.loading_address' => 'required|string|max:255',
 
-            'goodsData' => 'array',
-            'goodsData.*.good_id' => 'required|exists:goods,id',
-            'goodsData.*.unit_id' => 'required|exists:units,id',
-            'goodsData.*.quantity' => 'required|numeric|min:0.01',
-
             'transportSetsData' => 'array',
-            'transportSetsData.*.driver_id' => 'required|exists:drivers,id',
-            'transportSetsData.*.vehicle_id' => ['required', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value)],
-            'transportSetsData.*.trailer_id' => ['required', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value)],
-            'transportSetsData.*.loading_at' => 'required|date',
-            'transportSetsData.*.unloading_at' => 'required|date|after_or_equal:transportSetsData.*.loading_at',
+            'transportSetsData.*.driver_id' => [
+                'nullable',
+                'required_unless:transportSetsData.*.status,'.$draft,
+                'exists:drivers,id',
+            ],
+            'transportSetsData.*.vehicle_id' => [
+                'nullable',
+                'required_unless:transportSetsData.*.status,'.$draft,
+                Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value),
+            ],
+            'transportSetsData.*.trailer_id' => [
+                'nullable',
+                'required_unless:transportSetsData.*.status,'.$draft,
+                Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value),
+            ],
+            'transportSetsData.*.loading_at' => [
+                'nullable',
+                'required_unless:transportSetsData.*.status,'.$draft,
+                'date',
+            ],
+            'transportSetsData.*.unloading_at' => [
+                'nullable',
+                'required_unless:transportSetsData.*.status,'.$draft,
+                'date',
+                'after_or_equal:transportSetsData.*.loading_at',
+            ],
             'transportSetsData.*.status' => ['required', new Enum(DeliveryTransportSetStatusEnum::class)],
+
+            'transportSetsData.*.goods' => 'array',
+            'transportSetsData.*.goods.*.good_id' => 'required|exists:goods,id',
+            'transportSetsData.*.goods.*.unit_id' => 'required|exists:units,id',
+            'transportSetsData.*.goods.*.quantity' => 'required|numeric|min:0.01',
 
             'newDocuments.*' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
         ];
@@ -112,16 +134,16 @@ class DeliveriesForm extends Component
             'deliveryData.contractor_address_id' => __('deliveries.contractor_address'),
             'deliveryData.loading_address' => __('deliveries.loading_address'),
 
-            'goodsData.*.good_id' => __('deliveries.goods.good'),
-            'goodsData.*.unit_id' => __('deliveries.goods.unit'),
-            'goodsData.*.quantity' => __('deliveries.goods.quantity'),
-
             'transportSetsData.*.driver_id' => __('deliveries.transport_set.driver'),
             'transportSetsData.*.vehicle_id' => __('deliveries.transport_set.vehicle'),
             'transportSetsData.*.trailer_id' => __('deliveries.transport_set.trailer'),
             'transportSetsData.*.loading_at' => __('deliveries.transport_set.loading_at'),
             'transportSetsData.*.unloading_at' => __('deliveries.transport_set.unloading_at'),
             'transportSetsData.*.status' => __('deliveries.transport_set_status.status'),
+
+            'transportSetsData.*.goods.*.good_id' => __('deliveries.goods.good'),
+            'transportSetsData.*.goods.*.unit_id' => __('deliveries.goods.unit'),
+            'transportSetsData.*.goods.*.quantity' => __('deliveries.goods.quantity'),
 
             'newDocuments.*' => __('deliveries.documents'),
         ];
@@ -134,38 +156,22 @@ class DeliveriesForm extends Component
         }
     }
 
-    public function updatedGoodsData(mixed $value, string $key): void
-    {
-        if (! str_ends_with($key, '.good_id')) {
-            return;
-        }
-
-        $index = (int) explode('.', $key)[0];
-        $good = Good::find($value);
-        $this->goodsData[$index]['unit_id'] = $good?->default_unit_id;
-    }
-
     public function updatedTransportSetsData(mixed $value, string $key): void
     {
-        if (! str_ends_with($key, '.driver_id')) {
+        if (str_ends_with($key, '.driver_id')) {
+            $index = (int) explode('.', $key)[0];
+            $driver = Driver::find($value);
+            $this->transportSetsData[$index]['vehicle_id'] = $driver?->tractor()?->id;
+            $this->transportSetsData[$index]['trailer_id'] = $driver?->trailer()?->id;
+
             return;
         }
 
-        $index = (int) explode('.', $key)[0];
-        $driver = Driver::find($value);
-        $this->transportSetsData[$index]['vehicle_id'] = $driver?->tractor()?->id;
-        $this->transportSetsData[$index]['trailer_id'] = $driver?->trailer()?->id;
-    }
-
-    public function addGoodRow(): void
-    {
-        $this->goodsData[] = ['good_id' => null, 'unit_id' => null, 'quantity' => ''];
-    }
-
-    public function removeGoodRow(int $index): void
-    {
-        unset($this->goodsData[$index]);
-        $this->goodsData = array_values($this->goodsData);
+        if (str_ends_with($key, '.good_id') && str_contains($key, '.goods.')) {
+            [$setIndex, , $goodIndex] = explode('.', $key);
+            $good = Good::find($value);
+            $this->transportSetsData[(int) $setIndex]['goods'][(int) $goodIndex]['unit_id'] = $good?->default_unit_id;
+        }
     }
 
     public function addTransportSetRow(): void
@@ -176,7 +182,8 @@ class DeliveriesForm extends Component
             'trailer_id' => null,
             'loading_at' => '',
             'unloading_at' => '',
-            'status' => DeliveryTransportSetStatusEnum::ASSIGNED->value,
+            'status' => DeliveryTransportSetStatusEnum::DRAFT->value,
+            'goods' => [],
         ];
     }
 
@@ -184,6 +191,17 @@ class DeliveriesForm extends Component
     {
         unset($this->transportSetsData[$index]);
         $this->transportSetsData = array_values($this->transportSetsData);
+    }
+
+    public function addGoodRow(int $setIndex): void
+    {
+        $this->transportSetsData[$setIndex]['goods'][] = ['good_id' => null, 'unit_id' => null, 'quantity' => ''];
+    }
+
+    public function removeGoodRow(int $setIndex, int $goodIndex): void
+    {
+        unset($this->transportSetsData[$setIndex]['goods'][$goodIndex]);
+        $this->transportSetsData[$setIndex]['goods'] = array_values($this->transportSetsData[$setIndex]['goods']);
     }
 
     public function removeNewDocument(int $index): void
@@ -331,11 +349,14 @@ class DeliveriesForm extends Component
 
     private function computeStatus(): DeliveryStatusEnum
     {
-        if (empty($this->transportSetsData)) {
+        $statuses = collect($this->transportSetsData)
+            ->pluck('status')
+            ->map(fn ($status) => (int) $status)
+            ->reject(fn (int $status) => $status === DeliveryTransportSetStatusEnum::DRAFT->value);
+
+        if ($statuses->isEmpty()) {
             return DeliveryStatusEnum::PLANNED;
         }
-
-        $statuses = collect($this->transportSetsData)->pluck('status')->map(fn ($status) => (int) $status);
 
         if ($statuses->every(fn (int $status) => $status === DeliveryTransportSetStatusEnum::COMPLETED->value)) {
             return DeliveryStatusEnum::COMPLETED;
@@ -365,7 +386,6 @@ class DeliveriesForm extends Component
             $this->delivery->status = $this->computeStatus();
             $this->delivery->save();
 
-            $this->syncGoods();
             $this->syncTransportSets();
 
             foreach ($this->newDocuments as $file) {
@@ -384,11 +404,44 @@ class DeliveriesForm extends Component
         return $this->flashSavedAndRedirect($isUpdate, 'deliveries.index');
     }
 
-    private function syncGoods(): void
+    private function syncTransportSets(): void
     {
         $keepIds = [];
 
-        foreach ($this->goodsData as $good) {
+        foreach ($this->transportSetsData as $transportSetData) {
+            $attributes = [
+                'driver_id' => $transportSetData['driver_id'] ?: null,
+                'vehicle_id' => $transportSetData['vehicle_id'] ?: null,
+                'trailer_id' => $transportSetData['trailer_id'] ?: null,
+                'loading_at' => $transportSetData['loading_at'] ?: null,
+                'unloading_at' => $transportSetData['unloading_at'] ?: null,
+                'status' => $transportSetData['status'],
+            ];
+
+            if (! empty($transportSetData['id'])) {
+                $transportSet = $this->delivery->transportSets()->whereKey($transportSetData['id'])->first();
+                $transportSet->update($attributes);
+            } else {
+                $transportSet = $this->delivery->transportSets()->create($attributes);
+            }
+
+            $keepIds[] = $transportSet->id;
+
+            $this->syncGoods($transportSet, $transportSetData['goods'] ?? []);
+        }
+
+        $removedTransportSetIds = $this->delivery->transportSets()->whereNotIn('id', $keepIds)->pluck('id');
+
+        DeliveryGood::whereIn('delivery_transport_set_id', $removedTransportSetIds)->delete();
+
+        $this->delivery->transportSets()->whereNotIn('id', $keepIds)->delete();
+    }
+
+    private function syncGoods(DeliveryTransportSet $transportSet, array $goodsData): void
+    {
+        $keepIds = [];
+
+        foreach ($goodsData as $good) {
             $attributes = [
                 'good_id' => $good['good_id'],
                 'unit_id' => $good['unit_id'],
@@ -396,39 +449,14 @@ class DeliveriesForm extends Component
             ];
 
             if (! empty($good['id'])) {
-                $this->delivery->goods()->whereKey($good['id'])->update($attributes);
+                $transportSet->goods()->whereKey($good['id'])->update($attributes);
                 $keepIds[] = $good['id'];
             } else {
-                $keepIds[] = $this->delivery->goods()->create($attributes)->id;
+                $keepIds[] = $transportSet->goods()->create($attributes)->id;
             }
         }
 
-        $this->delivery->goods()->whereNotIn('id', $keepIds)->delete();
-    }
-
-    private function syncTransportSets(): void
-    {
-        $keepIds = [];
-
-        foreach ($this->transportSetsData as $transportSet) {
-            $attributes = [
-                'driver_id' => $transportSet['driver_id'],
-                'vehicle_id' => $transportSet['vehicle_id'],
-                'trailer_id' => $transportSet['trailer_id'],
-                'loading_at' => $transportSet['loading_at'],
-                'unloading_at' => $transportSet['unloading_at'],
-                'status' => $transportSet['status'],
-            ];
-
-            if (! empty($transportSet['id'])) {
-                $this->delivery->transportSets()->whereKey($transportSet['id'])->update($attributes);
-                $keepIds[] = $transportSet['id'];
-            } else {
-                $keepIds[] = $this->delivery->transportSets()->create($attributes)->id;
-            }
-        }
-
-        $this->delivery->transportSets()->whereNotIn('id', $keepIds)->delete();
+        $transportSet->goods()->whereNotIn('id', $keepIds)->delete();
     }
 
     public function render()

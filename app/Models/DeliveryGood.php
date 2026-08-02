@@ -13,7 +13,7 @@ class DeliveryGood extends Model
     use HasFactory;
 
     protected $fillable = [
-        'delivery_id',
+        'delivery_transport_set_id',
         'good_id',
         'unit_id',
         'quantity',
@@ -23,9 +23,9 @@ class DeliveryGood extends Model
         'quantity' => 'decimal:2',
     ];
 
-    public function delivery(): BelongsTo
+    public function transportSet(): BelongsTo
     {
-        return $this->belongsTo(Delivery::class);
+        return $this->belongsTo(DeliveryTransportSet::class, 'delivery_transport_set_id');
     }
 
     public function good(): BelongsTo

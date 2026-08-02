@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('delivery_transport_sets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('delivery_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('driver_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('vehicle_id')->constrained('vehicles')->cascadeOnDelete();
-            $table->foreignId('trailer_id')->constrained('vehicles')->cascadeOnDelete();
-            $table->dateTime('loading_at');
-            $table->dateTime('unloading_at');
+            $table->foreignId('driver_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('vehicle_id')->nullable()->constrained('vehicles')->cascadeOnDelete();
+            $table->foreignId('trailer_id')->nullable()->constrained('vehicles')->cascadeOnDelete();
+            $table->dateTime('loading_at')->nullable();
+            $table->dateTime('unloading_at')->nullable();
             $table->tinyInteger('status')->default(0);
 
             $table->timestamps();
