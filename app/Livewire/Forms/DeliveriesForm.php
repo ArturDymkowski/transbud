@@ -73,9 +73,6 @@ class DeliveriesForm extends Component
                 'contractor_address_id' => null,
                 'loading_address' => '',
             ];
-
-//            $this->addGoodRow();
-//            $this->addTransportSetRow();
         }
     }
 
@@ -90,12 +87,12 @@ class DeliveriesForm extends Component
             ],
             'deliveryData.loading_address' => 'required|string|max:255',
 
-            'goodsData' => 'required|array|min:1',
+            'goodsData' => 'array',
             'goodsData.*.good_id' => 'required|exists:goods,id',
             'goodsData.*.unit_id' => 'required|exists:units,id',
             'goodsData.*.quantity' => 'required|numeric|min:0.01',
 
-            'transportSetsData' => 'required|array|min:1',
+            'transportSetsData' => 'array',
             'transportSetsData.*.driver_id' => 'required|exists:drivers,id',
             'transportSetsData.*.vehicle_id' => ['required', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value)],
             'transportSetsData.*.trailer_id' => ['required', Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value)],
