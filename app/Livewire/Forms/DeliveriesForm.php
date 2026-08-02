@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Enums\CountriesEnum;
 use App\Enums\DeliveryStatusEnum;
 use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Enums\VehicleTypeEnum;
@@ -24,6 +25,8 @@ class DeliveriesForm extends Component
 {
     use WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
 
+    private const NUMBER_PREFIX = 'DOS-';
+
     public array $deliveryData = [];
 
     public array $goodsData = [];
@@ -32,6 +35,10 @@ class DeliveriesForm extends Component
 
     public array $newDocuments = [];
 
+    public bool $showCreateAddressModal = false;
+
+    public array $createAddressData = [];
+
     public ?Delivery $delivery = null;
 
     public function mount(?Delivery $delivery = null)
@@ -39,15 +46,13 @@ class DeliveriesForm extends Component
         $this->delivery = ($delivery && $delivery->exists) ? $delivery : new Delivery;
 
         $this->deliveryData = [
-            'number' => '',
+            'number' => $this->generateDeliveryNumber(),
             'contractor_id' => null,
             'contractor_address_id' => null,
             'loading_address' => '',
-            'status' => array_key_first(DeliveryStatusEnum::getOptions()),
         ];
 
         $this->addGoodRow();
-        $this->addTransportSetRow();
     }
 
     protected function rules(): array
@@ -60,7 +65,6 @@ class DeliveriesForm extends Component
                 Rule::exists('contractor_addresses', 'id')->where('contractor_id', $this->deliveryData['contractor_id'] ?? null),
             ],
             'deliveryData.loading_address' => 'required|string|max:255',
-            'deliveryData.status' => ['required', new Enum(DeliveryStatusEnum::class)],
 
             'goodsData' => 'required|array|min:1',
             'goodsData.*.good_id' => 'required|exists:goods,id',
@@ -86,7 +90,6 @@ class DeliveriesForm extends Component
             'deliveryData.contractor_id' => __('deliveries.contractor'),
             'deliveryData.contractor_address_id' => __('deliveries.contractor_address'),
             'deliveryData.loading_address' => __('deliveries.loading_address'),
-            'deliveryData.status' => __('deliveries.status.status'),
 
             'goodsData.*.good_id' => __('deliveries.goods.good'),
             'goodsData.*.unit_id' => __('deliveries.goods.unit'),
@@ -103,18 +106,34 @@ class DeliveriesForm extends Component
         ];
     }
 
-    public function updated(string $property): void
+    public function updatedDeliveryData(mixed $value, string $key): void
     {
-        if ($property === 'deliveryData.contractor_id') {
+        if ($key === 'contractor_id') {
             $this->deliveryData['contractor_address_id'] = null;
         }
+    }
 
-        if (preg_match('/^goodsData\.(\d+)\.good_id$/', $property, $matches)) {
-            $index = (int) $matches[1];
-            $options = $this->goodUnitOptions($this->goodsData[$index]['good_id'] ?? null);
-            $ids = array_keys($options);
-            $this->goodsData[$index]['unit_id'] = count($ids) === 1 ? $ids[0] : null;
+    public function updatedGoodsData(mixed $value, string $key): void
+    {
+        if (! str_ends_with($key, '.good_id')) {
+            return;
         }
+
+        $index = (int) explode('.', $key)[0];
+        $good = Good::find($value);
+        $this->goodsData[$index]['unit_id'] = $good?->default_unit_id;
+    }
+
+    public function updatedTransportSetsData(mixed $value, string $key): void
+    {
+        if (! str_ends_with($key, '.driver_id')) {
+            return;
+        }
+
+        $index = (int) explode('.', $key)[0];
+        $driver = Driver::find($value);
+        $this->transportSetsData[$index]['vehicle_id'] = $driver?->tractor()?->id;
+        $this->transportSetsData[$index]['trailer_id'] = $driver?->trailer()?->id;
     }
 
     public function addGoodRow(): void
@@ -182,7 +201,7 @@ class DeliveriesForm extends Component
         }
 
         foreach (ContractorAddress::where('contractor_id', $contractorId)->get() as $address) {
-            $options[$address->id] = $address->fullAddress;
+            $options[$address->id] = str_replace('<br>', ', ', $address->fullAddress);
         }
 
         return $options;
@@ -224,6 +243,90 @@ class DeliveriesForm extends Component
         return $options;
     }
 
+    public function openCreateAddressModal(): void
+    {
+        if (! ($this->deliveryData['contractor_id'] ?? null)) {
+            return;
+        }
+
+        $this->createAddressData = [
+            'country' => null,
+            'zipcode' => '',
+            'city' => '',
+            'street' => '',
+            'house_nr' => '',
+            'apartment_nr' => '',
+        ];
+        $this->resetValidation();
+        $this->showCreateAddressModal = true;
+    }
+
+    public function createAddress(): void
+    {
+        if (! ($this->deliveryData['contractor_id'] ?? null)) {
+            return;
+        }
+
+        $this->authorize('contractor-addresses.create');
+
+        $validated = $this->validate([
+            'createAddressData.country' => ['required', new Enum(CountriesEnum::class)],
+            'createAddressData.zipcode' => 'required|string|max:20',
+            'createAddressData.city' => 'required|string|max:100',
+            'createAddressData.street' => 'required|string|max:100',
+            'createAddressData.house_nr' => 'nullable|string|max:20',
+            'createAddressData.apartment_nr' => 'nullable|string|max:20',
+        ], [], [
+            'createAddressData.country' => __('labels.address.country'),
+            'createAddressData.zipcode' => __('labels.address.zipcode'),
+            'createAddressData.city' => __('labels.address.city'),
+            'createAddressData.street' => __('labels.address.street'),
+            'createAddressData.house_nr' => __('labels.address.house_nr'),
+            'createAddressData.apartment_nr' => __('labels.address.apartment_nr'),
+        ]);
+
+        $address = ContractorAddress::create([
+            ...$validated['createAddressData'],
+            'contractor_id' => $this->deliveryData['contractor_id'],
+        ]);
+
+        $this->deliveryData['contractor_address_id'] = $address->id;
+        $this->showCreateAddressModal = false;
+        $this->reset('createAddressData');
+
+        $this->dispatch('notify', message: __('labels.general.saved_success'));
+    }
+
+    private function generateDeliveryNumber(): string
+    {
+        $maxSequence = Delivery::withTrashed()
+            ->where('number', 'like', self::NUMBER_PREFIX.'%')
+            ->pluck('number')
+            ->map(fn (string $number) => (int) substr($number, strlen(self::NUMBER_PREFIX)))
+            ->max();
+
+        return self::NUMBER_PREFIX.sprintf('%04d', ($maxSequence ?? 0) + 1);
+    }
+
+    private function computeStatus(): DeliveryStatusEnum
+    {
+        if (empty($this->transportSetsData)) {
+            return DeliveryStatusEnum::PLANNED;
+        }
+
+        $statuses = collect($this->transportSetsData)->pluck('status')->map(fn ($status) => (int) $status);
+
+        if ($statuses->every(fn (int $status) => $status === DeliveryTransportSetStatusEnum::COMPLETED->value)) {
+            return DeliveryStatusEnum::COMPLETED;
+        }
+
+        if ($statuses->contains(fn (int $status) => $status !== DeliveryTransportSetStatusEnum::ASSIGNED->value)) {
+            return DeliveryStatusEnum::IN_PROGRESS;
+        }
+
+        return DeliveryStatusEnum::ASSIGNED;
+    }
+
     public function save()
     {
         $this->authorize('deliveries.create');
@@ -231,7 +334,10 @@ class DeliveriesForm extends Component
         $this->validate();
 
         DB::transaction(function () {
+            $this->deliveryData['number'] = $this->generateDeliveryNumber();
+
             $this->delivery->fill($this->deliveryData);
+            $this->delivery->status = $this->computeStatus();
             $this->delivery->save();
 
             foreach ($this->goodsData as $good) {

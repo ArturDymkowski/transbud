@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CountriesEnum;
+use App\Enums\VehicleTypeEnum;
 use App\Models\Concerns\HasFullAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,12 +15,15 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Driver extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, HasFullAddress;
+    use HasFactory, HasFullAddress, InteractsWithMedia, SoftDeletes;
 
     public const MEDIA_DRIVING_LICENSE_FRONT = 'driving_license_front';
-    public const MEDIA_DRIVING_LICENSE_BACK  = 'driving_license_back';
-    public const MEDIA_IDENTITY_CARD_FRONT   = 'identity_card_front';
-    public const MEDIA_IDENTITY_CARD_BACK    = 'identity_card_back';
+
+    public const MEDIA_DRIVING_LICENSE_BACK = 'driving_license_back';
+
+    public const MEDIA_IDENTITY_CARD_FRONT = 'identity_card_front';
+
+    public const MEDIA_IDENTITY_CARD_BACK = 'identity_card_back';
 
     protected $fillable = [
         'name',
@@ -51,16 +55,26 @@ class Driver extends Model implements HasMedia
         return $this->belongsToMany(Vehicle::class)->withTimestamps();
     }
 
+    public function tractor(): ?Vehicle
+    {
+        return $this->vehicles()->where('type', VehicleTypeEnum::TRACTOR->value)->first();
+    }
+
+    public function trailer(): ?Vehicle
+    {
+        return $this->vehicles()->where('type', VehicleTypeEnum::TRAILER->value)->first();
+    }
+
     public function scopeSearch($query, $search)
     {
         return $query->when($search, function ($q) use ($search) {
             $q->where(function ($q) use ($search) {
                 $search = trim($search);
-                $q->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhere('phone', 'like', '%' . $search . '%')
-                    ->orWhere('pesel', 'like', '%' . $search . '%')
-                    ->orWhere('zipcode', 'like', '%' . $search . '%')
-                    ->orWhere('street', 'like', '%' . $search . '%');
+                $q->orWhere('name', 'like', '%'.$search.'%')
+                    ->orWhere('phone', 'like', '%'.$search.'%')
+                    ->orWhere('pesel', 'like', '%'.$search.'%')
+                    ->orWhere('zipcode', 'like', '%'.$search.'%')
+                    ->orWhere('street', 'like', '%'.$search.'%');
             });
         });
     }
