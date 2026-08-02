@@ -11,6 +11,8 @@ return [
     'confirm_delete_delivery' => 'Czy na pewno chcesz usunąć dostawę?',
     'create_title' => 'Utwórz dostawę',
     'basic_info' => 'Informacje podstawowe',
+    'calendar_title' => 'Kalendarz dostaw',
+    'edit_transport_set' => 'Edycja zestawu transportowego',
 
     'status' => [
         'status' => 'Status',

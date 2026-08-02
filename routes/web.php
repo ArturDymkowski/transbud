@@ -50,6 +50,10 @@ Route::middleware('auth')->group(function () {
         ->middlewareFor('create', 'can:vehicles.create')
         ->middlewareFor('edit', 'can:vehicles.edit');
 
+    Route::get('/deliveries/calendar', [DeliveryController::class, 'calendar'])
+        ->middleware('can:deliveries.view')
+        ->name('deliveries.calendar');
+
     Route::resource('/deliveries', DeliveryController::class)->only(['index', 'edit', 'create', 'show'])
         ->middlewareFor(['index', 'show'], 'can:deliveries.view')
         ->middlewareFor('create', 'can:deliveries.create')

@@ -5,6 +5,14 @@ import './bootstrap';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+// FullCalendar
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
+import plLocale from '@fullcalendar/core/locales/pl';
+
 // window.Alpine = Alpine;
 window.flatpickr = flatpickr;
 
@@ -67,6 +75,40 @@ document.addEventListener('alpine:init', () => {
             } else {
                 this.selected = [...new Set([...this.selected, ...this.idsOnPage])];
             }
+        },
+    }));
+
+    Alpine.data('deliveriesCalendar', () => ({
+        calendar: null,
+
+        init() {
+            this.calendar = new Calendar(this.$refs.calendarEl, {
+                plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
+                locale: plLocale,
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek',
+                },
+                height: 'auto',
+                events: (info, successCallback, failureCallback) => {
+                    this.$wire.getEvents(info.startStr, info.endStr)
+                        .then(successCallback)
+                        .catch(failureCallback);
+                },
+                eventClick: (info) => {
+                    this.$wire.openTransportSet(parseInt(info.event.id, 10));
+                },
+            });
+
+            this.calendar.render();
+
+            this.$wire.on('calendar-refresh', () => this.calendar.refetchEvents());
+        },
+
+        destroy() {
+            this.calendar?.destroy();
         },
     }));
 

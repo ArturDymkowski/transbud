@@ -75,9 +75,9 @@
                     </x-tables.td>
                     <x-tables.td>{!! $delivery->contractorAddress->fullAddress ?? '-' !!}</x-tables.td>
                     <x-tables.td>
-                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $delivery->status->badgeClasses() }}">
+                        <x-ui.status-badge :color="$delivery->status->color()">
                             {{ $delivery->status->label() }}
-                        </span>
+                        </x-ui.status-badge>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('deliveries.show', $delivery->id)"/>

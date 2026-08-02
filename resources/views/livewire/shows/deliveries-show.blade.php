@@ -39,9 +39,9 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         {{ __('deliveries.status.status') }}
                     </label>
-                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $delivery->status->badgeClasses() }}">
+                    <x-ui.status-badge :color="$delivery->status->color()">
                         {{ $delivery->status->label() }}
-                    </span>
+                    </x-ui.status-badge>
                 </div>
 
             </div>

@@ -16,6 +16,14 @@ class DeliveryController extends Controller
     }
 
     /**
+     * Display the delivery calendar.
+     */
+    public function calendar()
+    {
+        return view('pages.deliveries.calendar');
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()

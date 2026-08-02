@@ -11,6 +11,8 @@ return [
     'confirm_delete_delivery' => 'Are you sure you want to delete the delivery?',
     'create_title' => 'Create delivery',
     'basic_info' => 'Basic information',
+    'calendar_title' => 'Delivery calendar',
+    'edit_transport_set' => 'Edit transport set',
 
     'status' => [
         'status' => 'Status',

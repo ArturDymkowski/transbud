@@ -26,6 +26,12 @@ class MenuHelper
                 'path' => route('deliveries.index'),
             ],
             [
+                'permission' => 'deliveries.view',
+                'icon' => 'heroicon-o-calendar-days',
+                'name' => __('deliveries.calendar_title'),
+                'path' => route('deliveries.calendar'),
+            ],
+            [
                 'permission' => 'contractors.view',
                 'icon' => 'heroicon-o-building-office',
                 'name' => __('contractors.plural_model_label'),

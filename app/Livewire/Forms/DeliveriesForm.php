@@ -3,29 +3,28 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
-use App\Enums\DeliveryStatusEnum;
 use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Enums\VehicleTypeEnum;
+use App\Livewire\Concerns\WithDeliveryGoodsSync;
+use App\Livewire\Concerns\WithDeliveryLookupOptions;
+use App\Livewire\Concerns\WithDeliveryStatusComputation;
 use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Livewire\Concerns\WithSavedRedirect;
-use App\Models\Contractor;
 use App\Models\ContractorAddress;
 use App\Models\Delivery;
 use App\Models\DeliveryGood;
-use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
 use App\Models\Good;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
-use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 class DeliveriesForm extends Component
 {
-    use WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
+    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryStatusComputation, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
 
     private const NUMBER_PREFIX = 'DOS-';
 
@@ -210,78 +209,6 @@ class DeliveriesForm extends Component
         $this->newDocuments = array_values($this->newDocuments);
     }
 
-    public function goodUnitOptions(?int $goodId): array
-    {
-        if (! $goodId) {
-            return [];
-        }
-
-        $good = Good::with(['units', 'defaultUnit'])->find($goodId);
-
-        if (! $good) {
-            return [];
-        }
-
-        return $good->units
-            ->push($good->defaultUnit)
-            ->filter()
-            ->unique('id')
-            ->sortBy('name')
-            ->pluck('name', 'id')
-            ->toArray();
-    }
-
-    public function contractorAddressOptions(?int $contractorId): array
-    {
-        $options = ['' => __('labels.general.not_selected')];
-
-        if (! $contractorId) {
-            return $options;
-        }
-
-        foreach (ContractorAddress::where('contractor_id', $contractorId)->get() as $address) {
-            $options[$address->id] = str_replace('<br>', ', ', $address->fullAddress);
-        }
-
-        return $options;
-    }
-
-    #[Computed]
-    public function contractorOptions(): array
-    {
-        $options = ['' => __('labels.general.not_selected')];
-
-        foreach (Contractor::orderBy('name')->get() as $contractor) {
-            $options[$contractor->id] = $contractor->name;
-        }
-
-        return $options;
-    }
-
-    #[Computed]
-    public function driverOptions(): array
-    {
-        $options = ['' => __('labels.general.not_selected')];
-
-        foreach (Driver::orderBy('name')->get() as $driver) {
-            $options[$driver->id] = $driver->name;
-        }
-
-        return $options;
-    }
-
-    #[Computed]
-    public function goodOptions(): array
-    {
-        $options = ['' => __('labels.general.not_selected')];
-
-        foreach (Good::where('is_active', true)->orderBy('name')->get() as $good) {
-            $options[$good->id] = $good->name;
-        }
-
-        return $options;
-    }
-
     public function openCreateAddressModal(): void
     {
         if (! ($this->deliveryData['contractor_id'] ?? null)) {
@@ -347,28 +274,6 @@ class DeliveriesForm extends Component
         return self::NUMBER_PREFIX.sprintf('%04d', ($maxSequence ?? 0) + 1);
     }
 
-    private function computeStatus(): DeliveryStatusEnum
-    {
-        $statuses = collect($this->transportSetsData)
-            ->pluck('status')
-            ->map(fn ($status) => (int) $status)
-            ->reject(fn (int $status) => $status === DeliveryTransportSetStatusEnum::DRAFT->value);
-
-        if ($statuses->isEmpty()) {
-            return DeliveryStatusEnum::PLANNED;
-        }
-
-        if ($statuses->every(fn (int $status) => $status === DeliveryTransportSetStatusEnum::COMPLETED->value)) {
-            return DeliveryStatusEnum::COMPLETED;
-        }
-
-        if ($statuses->contains(fn (int $status) => $status !== DeliveryTransportSetStatusEnum::ASSIGNED->value)) {
-            return DeliveryStatusEnum::IN_PROGRESS;
-        }
-
-        return DeliveryStatusEnum::ASSIGNED;
-    }
-
     public function save()
     {
         $isUpdate = $this->delivery->exists;
@@ -383,7 +288,7 @@ class DeliveriesForm extends Component
             }
 
             $this->delivery->fill($this->deliveryData);
-            $this->delivery->status = $this->computeStatus();
+            $this->delivery->status = $this->computeDeliveryStatus(collect($this->transportSetsData)->pluck('status'));
             $this->delivery->save();
 
             $this->syncTransportSets();
@@ -435,28 +340,6 @@ class DeliveriesForm extends Component
         DeliveryGood::whereIn('delivery_transport_set_id', $removedTransportSetIds)->delete();
 
         $this->delivery->transportSets()->whereNotIn('id', $keepIds)->delete();
-    }
-
-    private function syncGoods(DeliveryTransportSet $transportSet, array $goodsData): void
-    {
-        $keepIds = [];
-
-        foreach ($goodsData as $good) {
-            $attributes = [
-                'good_id' => $good['good_id'],
-                'unit_id' => $good['unit_id'],
-                'quantity' => $good['quantity'],
-            ];
-
-            if (! empty($good['id'])) {
-                $transportSet->goods()->whereKey($good['id'])->update($attributes);
-                $keepIds[] = $good['id'];
-            } else {
-                $keepIds[] = $transportSet->goods()->create($attributes)->id;
-            }
-        }
-
-        $transportSet->goods()->whereNotIn('id', $keepIds)->delete();
     }
 
     public function render()
