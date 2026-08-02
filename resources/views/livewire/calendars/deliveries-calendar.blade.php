@@ -72,15 +72,15 @@
                         </div>
 
                         <div class="col-span-1">
-                            <x-form.input.select name="transportSetData.driver_id"
+                            <x-form.input.searchable-select name="transportSetData.driver_id"
                                                  label="{{ __('deliveries.transport_set.driver') }}"
-                                                 wire:model.live="transportSetData.driver_id"
+                                                 wire:model="transportSetData.driver_id"
                                                  :options="$this->driverOptions"
                                                  :required="$fieldsRequired"/>
                         </div>
 
                         <div class="col-span-1">
-                            <x-form.input.select name="transportSetData.vehicle_id"
+                            <x-form.input.searchable-select name="transportSetData.vehicle_id"
                                                  label="{{ __('vehicles.type.tractor') }}"
                                                  wire:model="transportSetData.vehicle_id"
                                                  :options="$this->tractorOptions"
@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="col-span-1">
-                            <x-form.input.select name="transportSetData.trailer_id"
+                            <x-form.input.searchable-select name="transportSetData.trailer_id"
                                                  label="{{ __('vehicles.type.trailer') }}"
                                                  wire:model="transportSetData.trailer_id"
                                                  :options="$this->trailerOptions"

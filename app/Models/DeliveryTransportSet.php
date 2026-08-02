@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DeliveryTransportSet extends Model
 {
     /** @use HasFactory<DeliveryTransportSetFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'delivery_id',

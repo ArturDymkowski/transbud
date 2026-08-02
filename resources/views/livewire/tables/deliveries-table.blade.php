@@ -49,6 +49,8 @@
 
                 <x-tables.th>{{ __('deliveries.contractor_address') }}</x-tables.th>
 
+                <x-tables.th>{{ __('deliveries.transport_set.transport_sets') }}</x-tables.th>
+
                 <x-tables.th-sort
                     field="status"
                     :label="__('deliveries.status.status')"
@@ -74,6 +76,7 @@
                         </a>
                     </x-tables.td>
                     <x-tables.td>{!! $delivery->contractorAddress->fullAddress ?? '-' !!}</x-tables.td>
+                    <x-tables.td>{{ $delivery->transport_sets_count }}</x-tables.td>
                     <x-tables.td>
                         <x-ui.status-badge :color="$delivery->status->color()">
                             {{ $delivery->status->label() }}

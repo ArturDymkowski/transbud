@@ -818,3 +818,11 @@ pre[class*='language-'] {
     margin-right: -60px !important;
   }
 }
+
+.fc-event {
+  cursor: pointer;
+}
+
+.dark .fc-daygrid-more-link {
+  color: #fff;
+}

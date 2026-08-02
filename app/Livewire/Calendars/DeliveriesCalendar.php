@@ -37,6 +37,7 @@ class DeliveriesCalendar extends Component
             ->whereNotNull('loading_at')
             ->whereBetween('loading_at', [$start, $end])
             ->with(['delivery', 'driver', 'vehicle', 'trailer'])
+            ->whereNotIn('status',  [DeliveryTransportSetStatusEnum::CANCELLED, DeliveryTransportSetStatusEnum::DRAFT])
             ->get()
             ->map(fn (DeliveryTransportSet $transportSet) => [
                 'id' => $transportSet->id,

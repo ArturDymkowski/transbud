@@ -29,6 +29,7 @@ class DeliveriesTable extends Component
     public function render()
     {
         $query = Delivery::with(['contractor', 'contractorAddress'])
+            ->withCount('transportSets')
             ->search($this->search)
             ->when(filled($this->status), fn ($q) => $q->where('status', $this->status))
             ->when($this->trashed === 'with', fn ($q) => $q->withTrashed())

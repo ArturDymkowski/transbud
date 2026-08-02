@@ -92,6 +92,7 @@ document.addEventListener('alpine:init', () => {
                     right: 'dayGridMonth,timeGridWeek,listWeek',
                 },
                 height: 'auto',
+                dayMaxEvents: 4,
                 events: (info, successCallback, failureCallback) => {
                     this.$wire.getEvents(info.startStr, info.endStr)
                         .then(successCallback)
