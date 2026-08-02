@@ -15,7 +15,9 @@ test('guest is redirected from the permissions list', function () {
 });
 
 test('permissions index page lists seeded permissions', function () {
-    $this->get(route('permissions.index'))->assertOk()->assertSee('drivers.view');
+    $latestPermission = Permission::latest('id')->first();
+
+    $this->get(route('permissions.index'))->assertOk()->assertSee($latestPermission->name);
 });
 
 test('deletePermission removes a permission', function () {

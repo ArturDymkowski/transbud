@@ -14,7 +14,7 @@ class RolesTable extends Component
 
     public function render()
     {
-        $roles = Role::withCount('permissions')->orderBy('name')->get();
+        $roles = Role::withCount('permissions')->orderBy('id', 'desc')->get();
 
         $this->idsOnPage = $roles->pluck('id')->toArray();
 

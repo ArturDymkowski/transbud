@@ -4,7 +4,7 @@ namespace App\Livewire\Concerns;
 trait WithTableSorting
 {
     public string $sortField = 'id';
-    public string $sortDirection = 'asc';
+    public string $sortDirection = 'desc';
 
     public function sortBy(string $field): void
     {
