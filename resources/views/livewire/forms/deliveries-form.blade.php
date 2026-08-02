@@ -131,11 +131,11 @@
                                                              wire:model="goodsData.{{ $index }}.quantity"
                                     />
                                 </div>
-                                <x-ui.tooltip :text="__('deliveries.goods.remove')">
-                                    <button type="button" wire:click="removeGoodRow({{ $index }})" class="flex items-center justify-center w-11 h-11 shrink-0 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-400 hover:text-red-500 dark:text-gray-500">
-                                        <x-heroicon-o-trash class="w-5 h-5"/>
-                                    </button>
-                                </x-ui.tooltip>
+                                <button type="button" wire:click="removeGoodRow({{ $index }})"
+                                        title="{{ __('deliveries.goods.remove') }}"
+                                        class="flex h-11 w-11 shrink-0 items-center justify-center text-gray-400 hover:text-red-500 dark:text-gray-500">
+                                    <x-heroicon-o-trash class="w-5 h-5"/>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -153,10 +153,10 @@
         <x-form.section title="{{ __('deliveries.transport_set.transport_sets') }}">
             <div class="flex flex-col gap-4">
                 @foreach($transportSetsData as $index => $transportSet)
-                    <div wire:key="transport-set-row-{{ $index }}" class="relative grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3 p-4 pr-14 rounded-xl border border-gray-100 dark:border-gray-800">
+                    <div wire:key="transport-set-row-{{ $index }}" class="relative grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3 p-4 pr-16 rounded-xl border border-gray-100 dark:border-gray-800">
                         <button type="button" wire:click="removeTransportSetRow({{ $index }})"
                                 title="{{ __('deliveries.transport_set.remove') }}"
-                                class="absolute top-3 right-3 flex items-center justify-center w-9 h-9 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 dark:text-gray-500 dark:hover:bg-white/5">
+                                class="absolute top-3 right-3 flex h-11 w-11 items-center justify-center text-gray-400 hover:text-red-500 dark:text-gray-500">
                             <x-heroicon-o-trash class="w-5 h-5"/>
                         </button>
 
