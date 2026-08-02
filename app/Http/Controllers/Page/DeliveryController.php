@@ -22,4 +22,20 @@ class DeliveryController extends Controller
     {
         return view('pages.deliveries.create', ['delivery' => new Delivery]);
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Delivery $delivery)
+    {
+        return view('pages.deliveries.show', ['delivery' => $delivery]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Delivery $delivery)
+    {
+        return view('pages.deliveries.edit', ['delivery' => $delivery]);
+    }
 }

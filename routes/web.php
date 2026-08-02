@@ -50,9 +50,10 @@ Route::middleware('auth')->group(function () {
         ->middlewareFor('create', 'can:vehicles.create')
         ->middlewareFor('edit', 'can:vehicles.edit');
 
-    Route::resource('/deliveries', DeliveryController::class)->only(['index', 'create'])
-        ->middlewareFor('index', 'can:deliveries.view')
-        ->middlewareFor('create', 'can:deliveries.create');
+    Route::resource('/deliveries', DeliveryController::class)->only(['index', 'edit', 'create', 'show'])
+        ->middlewareFor(['index', 'show'], 'can:deliveries.view')
+        ->middlewareFor('create', 'can:deliveries.create')
+        ->middlewareFor('edit', 'can:deliveries.edit');
 
     Route::resource('/contractors', ContractorController::class)->only(['index', 'edit', 'create', 'show'])
         ->middlewareFor(['index', 'show'], 'can:contractors.view')

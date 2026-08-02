@@ -45,14 +45,38 @@ class DeliveriesForm extends Component
     {
         $this->delivery = ($delivery && $delivery->exists) ? $delivery : new Delivery;
 
-        $this->deliveryData = [
-            'number' => $this->generateDeliveryNumber(),
-            'contractor_id' => null,
-            'contractor_address_id' => null,
-            'loading_address' => '',
-        ];
+        if ($this->delivery->exists) {
+            $this->deliveryData = $this->delivery->only([
+                'number', 'contractor_id', 'contractor_address_id', 'loading_address',
+            ]);
 
-        $this->addGoodRow();
+            $this->goodsData = $this->delivery->goods->map(fn ($good) => [
+                'id' => $good->id,
+                'good_id' => $good->good_id,
+                'unit_id' => $good->unit_id,
+                'quantity' => (string) $good->quantity,
+            ])->all();
+
+            $this->transportSetsData = $this->delivery->transportSets->map(fn ($transportSet) => [
+                'id' => $transportSet->id,
+                'driver_id' => $transportSet->driver_id,
+                'vehicle_id' => $transportSet->vehicle_id,
+                'trailer_id' => $transportSet->trailer_id,
+                'loading_at' => $transportSet->loading_at?->format('Y-m-d H:i'),
+                'unloading_at' => $transportSet->unloading_at?->format('Y-m-d H:i'),
+                'status' => $transportSet->status->value,
+            ])->all();
+        } else {
+            $this->deliveryData = [
+                'number' => $this->generateDeliveryNumber(),
+                'contractor_id' => null,
+                'contractor_address_id' => null,
+                'loading_address' => '',
+            ];
+
+//            $this->addGoodRow();
+//            $this->addTransportSetRow();
+        }
     }
 
     protected function rules(): array
@@ -329,24 +353,23 @@ class DeliveriesForm extends Component
 
     public function save()
     {
-        $this->authorize('deliveries.create');
+        $isUpdate = $this->delivery->exists;
+
+        $this->authorize($isUpdate ? 'deliveries.edit' : 'deliveries.create');
 
         $this->validate();
 
-        DB::transaction(function () {
-            $this->deliveryData['number'] = $this->generateDeliveryNumber();
+        DB::transaction(function () use ($isUpdate) {
+            if (! $isUpdate) {
+                $this->deliveryData['number'] = $this->generateDeliveryNumber();
+            }
 
             $this->delivery->fill($this->deliveryData);
             $this->delivery->status = $this->computeStatus();
             $this->delivery->save();
 
-            foreach ($this->goodsData as $good) {
-                $this->delivery->goods()->create($good);
-            }
-
-            foreach ($this->transportSetsData as $transportSet) {
-                $this->delivery->transportSets()->create($transportSet);
-            }
+            $this->syncGoods();
+            $this->syncTransportSets();
 
             foreach ($this->newDocuments as $file) {
                 if (! $file instanceof TemporaryUploadedFile) {
@@ -361,7 +384,54 @@ class DeliveriesForm extends Component
             }
         });
 
-        return $this->flashSavedAndRedirect(false, 'deliveries.index');
+        return $this->flashSavedAndRedirect($isUpdate, 'deliveries.index');
+    }
+
+    private function syncGoods(): void
+    {
+        $keepIds = [];
+
+        foreach ($this->goodsData as $good) {
+            $attributes = [
+                'good_id' => $good['good_id'],
+                'unit_id' => $good['unit_id'],
+                'quantity' => $good['quantity'],
+            ];
+
+            if (! empty($good['id'])) {
+                $this->delivery->goods()->whereKey($good['id'])->update($attributes);
+                $keepIds[] = $good['id'];
+            } else {
+                $keepIds[] = $this->delivery->goods()->create($attributes)->id;
+            }
+        }
+
+        $this->delivery->goods()->whereNotIn('id', $keepIds)->delete();
+    }
+
+    private function syncTransportSets(): void
+    {
+        $keepIds = [];
+
+        foreach ($this->transportSetsData as $transportSet) {
+            $attributes = [
+                'driver_id' => $transportSet['driver_id'],
+                'vehicle_id' => $transportSet['vehicle_id'],
+                'trailer_id' => $transportSet['trailer_id'],
+                'loading_at' => $transportSet['loading_at'],
+                'unloading_at' => $transportSet['unloading_at'],
+                'status' => $transportSet['status'],
+            ];
+
+            if (! empty($transportSet['id'])) {
+                $this->delivery->transportSets()->whereKey($transportSet['id'])->update($attributes);
+                $keepIds[] = $transportSet['id'];
+            } else {
+                $keepIds[] = $this->delivery->transportSets()->create($attributes)->id;
+            }
+        }
+
+        $this->delivery->transportSets()->whereNotIn('id', $keepIds)->delete();
     }
 
     public function render()
