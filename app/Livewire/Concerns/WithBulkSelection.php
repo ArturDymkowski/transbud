@@ -14,7 +14,7 @@ trait WithBulkSelection
         }
 
         $count = count($this->selected);
-        $modelClass::whereIn('id', $this->selected)->delete();
+        $modelClass::destroy($this->selected);
         $this->selected = [];
 
         $this->dispatch('notify', message: trans('labels.general.deleted_success_count', [

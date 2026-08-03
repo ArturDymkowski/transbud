@@ -43,9 +43,9 @@ class DeliveriesCalendar extends Component
                 'id' => $transportSet->id,
                 'title' => $this->eventTitle($transportSet),
                 'start' => $transportSet->loading_at?->toIso8601String(),
-                'end' => $transportSet->loading_at?->toIso8601String(),
+                'end' => $transportSet->unloading_at?->toIso8601String(),
                 'color' => $transportSet->delivery->status->color(),
-                'allDay' => true,
+                'allDay' => false,
             ])
             ->all();
     }

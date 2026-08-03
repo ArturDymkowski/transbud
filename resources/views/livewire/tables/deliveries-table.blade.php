@@ -1,9 +1,6 @@
 <x-tables.card :createRoute="route('deliveries.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
-            <!-- Trashed -->
-            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
-
             <!-- Status -->
             <x-form.input.select :label="__('deliveries.status.status')" :options="$this->statusOptions" name="status" wire:model.live="status"/>
         </x-tables.filter-bar>

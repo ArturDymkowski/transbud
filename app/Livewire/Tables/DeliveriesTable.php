@@ -19,11 +19,9 @@ class DeliveriesTable extends Component
 
     public string $status = '';
 
-    public string $trashed = '';
-
     protected function filterFields(): array
     {
-        return ['search', 'status', 'trashed'];
+        return ['search', 'status'];
     }
 
     public function render()
@@ -31,9 +29,7 @@ class DeliveriesTable extends Component
         $query = Delivery::with(['contractor', 'contractorAddress'])
             ->withCount('transportSets')
             ->search($this->search)
-            ->when(filled($this->status), fn ($q) => $q->where('status', $this->status))
-            ->when($this->trashed === 'with', fn ($q) => $q->withTrashed())
-            ->when($this->trashed === 'only', fn ($q) => $q->onlyTrashed());
+            ->when(filled($this->status), fn ($q) => $q->where('status', $this->status));
 
         if ($this->sortField === 'contractor_name') {
             $query->join('contractors', 'contractors.id', '=', 'deliveries.contractor_id')
@@ -63,22 +59,13 @@ class DeliveriesTable extends Component
     {
         $this->authorize('deliveries.delete');
 
-        Delivery::where('id', $id)->delete();
+        Delivery::destroy($id);
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function getStatusOptionsProperty(): array
     {
         return ['' => __('labels.tables.all')] + DeliveryStatusEnum::getOptions();
-    }
-
-    public function getTrashedOptionsProperty(): array
-    {
-        return [
-            '' => __('labels.tables.without_trashed'),
-            'with' => __('labels.tables.with_trashed'),
-            'only' => __('labels.tables.only_trashed'),
-        ];
     }
 
     public function getActiveFiltersProperty(): array
@@ -96,13 +83,6 @@ class DeliveriesTable extends Component
             $filters[] = [
                 'label' => __('deliveries.status.status').': '.DeliveryStatusEnum::from((int) $this->status)->label(),
                 'property' => 'status',
-            ];
-        }
-
-        if (filled($this->trashed)) {
-            $filters[] = [
-                'label' => $this->trashedOptions[$this->trashed],
-                'property' => 'trashed',
             ];
         }
 

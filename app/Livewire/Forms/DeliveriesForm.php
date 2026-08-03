@@ -265,7 +265,7 @@ class DeliveriesForm extends Component
 
     private function generateDeliveryNumber(): string
     {
-        $maxSequence = Delivery::withTrashed()
+        $maxSequence = Delivery::query()
             ->where('number', 'like', self::NUMBER_PREFIX.'%')
             ->pluck('number')
             ->map(fn (string $number) => (int) substr($number, strlen(self::NUMBER_PREFIX)))
