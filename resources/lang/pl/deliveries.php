@@ -13,6 +13,7 @@ return [
     'basic_info' => 'Informacje podstawowe',
     'calendar_title' => 'Kalendarz dostaw',
     'edit_transport_set' => 'Edycja zestawu transportowego',
+    'go_to_edit' => 'Przejdź do edycji',
 
     'status' => [
         'status' => 'Status',

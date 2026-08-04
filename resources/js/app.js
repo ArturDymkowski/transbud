@@ -85,6 +85,7 @@ document.addEventListener('alpine:init', () => {
             this.calendar = new Calendar(this.$refs.calendarEl, {
                 plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
                 locale: plLocale,
+                timeZone: 'UTC',
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next today',
@@ -93,6 +94,8 @@ document.addEventListener('alpine:init', () => {
                 },
                 height: 'auto',
                 dayMaxEvents: 4,
+                editable: true,
+                eventDurationEditable: false,
                 events: (info, successCallback, failureCallback) => {
                     this.$wire.getEvents(info.startStr, info.endStr)
                         .then(successCallback)
@@ -100,6 +103,15 @@ document.addEventListener('alpine:init', () => {
                 },
                 eventClick: (info) => {
                     this.$wire.openTransportSet(parseInt(info.event.id, 10));
+                },
+                eventDrop: (info) => {
+                    const id = parseInt(info.event.id, 10);
+                    const startStr = info.event.startStr;
+                    const endStr = info.event.end ? info.event.endStr : null;
+
+                    info.revert();
+
+                    this.$wire.openTransportSet(id, startStr, endStr);
                 },
             });
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Page\RoleController;
 use App\Http\Controllers\Page\UnitController;
 use App\Http\Controllers\Page\UserController;
 use App\Http\Controllers\Page\VehicleController;
+use App\Models\Delivery;
 use App\Models\Driver;
 use Illuminate\Support\Facades\Route;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -35,6 +36,12 @@ Route::get('/driver-documents/{media}', function (Media $media) {
 
     return response()->file($media->getPath());
 })->middleware('auth')->name('driver-documents.show');
+
+Route::get('/delivery-documents/{media}', function (Media $media) {
+    abort_unless($media->model_type === Delivery::class, 404);
+
+    return response()->file($media->getPath());
+})->middleware('auth')->name('delivery-documents.show');
 
 // After login
 Route::middleware('auth')->group(function () {

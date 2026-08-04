@@ -13,6 +13,7 @@ return [
     'basic_info' => 'Basic information',
     'calendar_title' => 'Delivery calendar',
     'edit_transport_set' => 'Edit transport set',
+    'go_to_edit' => 'Go to edit',
 
     'status' => [
         'status' => 'Status',

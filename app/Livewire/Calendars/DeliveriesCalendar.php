@@ -11,7 +11,7 @@ use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Models\Delivery;
 use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
-use App\Models\Good;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -37,7 +37,7 @@ class DeliveriesCalendar extends Component
             ->whereNotNull('loading_at')
             ->whereBetween('loading_at', [$start, $end])
             ->with(['delivery', 'driver', 'vehicle', 'trailer'])
-            ->whereNotIn('status',  [DeliveryTransportSetStatusEnum::CANCELLED, DeliveryTransportSetStatusEnum::DRAFT])
+            ->whereNotIn('status', [DeliveryTransportSetStatusEnum::CANCELLED, DeliveryTransportSetStatusEnum::DRAFT])
             ->get()
             ->map(fn (DeliveryTransportSet $transportSet) => [
                 'id' => $transportSet->id,
@@ -60,7 +60,7 @@ class DeliveriesCalendar extends Component
         return implode(' · ', $parts);
     }
 
-    public function openTransportSet(int $transportSetId): void
+    public function openTransportSet(int $transportSetId, ?string $loadingAt = null, ?string $unloadingAt = null): void
     {
         $this->authorize('deliveries.edit');
 
@@ -77,8 +77,8 @@ class DeliveriesCalendar extends Component
             'driver_id' => $transportSet->driver_id,
             'vehicle_id' => $transportSet->vehicle_id,
             'trailer_id' => $transportSet->trailer_id,
-            'loading_at' => $transportSet->loading_at?->format('Y-m-d H:i'),
-            'unloading_at' => $transportSet->unloading_at?->format('Y-m-d H:i'),
+            'loading_at' => $loadingAt ? Carbon::parse($loadingAt)->format('Y-m-d H:i') : $transportSet->loading_at?->format('Y-m-d H:i'),
+            'unloading_at' => $unloadingAt ? Carbon::parse($unloadingAt)->format('Y-m-d H:i') : $transportSet->unloading_at?->format('Y-m-d H:i'),
             'status' => $transportSet->status->value,
             'goods' => $transportSet->goods->map(fn ($good) => [
                 'id' => $good->id,
@@ -183,23 +183,6 @@ class DeliveriesCalendar extends Component
 
             return;
         }
-
-        if (str_starts_with($key, 'goods.') && str_ends_with($key, '.good_id')) {
-            $goodIndex = (int) explode('.', $key)[1];
-            $good = Good::find($value);
-            $this->transportSetData['goods'][$goodIndex]['unit_id'] = $good?->default_unit_id;
-        }
-    }
-
-    public function addGoodRow(): void
-    {
-        $this->transportSetData['goods'][] = ['good_id' => null, 'unit_id' => null, 'quantity' => ''];
-    }
-
-    public function removeGoodRow(int $goodIndex): void
-    {
-        unset($this->transportSetData['goods'][$goodIndex]);
-        $this->transportSetData['goods'] = array_values($this->transportSetData['goods']);
     }
 
     public function save(): void

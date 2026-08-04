@@ -115,24 +115,24 @@
                             <div class="col-span-1">
                                 <x-form.input.searchable-select name="transportSetsData.{{ $index }}.driver_id"
                                                      label="{{ __('deliveries.transport_set.driver') }}"
-                                                     wire:model="transportSetsData.{{ $index }}.driver_id"
-                                                     :options="$this->driverOptions"
+                                                     wire:model.live="transportSetsData.{{ $index }}.driver_id"
+                                                     :options="$this->driverOptionsFor($index)"
                                                      :required="$fieldsRequired"/>
                             </div>
 
                             <div class="col-span-1">
                                 <x-form.input.searchable-select name="transportSetsData.{{ $index }}.vehicle_id"
                                                      label="{{ __('vehicles.type.tractor') }}"
-                                                     wire:model="transportSetsData.{{ $index }}.vehicle_id"
-                                                     :options="$this->tractorOptions"
+                                                     wire:model.live="transportSetsData.{{ $index }}.vehicle_id"
+                                                     :options="$this->tractorOptionsFor($index)"
                                                      :required="$fieldsRequired"/>
                             </div>
 
                             <div class="col-span-1">
                                 <x-form.input.searchable-select name="transportSetsData.{{ $index }}.trailer_id"
                                                      label="{{ __('vehicles.type.trailer') }}"
-                                                     wire:model="transportSetsData.{{ $index }}.trailer_id"
-                                                     :options="$this->trailerOptions"
+                                                     wire:model.live="transportSetsData.{{ $index }}.trailer_id"
+                                                     :options="$this->trailerOptionsFor($index)"
                                                      :required="$fieldsRequired"/>
                             </div>
 
@@ -241,6 +241,21 @@
 
         <!-- Sekcja: Dokumenty -->
         <x-form.section title="{{ __('deliveries.documents') }}">
+            @if($this->existingDocuments->isNotEmpty())
+                <ul class="mb-3 flex flex-col gap-2">
+                    @foreach($this->existingDocuments as $media)
+                        <li wire:key="existing-document-{{ $media->id }}" class="flex items-center justify-between px-4 py-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                            <a href="{{ route('delivery-documents.show', $media->id) }}" target="_blank" class="text-sm text-gray-700 dark:text-gray-400 truncate hover:text-brand-500 hover:underline">
+                                {{ $media->file_name }}
+                            </a>
+                            <button type="button" wire:click="deleteDocument({{ $media->id }})" wire:loading.attr="disabled" class="text-gray-400 hover:text-red-500" title="{{ __('labels.general.delete_document') }}">
+                                <x-heroicon-o-trash class="w-5 h-5"/>
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+
             <x-form.input.file-input name="newDocuments" :label="__('deliveries.documents')" wire:model="newDocuments" multiple accept=".jpg,.jpeg,.png,.webp,.pdf"/>
 
             @if(count($newDocuments))

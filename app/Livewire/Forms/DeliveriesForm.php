@@ -18,6 +18,7 @@ use App\Models\Good;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -173,6 +174,32 @@ class DeliveriesForm extends Component
         }
     }
 
+    public function driverOptionsFor(int $index): array
+    {
+        return $this->excludeUsedOptions($this->driverOptions, 'driver_id', $index);
+    }
+
+    public function tractorOptionsFor(int $index): array
+    {
+        return collect($this->excludeUsedOptions($this->tractorOptions, 'vehicle_id', $index))->except('')->all();
+    }
+
+    public function trailerOptionsFor(int $index): array
+    {
+        return collect($this->excludeUsedOptions($this->trailerOptions, 'trailer_id', $index))->except('')->all();
+    }
+
+    private function excludeUsedOptions(array $options, string $field, int $currentIndex): array
+    {
+        $usedIds = collect($this->transportSetsData)
+            ->reject(fn ($transportSet, $index) => $index === $currentIndex)
+            ->pluck($field)
+            ->filter()
+            ->all();
+
+        return collect($options)->except($usedIds)->all();
+    }
+
     public function addTransportSetRow(): void
     {
         $this->transportSetsData[] = [
@@ -207,6 +234,25 @@ class DeliveriesForm extends Component
     {
         unset($this->newDocuments[$index]);
         $this->newDocuments = array_values($this->newDocuments);
+    }
+
+    #[Computed]
+    public function existingDocuments()
+    {
+        if (! $this->delivery->exists) {
+            return collect();
+        }
+
+        return $this->delivery->getMedia(Delivery::MEDIA_DOCUMENTS);
+    }
+
+    public function deleteDocument(int $mediaId): void
+    {
+        $this->delivery->getMedia(Delivery::MEDIA_DOCUMENTS)
+            ->firstWhere('id', $mediaId)
+            ?->delete();
+
+        unset($this->existingDocuments);
     }
 
     public function openCreateAddressModal(): void

@@ -30,7 +30,11 @@
         id="{{ $name }}"
         @click="toggle()"
         :aria-expanded="open"
-        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 flex h-11 w-full items-center justify-between rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-left text-sm focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900"
+        @class([
+            'dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 flex h-11 w-full items-center justify-between rounded-lg border bg-transparent px-4 py-2.5 text-left text-sm focus:ring-3 focus:outline-hidden dark:bg-gray-900',
+            'border-gray-300 dark:border-gray-700' => !$errors->has($name),
+            'border-red-300 dark:border-red-700' => $errors->has($name),
+        ])
         :class="selectedOption ? 'text-gray-800 dark:text-white/90' : 'text-gray-400 dark:text-white/30'"
     >
         <span x-text="selectedOption ? selectedOption.label : @js($placeholder ?? __('labels.general.not_selected'))" class="truncate"></span>
@@ -78,4 +82,8 @@
             </li>
         </ul>
     </div>
+
+    @error($name)
+        <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
+    @enderror
 </div>
