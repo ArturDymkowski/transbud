@@ -126,6 +126,19 @@ class DeliveriesForm extends Component
         ];
     }
 
+    protected function messages(): array
+    {
+        $required = trans('validation.required');
+
+        return [
+            'transportSetsData.*.driver_id.required_unless' => $required,
+            'transportSetsData.*.vehicle_id.required_unless' => $required,
+            'transportSetsData.*.trailer_id.required_unless' => $required,
+            'transportSetsData.*.loading_at.required_unless' => $required,
+            'transportSetsData.*.unloading_at.required_unless' => $required,
+        ];
+    }
+
     protected function validationAttributes(): array
     {
         return [
@@ -176,7 +189,7 @@ class DeliveriesForm extends Component
 
     public function driverOptionsFor(int $index): array
     {
-        return $this->excludeUsedOptions($this->driverOptions, 'driver_id', $index);
+        return collect($this->excludeUsedOptions($this->driverOptions, 'driver_id', $index))->except('')->all();
     }
 
     public function tractorOptionsFor(int $index): array
@@ -252,7 +265,10 @@ class DeliveriesForm extends Component
             ->firstWhere('id', $mediaId)
             ?->delete();
 
+        $this->delivery->unsetRelation('media');
         unset($this->existingDocuments);
+
+        $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
     public function openCreateAddressModal(): void

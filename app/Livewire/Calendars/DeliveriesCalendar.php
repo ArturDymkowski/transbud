@@ -146,6 +146,19 @@ class DeliveriesCalendar extends Component
         ];
     }
 
+    protected function messages(): array
+    {
+        $required = trans('validation.required');
+
+        return [
+            'transportSetData.driver_id.required_unless' => $required,
+            'transportSetData.vehicle_id.required_unless' => $required,
+            'transportSetData.trailer_id.required_unless' => $required,
+            'transportSetData.loading_at.required_unless' => $required,
+            'transportSetData.unloading_at.required_unless' => $required,
+        ];
+    }
+
     protected function validationAttributes(): array
     {
         return [

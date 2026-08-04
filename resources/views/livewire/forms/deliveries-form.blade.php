@@ -248,7 +248,7 @@
                             <a href="{{ route('delivery-documents.show', $media->id) }}" target="_blank" class="text-sm text-gray-700 dark:text-gray-400 truncate hover:text-brand-500 hover:underline">
                                 {{ $media->file_name }}
                             </a>
-                            <button type="button" wire:click="deleteDocument({{ $media->id }})" wire:loading.attr="disabled" class="text-gray-400 hover:text-red-500" title="{{ __('labels.general.delete_document') }}">
+                            <button type="button" wire:click="deleteDocument({{ $media->id }})" wire:confirm="{{ __('deliveries.confirm_delete_document') }}" wire:loading.attr="disabled" class="text-gray-400 hover:text-red-500" title="{{ __('labels.general.delete_document') }}">
                                 <x-heroicon-o-trash class="w-5 h-5"/>
                             </button>
                         </li>

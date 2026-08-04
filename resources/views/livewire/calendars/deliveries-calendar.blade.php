@@ -150,7 +150,6 @@
                 </div>
 
                 <div class="flex items-center justify-end w-full gap-3 mt-6">
-                    <x-ui.button @click="open = false" class="w-full" size="sm" variant="outline">{{ __('labels.general.close') }}</x-ui.button>
                     <x-ui.button class="w-full" size="sm" variant="outline">
                         <a href="{{ route('deliveries.edit', $deliveryId) }}" wire:navigate>{{ __('deliveries.go_to_edit') }}</a>
                     </x-ui.button>

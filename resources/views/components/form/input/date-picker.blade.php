@@ -10,7 +10,7 @@
     'enableTime' => false,
 ])
 
-<div wire:ignore x-data="{
+<div wire:ignore wire:key="date-picker-{{ $name }}-{{ $errors->has($name) ? 1 : 0 }}" x-data="{
     flatpickrInstance: null,
     init() {
         this.$nextTick(() => {

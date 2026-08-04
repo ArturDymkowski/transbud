@@ -9,6 +9,7 @@ return [
     'contractor_address' => 'Contractor address',
     'loading_address' => 'Loading address',
     'confirm_delete_delivery' => 'Are you sure you want to delete the delivery?',
+    'confirm_delete_document' => 'Are you sure you want to delete this document?',
     'create_title' => 'Create delivery',
     'basic_info' => 'Basic information',
     'calendar_title' => 'Delivery calendar',

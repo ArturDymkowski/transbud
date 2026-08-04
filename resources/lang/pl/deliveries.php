@@ -9,6 +9,7 @@ return [
     'contractor_address' => 'Adres kontrahenta',
     'loading_address' => 'Adres załadunku',
     'confirm_delete_delivery' => 'Czy na pewno chcesz usunąć dostawę?',
+    'confirm_delete_document' => 'Czy na pewno chcesz usunąć ten dokument?',
     'create_title' => 'Utwórz dostawę',
     'basic_info' => 'Informacje podstawowe',
     'calendar_title' => 'Kalendarz dostaw',
