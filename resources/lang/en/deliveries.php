@@ -44,6 +44,9 @@ return [
         'unloading_at' => 'Unloading date and time',
         'add' => 'Add transport set',
         'remove' => 'Remove transport set',
+        'driver_busy' => 'The selected driver is already busy at this time.',
+        'vehicle_busy' => 'The selected tractor is already busy at this time.',
+        'trailer_busy' => 'The selected trailer is already busy at this time.',
     ],
 
     'transport_set_status' => [

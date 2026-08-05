@@ -7,6 +7,7 @@ use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithDeliveryGoodsSync;
 use App\Livewire\Concerns\WithDeliveryLookupOptions;
+use App\Livewire\Concerns\WithDeliveryResourceAvailability;
 use App\Livewire\Concerns\WithDeliveryStatusComputation;
 use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Livewire\Concerns\WithSavedRedirect;
@@ -15,6 +16,7 @@ use App\Models\Delivery;
 use App\Models\DeliveryGood;
 use App\Models\Driver;
 use App\Models\Good;
+use Closure;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -25,7 +27,7 @@ use Livewire\WithFileUploads;
 
 class DeliveriesForm extends Component
 {
-    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryStatusComputation, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
+    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryResourceAvailability, WithDeliveryStatusComputation, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
 
     private const NUMBER_PREFIX = 'DOS-';
 
@@ -93,16 +95,28 @@ class DeliveriesForm extends Component
                 'nullable',
                 'required_unless:transportSetsData.*.status,'.$draft,
                 'exists:drivers,id',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $row = $this->transportSetsData[$this->rowIndexFromAttribute($attribute)];
+                    $this->validateResourceAvailability($fail, 'driver_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $row['id'] ?? null, __('deliveries.transport_set.driver_busy'));
+                },
             ],
             'transportSetsData.*.vehicle_id' => [
                 'nullable',
                 'required_unless:transportSetsData.*.status,'.$draft,
                 Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value),
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $row = $this->transportSetsData[$this->rowIndexFromAttribute($attribute)];
+                    $this->validateResourceAvailability($fail, 'vehicle_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $row['id'] ?? null, __('deliveries.transport_set.vehicle_busy'));
+                },
             ],
             'transportSetsData.*.trailer_id' => [
                 'nullable',
                 'required_unless:transportSetsData.*.status,'.$draft,
                 Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value),
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $row = $this->transportSetsData[$this->rowIndexFromAttribute($attribute)];
+                    $this->validateResourceAvailability($fail, 'trailer_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $row['id'] ?? null, __('deliveries.transport_set.trailer_busy'));
+                },
             ],
             'transportSetsData.*.loading_at' => [
                 'nullable',
@@ -211,6 +225,11 @@ class DeliveriesForm extends Component
             ->all();
 
         return collect($options)->except($usedIds)->all();
+    }
+
+    private function rowIndexFromAttribute(string $attribute): int
+    {
+        return (int) explode('.', $attribute)[1];
     }
 
     public function addTransportSetRow(): void

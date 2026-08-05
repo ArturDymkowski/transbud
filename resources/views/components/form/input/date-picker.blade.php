@@ -18,6 +18,7 @@
                 mode: '{{ $mode }}',
                 allowInput: true,
                 monthSelectorType: 'static',
+                appendTo: document.body,
                 dateFormat: '{{ $dateFormat }}',
                 enableTime: @js($enableTime),
                 time_24hr: true,

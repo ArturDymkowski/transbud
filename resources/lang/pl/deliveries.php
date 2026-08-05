@@ -44,6 +44,9 @@ return [
         'unloading_at' => 'Data i godzina rozładunku',
         'add' => 'Dodaj zestaw transportowy',
         'remove' => 'Usuń zestaw transportowy',
+        'driver_busy' => 'Wybrany kierowca jest już zajęty w tym terminie.',
+        'vehicle_busy' => 'Wybrany ciągnik jest już zajęty w tym terminie.',
+        'trailer_busy' => 'Wybrana naczepa jest już zajęta w tym terminie.',
     ],
 
     'transport_set_status' => [

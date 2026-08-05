@@ -6,11 +6,13 @@ use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithDeliveryGoodsSync;
 use App\Livewire\Concerns\WithDeliveryLookupOptions;
+use App\Livewire\Concerns\WithDeliveryResourceAvailability;
 use App\Livewire\Concerns\WithDeliveryStatusComputation;
 use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Models\Delivery;
 use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
+use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -19,7 +21,7 @@ use Livewire\Component;
 
 class DeliveriesCalendar extends Component
 {
-    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryStatusComputation, WithDriverVehicleOptions;
+    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryResourceAvailability, WithDeliveryStatusComputation, WithDriverVehicleOptions;
 
     public bool $isOpen = false;
 
@@ -115,16 +117,25 @@ class DeliveriesCalendar extends Component
                 'nullable',
                 'required_unless:transportSetData.status,'.$draft,
                 'exists:drivers,id',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $this->validateResourceAvailability($fail, 'driver_id', $value, $this->transportSetData['loading_at'] ?? null, $this->transportSetData['unloading_at'] ?? null, $this->transportSetId, __('deliveries.transport_set.driver_busy'));
+                },
             ],
             'transportSetData.vehicle_id' => [
                 'nullable',
                 'required_unless:transportSetData.status,'.$draft,
                 Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value),
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $this->validateResourceAvailability($fail, 'vehicle_id', $value, $this->transportSetData['loading_at'] ?? null, $this->transportSetData['unloading_at'] ?? null, $this->transportSetId, __('deliveries.transport_set.vehicle_busy'));
+                },
             ],
             'transportSetData.trailer_id' => [
                 'nullable',
                 'required_unless:transportSetData.status,'.$draft,
                 Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value),
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $this->validateResourceAvailability($fail, 'trailer_id', $value, $this->transportSetData['loading_at'] ?? null, $this->transportSetData['unloading_at'] ?? null, $this->transportSetId, __('deliveries.transport_set.trailer_busy'));
+                },
             ],
             'transportSetData.loading_at' => [
                 'nullable',
