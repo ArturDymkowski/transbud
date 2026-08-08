@@ -50,7 +50,7 @@
                         {{ __('labels.dashboard.empty_box') }}
                     </p>
                 @else
-                    <div class="flex max-h-[420px] flex-col gap-3 overflow-y-auto pr-1">
+                    <div class="custom-scrollbar flex max-h-[420px] flex-col gap-3 overflow-y-auto pr-1">
                         @foreach($grouped[$box['key']] as $item)
                             <a href="{{ $item['route'] }}" wire:navigate
                                 class="block rounded-lg border bg-white p-3 transition hover:shadow-sm dark:bg-gray-900 {{ $box['itemBorder'] }}">

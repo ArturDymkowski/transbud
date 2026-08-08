@@ -287,6 +287,9 @@
 }
 
 @utility custom-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--color-gray-200) transparent; /* Firefox */
+
   &::-webkit-scrollbar {
     @apply size-1.5;
   }
@@ -298,6 +301,9 @@
   &::-webkit-scrollbar-thumb {
     @apply bg-gray-200 rounded-full dark:bg-gray-700;
   }
+}
+.dark .custom-scrollbar {
+  scrollbar-color: #344054 transparent; /* Firefox */
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #344054;
