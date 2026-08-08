@@ -8,5 +8,15 @@
         __('labels.tables.show') => null
     ]"
     />
-    <livewire:shows.goods-show :good="$good"/>
+    <x-common.tabs :tabs="[
+        'view' => __('labels.tables.show'),
+        'units' => __('goods.units'),
+    ]">
+        <x-slot:view>
+            <livewire:shows.goods-show :good="$good"/>
+        </x-slot:view>
+        <x-slot:units>
+            <livewire:tables.units-table :good="$good" :readonly="true"/>
+        </x-slot:units>
+    </x-common.tabs>
 @endsection

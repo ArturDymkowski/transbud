@@ -1,5 +1,5 @@
 <div>
-    @if($contractor)
+    @if($contractor && ! $readonly)
         <div class="flex w-full justify-end mb-4">
             <x-ui.button wire:click="openCreateModal" size="sm" variant="primary">
                 {{ __('labels.tables.create') }}
@@ -53,19 +53,23 @@
     </x-slot:header>
 
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($addresses->pluck('id')) }})">
-        <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        @unless($readonly)
+            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <x-tables.th>
-                    <x-form.input.checkbox
-                        name="selectAll"
-                        @click="togglePage"
-                        x-bind:checked="isAllPageSelected()"
-                    />
-                </x-tables.th>
+                @unless($readonly)
+                    <x-tables.th>
+                        <x-form.input.checkbox
+                            name="selectAll"
+                            @click="togglePage"
+                            x-bind:checked="isAllPageSelected()"
+                        />
+                    </x-tables.th>
+                @endunless
 
                 <x-tables.th-sort
                     field="id"
@@ -98,9 +102,11 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($addresses as $address)
                 <tr wire:key="address-row-{{ $address->id }}">
-                    <x-tables.td>
-                        <x-form.input.checkbox name="check_{{ $address->id }}" value="{{ $address->id }}" x-model="selected" wire:key="checkbox-{{ $address->id }}"/>
-                    </x-tables.td>
+                    @unless($readonly)
+                        <x-tables.td>
+                            <x-form.input.checkbox name="check_{{ $address->id }}" value="{{ $address->id }}" x-model="selected" wire:key="checkbox-{{ $address->id }}"/>
+                        </x-tables.td>
+                    @endunless
                     <x-tables.td>{{ $address->id }}</x-tables.td>
                     @unless($contractor)
                         <x-tables.td>
@@ -111,16 +117,24 @@
                     @endunless
                     <x-tables.td>{!! $address->fullAddress ?? '-' !!}</x-tables.td>
                     <x-tables.td>
-                        <x-form.input.toggle wire:change="toggleActive({{ $address->id }})"
-                                             name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
+                        @if($readonly)
+                            <x-ui.status-badge :color="$address->is_active ? '#12b76a' : '#f04438'">
+                                {{ $address->is_active ? __('labels.tables.yes') : __('labels.tables.no') }}
+                            </x-ui.status-badge>
+                        @else
+                            <x-form.input.toggle wire:change="toggleActive({{ $address->id }})"
+                                                 name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
+                        @endif
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('contractor-addresses.show', $address->id)"/>
-                        <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
-                        <x-tables.action-delete
-                            wire:click="deleteAddress({{ $address->id }})"
-                            :confirm="__('address_book.confirm_delete_address')"
-                        />
+                        @unless($readonly)
+                            <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
+                            <x-tables.action-delete
+                                wire:click="deleteAddress({{ $address->id }})"
+                                :confirm="__('address_book.confirm_delete_address')"
+                            />
+                        @endunless
                     </x-tables.td>
                 </tr>
             @endforeach

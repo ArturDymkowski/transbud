@@ -25,6 +25,8 @@ class DriversTable extends Component
 
     public ?Vehicle $vehicle = null;
 
+    public bool $readonly = false;
+
     public string $search = '';
     public string $isActive = '';
     public string $drivingLicenseExpiryDateFrom = '';
@@ -38,9 +40,10 @@ class DriversTable extends Component
 
     public string $selectedDriverId = '';
 
-    public function mount(?Vehicle $vehicle = null): void
+    public function mount(?Vehicle $vehicle = null, bool $readonly = false): void
     {
         $this->vehicle = ($vehicle && $vehicle->exists) ? $vehicle : null;
+        $this->readonly = $readonly;
     }
 
     protected function filterFields(): array
@@ -72,6 +75,10 @@ class DriversTable extends Component
 
     public function deleteSelected(): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         if ($this->vehicle) {
             $this->authorize('vehicles.edit');
 
@@ -94,6 +101,10 @@ class DriversTable extends Component
 
     public function deleteDriver(int $id): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         if ($this->vehicle) {
             $this->authorize('vehicles.edit');
 
@@ -111,12 +122,16 @@ class DriversTable extends Component
 
     public function openAssignModal(): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->showAssignModal = true;
     }
 
     public function assignDriver(): void
     {
-        if (! $this->vehicle) {
+        if (! $this->vehicle || $this->readonly) {
             return;
         }
 
@@ -155,6 +170,10 @@ class DriversTable extends Component
 
     public function toggleActive(int $driverId): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->authorize('drivers.edit');
 
         $driver = Driver::findOrFail($driverId);

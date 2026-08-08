@@ -1,5 +1,5 @@
 <div>
-    @if($vehicle)
+    @if($vehicle && ! $readonly)
         <div class="flex w-full justify-end mb-4">
             <x-ui.button wire:click="openAssignModal" size="sm" variant="primary">
                 {{ __('vehicles.assign_driver') }}
@@ -45,19 +45,23 @@
     </x-slot:header>
 
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($drivers->pluck('id')) }})">
-        <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$vehicle ? __('vehicles.confirm_remove_driver_assignments') : __('labels.tables.confirm_delete_selected')"/>
+        @unless($readonly)
+            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$vehicle ? __('vehicles.confirm_remove_driver_assignments') : __('labels.tables.confirm_delete_selected')"/>
+        @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <x-tables.th>
-                    <x-form.input.checkbox
-                        name="selectAll"
-                        @click="togglePage"
-                        x-bind:checked="isAllPageSelected()"
-                    />
-                </x-tables.th>
+                @unless($readonly)
+                    <x-tables.th>
+                        <x-form.input.checkbox
+                            name="selectAll"
+                            @click="togglePage"
+                            x-bind:checked="isAllPageSelected()"
+                        />
+                    </x-tables.th>
+                @endunless
 
                 <x-tables.th-sort
                     field="id"
@@ -108,9 +112,11 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($drivers as $driver)
                 <tr wire:key="driver-row-{{ $driver->id }}">
-                    <x-tables.td>
-                        <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" wire:key="checkbox-{{ $driver->id }}"/>
-                    </x-tables.td>
+                    @unless($readonly)
+                        <x-tables.td>
+                            <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" wire:key="checkbox-{{ $driver->id }}"/>
+                        </x-tables.td>
+                    @endunless
                     <x-tables.td>{{ $driver->id }}</x-tables.td>
                     <x-tables.td>{{ $driver->name ?? '-' }}</x-tables.td>
                     @unless($vehicle)
@@ -126,21 +132,23 @@
                     @endunless
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('drivers.show', $driver->id)"/>
-                        <x-tables.action-edit :route="route('drivers.edit', $driver->id)"/>
-                        @if($vehicle)
-                            <x-tables.action-delete
-                                wire:click="deleteDriver({{ $driver->id }})"
-                                :confirm="__('vehicles.confirm_remove_driver_assignment')"
-                                :label="__('vehicles.remove_driver_assignment')"
-                            >
-                                <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
-                            </x-tables.action-delete>
-                        @else
-                            <x-tables.action-delete
-                                wire:click="deleteDriver({{ $driver->id }})"
-                                :confirm="__('drivers.confirm_delete_driver')"
-                            />
-                        @endif
+                        @unless($readonly)
+                            <x-tables.action-edit :route="route('drivers.edit', $driver->id)"/>
+                            @if($vehicle)
+                                <x-tables.action-delete
+                                    wire:click="deleteDriver({{ $driver->id }})"
+                                    :confirm="__('vehicles.confirm_remove_driver_assignment')"
+                                    :label="__('vehicles.remove_driver_assignment')"
+                                >
+                                    <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                                </x-tables.action-delete>
+                            @else
+                                <x-tables.action-delete
+                                    wire:click="deleteDriver({{ $driver->id }})"
+                                    :confirm="__('drivers.confirm_delete_driver')"
+                                />
+                            @endif
+                        @endunless
                     </x-tables.td>
                 </tr>
             @endforeach

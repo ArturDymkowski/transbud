@@ -17,6 +17,8 @@ class UnitsTable extends Component
 
     public ?Good $good = null;
 
+    public bool $readonly = false;
+
     public string $search = '';
     public string $isActive = '';
     public string $trashed = '';
@@ -25,9 +27,10 @@ class UnitsTable extends Component
 
     public string $selectedUnitId = '';
 
-    public function mount(?Good $good = null): void
+    public function mount(?Good $good = null, bool $readonly = false): void
     {
         $this->good = ($good && $good->exists) ? $good : null;
+        $this->readonly = $readonly;
     }
 
     protected function filterFields(): array
@@ -54,6 +57,10 @@ class UnitsTable extends Component
 
     public function deleteSelected(): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         if ($this->good) {
             $this->authorize('goods.edit');
 
@@ -76,6 +83,10 @@ class UnitsTable extends Component
 
     public function deleteUnit(int $id): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         if ($this->good) {
             $this->authorize('goods.edit');
 
@@ -93,12 +104,16 @@ class UnitsTable extends Component
 
     public function openAssignModal(): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->showAssignModal = true;
     }
 
     public function assignUnit(): void
     {
-        if (! $this->good) {
+        if (! $this->good || $this->readonly) {
             return;
         }
 
@@ -137,6 +152,10 @@ class UnitsTable extends Component
 
     public function toggleActive(int $unitId): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->authorize('units.edit');
 
         $unit = Unit::findOrFail($unitId);

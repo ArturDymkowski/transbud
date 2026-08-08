@@ -8,5 +8,15 @@
         __('labels.tables.show') => null
     ]"
     />
-    <livewire:shows.contractors-show :contractor="$contractor"/>
+    <x-common.tabs :tabs="[
+        'view' => __('labels.tables.show'),
+        'addresses' => __('address_book.plural_model_label'),
+    ]">
+        <x-slot:view>
+            <livewire:shows.contractors-show :contractor="$contractor"/>
+        </x-slot:view>
+        <x-slot:addresses>
+            <livewire:tables.contractor-addresses-table :contractor="$contractor" :readonly="true"/>
+        </x-slot:addresses>
+    </x-common.tabs>
 @endsection

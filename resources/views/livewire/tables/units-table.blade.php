@@ -1,5 +1,5 @@
 <div>
-    @if($good)
+    @if($good && ! $readonly)
         <div class="flex w-full justify-end mb-4">
             <x-ui.button wire:click="openAssignModal" size="sm" variant="primary">
                 {{ __('goods.assign_unit') }}
@@ -36,19 +36,23 @@
     </x-slot:header>
 
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($units->pluck('id')) }})">
-        <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$good ? __('goods.confirm_remove_unit_assignments') : __('labels.tables.confirm_delete_selected')"/>
+        @unless($readonly)
+            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$good ? __('goods.confirm_remove_unit_assignments') : __('labels.tables.confirm_delete_selected')"/>
+        @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <x-tables.th>
-                    <x-form.input.checkbox
-                        name="selectAll"
-                        @click="togglePage"
-                        x-bind:checked="isAllPageSelected()"
-                    />
-                </x-tables.th>
+                @unless($readonly)
+                    <x-tables.th>
+                        <x-form.input.checkbox
+                            name="selectAll"
+                            @click="togglePage"
+                            x-bind:checked="isAllPageSelected()"
+                        />
+                    </x-tables.th>
+                @endunless
 
                 <x-tables.th-sort
                     field="id"
@@ -79,9 +83,11 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($units as $unit)
                 <tr wire:key="unit-row-{{ $unit->id }}">
-                    <x-tables.td>
-                        <x-form.input.checkbox name="check_{{ $unit->id }}" value="{{ $unit->id }}" x-model="selected" wire:key="checkbox-{{ $unit->id }}"/>
-                    </x-tables.td>
+                    @unless($readonly)
+                        <x-tables.td>
+                            <x-form.input.checkbox name="check_{{ $unit->id }}" value="{{ $unit->id }}" x-model="selected" wire:key="checkbox-{{ $unit->id }}"/>
+                        </x-tables.td>
+                    @endunless
                     <x-tables.td>{{ $unit->id }}</x-tables.td>
                     <x-tables.td>{{ $unit->name }}</x-tables.td>
                     @unless($good)
@@ -92,21 +98,23 @@
                     @endunless
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('units.show', $unit->id)"/>
-                        <x-tables.action-edit :route="route('units.edit', $unit->id)"/>
-                        @if($good)
-                            <x-tables.action-delete
-                                wire:click="deleteUnit({{ $unit->id }})"
-                                :confirm="__('goods.confirm_remove_unit_assignment')"
-                                :label="__('goods.remove_unit_assignment')"
-                            >
-                                <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
-                            </x-tables.action-delete>
-                        @else
-                            <x-tables.action-delete
-                                wire:click="deleteUnit({{ $unit->id }})"
-                                :confirm="__('units.confirm_delete_unit')"
-                            />
-                        @endif
+                        @unless($readonly)
+                            <x-tables.action-edit :route="route('units.edit', $unit->id)"/>
+                            @if($good)
+                                <x-tables.action-delete
+                                    wire:click="deleteUnit({{ $unit->id }})"
+                                    :confirm="__('goods.confirm_remove_unit_assignment')"
+                                    :label="__('goods.remove_unit_assignment')"
+                                >
+                                    <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                                </x-tables.action-delete>
+                            @else
+                                <x-tables.action-delete
+                                    wire:click="deleteUnit({{ $unit->id }})"
+                                    :confirm="__('units.confirm_delete_unit')"
+                                />
+                            @endif
+                        @endunless
                     </x-tables.td>
                 </tr>
             @endforeach

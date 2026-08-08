@@ -21,6 +21,8 @@ class ContractorAddressesTable extends Component
 
     public ?Contractor $contractor = null;
 
+    public bool $readonly = false;
+
     public string $search = '';
     public string $isActive = '';
     public ?int $country = null;
@@ -29,9 +31,10 @@ class ContractorAddressesTable extends Component
     public bool $showCreateModal = false;
     public array $createAddressData = [];
 
-    public function mount(?Contractor $contractor = null): void
+    public function mount(?Contractor $contractor = null, bool $readonly = false): void
     {
         $this->contractor = ($contractor && $contractor->exists) ? $contractor : null;
+        $this->readonly = $readonly;
     }
 
     protected function filterFields(): array
@@ -68,6 +71,10 @@ class ContractorAddressesTable extends Component
 
     public function deleteSelected(): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->authorize('contractor-addresses.delete');
 
         $this->deleteSelectedRecords(ContractorAddress::class);
@@ -75,6 +82,10 @@ class ContractorAddressesTable extends Component
 
     public function deleteAddress(int $id): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->authorize('contractor-addresses.delete');
 
         ContractorAddress::where('id', $id)->delete();
@@ -83,6 +94,10 @@ class ContractorAddressesTable extends Component
 
     public function toggleActive(int $addressId): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->authorize('contractor-addresses.edit');
 
         $address = ContractorAddress::findOrFail($addressId);
@@ -94,6 +109,10 @@ class ContractorAddressesTable extends Component
 
     public function openCreateModal(): void
     {
+        if ($this->readonly) {
+            return;
+        }
+
         $this->createAddressData = [
             'country' => null,
             'zipcode' => '',
@@ -108,7 +127,7 @@ class ContractorAddressesTable extends Component
 
     public function createAddress(): void
     {
-        if (! $this->contractor) {
+        if (! $this->contractor || $this->readonly) {
             return;
         }
 
