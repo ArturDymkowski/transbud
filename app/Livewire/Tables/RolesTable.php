@@ -12,9 +12,14 @@ class RolesTable extends Component
 {
     use WithBulkSelection;
 
+    public string $search = '';
+
     public function render()
     {
-        $roles = Role::withCount('permissions')->orderBy('id', 'desc')->get();
+        $roles = Role::withCount('permissions')
+            ->when(filled($this->search), fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'))
+            ->orderBy('id', 'desc')
+            ->get();
 
         $this->idsOnPage = $roles->pluck('id')->toArray();
 

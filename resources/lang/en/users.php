@@ -10,6 +10,8 @@ return [
     'password_section' => 'Password',
     'password_keep_hint' => 'Leave blank to keep the current password',
     'basic_info' => 'Basic information',
+    'role' => 'Role',
+    'role_section' => 'Role',
     'create_title' => 'Create user',
     'confirm_delete_user' => 'Are you sure you want to delete the user?',
 ];

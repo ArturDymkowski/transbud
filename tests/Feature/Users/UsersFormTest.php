@@ -4,6 +4,7 @@ use App\Livewire\Forms\UsersForm;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();
@@ -120,4 +121,59 @@ test('editing a user keeps its own email valid despite the uniqueness rule', fun
         ->call('save')
         ->assertHasNoErrors(['userData.email'])
         ->assertRedirect(route('users.index'));
+});
+
+test('a role can be assigned to a user on create', function () {
+    $role = Role::create(['name' => 'Dispatcher']);
+
+    Livewire::test(UsersForm::class)
+        ->set(validUserPayload())
+        ->set('userData.role_id', $role->id)
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    $user = User::where('email', 'jan.kowalski@example.com')->first();
+    expect($user->hasRole('Dispatcher'))->toBeTrue();
+});
+
+test('a role can be assigned when its id arrives as a string, as the select input sends it', function () {
+    $role = Role::create(['name' => 'Dispatcher']);
+
+    Livewire::test(UsersForm::class)
+        ->set(validUserPayload())
+        ->set('userData.role_id', (string) $role->id)
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    $user = User::where('email', 'jan.kowalski@example.com')->first();
+    expect($user->hasRole('Dispatcher'))->toBeTrue();
+});
+
+test('a user can have at most one role, switching replaces the previous one', function () {
+    $roleA = Role::create(['name' => 'Dispatcher']);
+    $roleB = Role::create(['name' => 'Accountant']);
+
+    $user = User::factory()->create()->fresh();
+    $user->assignRole($roleA);
+
+    Livewire::test(UsersForm::class, ['user' => $user])
+        ->set('userData.role_id', $roleB->id)
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    expect($user->refresh()->roles->pluck('name')->all())->toBe(['Accountant']);
+});
+
+test('a role can be unassigned from a user by selecting no role', function () {
+    $role = Role::create(['name' => 'Dispatcher']);
+
+    $user = User::factory()->create()->fresh();
+    $user->assignRole($role);
+
+    Livewire::test(UsersForm::class, ['user' => $user])
+        ->set('userData.role_id', '')
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    expect($user->refresh()->roles)->toBeEmpty();
 });

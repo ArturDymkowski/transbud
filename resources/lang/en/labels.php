@@ -89,6 +89,16 @@ return [
         'title' => 'Dashboard',
         'empty_title' => 'Nothing to show yet',
         'empty_description' => 'Soon you\'ll see alerts here about drivers\' documents nearing their expiry date (driving license, ID card).',
+        'expiring_documents' => 'Expiring documents',
+        'box_30_days' => 'In 30 days',
+        'box_14_days' => 'In 2 weeks',
+        'box_7_days' => 'In a week',
+        'empty_box' => 'No upcoming deadlines',
+        'days_left' => ':days days left',
+        'day_left' => '1 day left',
+        'expires_today' => 'Expires today',
+        'expired_days_ago' => 'Overdue by :days days',
+        'expired_one_day_ago' => 'Overdue by 1 day',
     ],
 
     'address' => [

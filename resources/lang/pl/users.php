@@ -10,6 +10,8 @@ return [
     'password_section' => 'Hasło',
     'password_keep_hint' => 'Pozostaw puste, aby nie zmieniać hasła',
     'basic_info' => 'Informacje podstawowe',
+    'role' => 'Rola',
+    'role_section' => 'Rola',
     'create_title' => 'Utwórz użytkownika',
     'confirm_delete_user' => 'Czy na pewno chcesz usunąć użytkownika?',
 ];

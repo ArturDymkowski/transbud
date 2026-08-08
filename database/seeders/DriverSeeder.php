@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Schema;
 class DriverSeeder extends Seeder
 {
     /**
+     * Day offsets (from "today", whenever the seeder happens to run) guaranteed to land in the
+     * red (<=7 days), yellow (<=14 days) and green (<=30 days) buckets used by the dashboard
+     * and table badges. See App\Helpers\ExpiryHelper.
+     */
+    private const EXPIRY_OFFSETS = [3, 10, 20];
+
+    private const EXPIRY_FIELDS = [
+        'driving_license_expiry_date',
+        'identity_card_expiry_date',
+    ];
+
+    /**
      * Run the database seed.
      *
      * @return void
@@ -24,5 +36,22 @@ class DriverSeeder extends Seeder
         Schema::enableForeignKeyConstraints();
 
         Driver::factory()->count(100)->create();
+
+        $this->seedExpiringDrivers();
+    }
+
+    /**
+     * A handful of drivers per date field, with expiry dates pinned so the dashboard's
+     * 30/14/7-day boxes always have something to show, regardless of when this seeder runs.
+     */
+    private function seedExpiringDrivers(): void
+    {
+        foreach (self::EXPIRY_FIELDS as $field) {
+            foreach (self::EXPIRY_OFFSETS as $days) {
+                Driver::factory()->count(2)->create([
+                    $field => now()->addDays($days),
+                ]);
+            }
+        }
     }
 }

@@ -117,8 +117,8 @@
                         <x-tables.td>{{ $driver->phone ?? '-' }}</x-tables.td>
                         <x-tables.td>{{ $driver->pesel ?? '-' }}</x-tables.td>
                         <x-tables.td>{!! $driver->fullAddress ?? '-' !!}</x-tables.td>
-                        <x-tables.td>{{ $driver->driving_license_expiry_date ?? '-' }}</x-tables.td>
-                        <x-tables.td>{{ $driver->identity_card_expiry_date ?? '-' }}</x-tables.td>
+                        <x-tables.td><x-ui.expiry-date-badge :date="$driver->driving_license_expiry_date"/></x-tables.td>
+                        <x-tables.td><x-ui.expiry-date-badge :date="$driver->identity_card_expiry_date"/></x-tables.td>
                         <x-tables.td>
                             <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
                                                  name="{{ $driver->id }}" :isActive="$driver->is_active" wire:key="toggle-{{ $driver->id }}"/>

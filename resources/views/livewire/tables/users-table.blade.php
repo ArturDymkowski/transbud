@@ -42,6 +42,8 @@
                     :sortDirection="$sortDirection"
                 />
 
+                <x-tables.th>{{ __('users.role') }}</x-tables.th>
+
                 <x-tables.th-sort
                     field="is_active"
                     :label="__('labels.tables.active')"
@@ -61,6 +63,7 @@
                     <x-tables.td>{{ $user->id }}</x-tables.td>
                     <x-tables.td>{{ $user->name }}</x-tables.td>
                     <x-tables.td>{{ $user->email }}</x-tables.td>
+                    <x-tables.td>{{ $user->roles->first()?->name ?? '-' }}</x-tables.td>
                     <x-tables.td>
                         <x-form.input.toggle wire:change="toggleActive({{ $user->id }})"
                                              name="{{ $user->id }}" :isActive="$user->is_active" wire:key="toggle-{{ $user->id }}"/>

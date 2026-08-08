@@ -1,4 +1,8 @@
 <x-tables.card :createRoute="auth()->user()->can('roles.create') ? route('roles.create') : null">
+    <x-slot:header>
+        <x-tables.filter-bar searchModel="search"/>
+    </x-slot:header>
+
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($roles->pluck('id')) }})">
         <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
 

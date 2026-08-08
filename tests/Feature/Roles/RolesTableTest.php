@@ -37,6 +37,16 @@ test('deleteRole refuses to delete a role assigned to a user', function () {
     expect(Role::find($role->id))->not->toBeNull();
 });
 
+test('search filters roles by name', function () {
+    Role::create(['name' => 'Dispatcher']);
+    Role::create(['name' => 'Accountant']);
+
+    Livewire::test(RolesTable::class)
+        ->set('search', 'Dispatch')
+        ->assertSee('Dispatcher')
+        ->assertDontSee('Accountant');
+});
+
 test('a user without the roles.delete permission cannot delete a role', function () {
     $limitedRole = Role::create(['name' => 'Limited']);
     $limitedRole->syncPermissions(Permission::where('name', 'roles.view')->get());

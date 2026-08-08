@@ -90,9 +90,9 @@
                     <x-tables.td>{{ $vehicle->registration_number }}</x-tables.td>
                     <x-tables.td>{{ $vehicle->vin }}</x-tables.td>
                     <x-tables.td>{{ $vehicle->type?->label() ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $vehicle->technical_inspection_expiry_date ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $vehicle->insurance_expiry_date ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $vehicle->tachograph_inspection_expiry_date ?? '-' }}</x-tables.td>
+                    <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->technical_inspection_expiry_date"/></x-tables.td>
+                    <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->insurance_expiry_date"/></x-tables.td>
+                    <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->tachograph_inspection_expiry_date"/></x-tables.td>
                     <x-tables.td>
                         <x-form.input.toggle wire:change="toggleActive({{ $vehicle->id }})"
                                              name="{{ $vehicle->id }}" :isActive="$vehicle->is_active" wire:key="toggle-{{ $vehicle->id }}"/>

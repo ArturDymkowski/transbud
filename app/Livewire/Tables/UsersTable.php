@@ -26,6 +26,7 @@ class UsersTable extends Component
     public function render()
     {
         $users = User::search($this->search)
+            ->with('roles')
             ->when(filled($this->isActive), fn ($q) => $q->where('is_active', $this->isActive))
             ->when($this->trashed === 'with', fn ($q) => $q->withTrashed())
             ->when($this->trashed === 'only', fn ($q) => $q->onlyTrashed())

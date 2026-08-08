@@ -47,4 +47,18 @@
         </div>
     </x-form.section>
 
+    <!-- Sekcja: Rola -->
+    <x-form.section title="{{ __('users.role_section') }}">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
+
+            <div class="col-span-1">
+                <x-form.input.select name="userData.role_id"
+                                     label="{{ __('users.role') }}"
+                                     wire:model="userData.role_id"
+                                     :options="$this->roleOptions"/>
+            </div>
+
+        </div>
+    </x-form.section>
+
 </x-form.wrapper>

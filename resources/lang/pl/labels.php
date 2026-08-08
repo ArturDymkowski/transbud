@@ -89,6 +89,16 @@ return [
         'title' => 'Panel',
         'empty_title' => 'Brak danych do wyświetlenia',
         'empty_description' => 'Wkrótce pojawią się tu informacje o kończących się terminach dokumentów kierowców (prawo jazdy, dowód osobisty).',
+        'expiring_documents' => 'Wygasające dokumenty',
+        'box_30_days' => 'Za 30 dni',
+        'box_14_days' => 'Za 2 tygodnie',
+        'box_7_days' => 'Za tydzień',
+        'empty_box' => 'Brak terminów w tym okresie',
+        'days_left' => 'Pozostało dni: :days',
+        'day_left' => 'Pozostał 1 dzień',
+        'expires_today' => 'Termin mija dzisiaj',
+        'expired_days_ago' => 'Przeterminowane o :days dni',
+        'expired_one_day_ago' => 'Przeterminowane o 1 dzień',
     ],
 
     'address' => [

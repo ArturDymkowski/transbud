@@ -8,6 +8,11 @@ class MenuHelper
     {
         $items = [
             [
+                'icon' => 'heroicon-o-home',
+                'name' => __('labels.dashboard.title'),
+                'path' => route('dashboard'),
+            ],
+            [
                 'permission' => 'drivers.view',
                 'icon' => 'heroicon-o-user-group',
                 'name' => __('drivers.plural_model_label'),
@@ -77,7 +82,7 @@ class MenuHelper
 
         return array_values(array_filter(
             $items,
-            fn (array $item) => auth()->user()?->can($item['permission']) ?? false
+            fn (array $item) => empty($item['permission']) || (auth()->user()?->can($item['permission']) ?? false)
         ));
     }
 

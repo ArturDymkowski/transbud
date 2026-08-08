@@ -3,6 +3,7 @@
 use App\Livewire\Tables\UsersTable;
 use App\Models\User;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();
@@ -38,6 +39,19 @@ test('search filters users by email', function () {
         ->set('search', 'jan@example.com')
         ->assertSee('Jan Kowalski')
         ->assertDontSee('Anna Nowak');
+});
+
+test('the assigned role is shown in the role column', function () {
+    $role = Role::create(['name' => 'Dispatcher']);
+    $user = User::factory()->create(['name' => 'Jan Kowalski']);
+    $user->assignRole($role);
+
+    User::factory()->create(['name' => 'Anna Nowak']);
+
+    $component = Livewire::test(UsersTable::class);
+
+    $component->assertSeeInOrder(['Jan Kowalski', 'Dispatcher']);
+    $component->assertSeeInOrder(['Anna Nowak', '-']);
 });
 
 test('active filter narrows the list to active or inactive users', function () {
