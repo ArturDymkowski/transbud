@@ -61,4 +61,14 @@ return [
     ],
 
     'documents' => 'Dokumenty',
+
+    'status_history' => [
+        'tab' => 'Historia statusów',
+        'transport_set' => 'Zestaw transportowy',
+        'status' => 'Status',
+        'changed_by' => 'Zmienił',
+        'changed_at' => 'Data zmiany',
+        'system' => 'System',
+        'empty' => 'Brak historii zmian statusów.',
+    ],
 ];

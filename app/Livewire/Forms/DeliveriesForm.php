@@ -14,6 +14,7 @@ use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\ContractorAddress;
 use App\Models\Delivery;
 use App\Models\DeliveryGood;
+use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
 use App\Models\Good;
 use Closure;
@@ -406,9 +407,15 @@ class DeliveriesForm extends Component
 
             if (! empty($transportSetData['id'])) {
                 $transportSet = $this->delivery->transportSets()->whereKey($transportSetData['id'])->first();
+                $previousStatus = $transportSet->status->value;
                 $transportSet->update($attributes);
+
+                if ($previousStatus !== (int) $attributes['status']) {
+                    $this->recordStatusChange($transportSet, $attributes['status']);
+                }
             } else {
                 $transportSet = $this->delivery->transportSets()->create($attributes);
+                $this->recordStatusChange($transportSet, $attributes['status']);
             }
 
             $keepIds[] = $transportSet->id;
@@ -421,6 +428,14 @@ class DeliveriesForm extends Component
         DeliveryGood::whereIn('delivery_transport_set_id', $removedTransportSetIds)->delete();
 
         $this->delivery->transportSets()->whereNotIn('id', $keepIds)->delete();
+    }
+
+    private function recordStatusChange(DeliveryTransportSet $transportSet, int|string $status): void
+    {
+        $transportSet->statusHistories()->create([
+            'status' => $status,
+            'changed_by' => auth()->id(),
+        ]);
     }
 
     public function render()

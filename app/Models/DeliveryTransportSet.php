@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DeliveryTransportSet extends Model
 {
@@ -54,5 +53,10 @@ class DeliveryTransportSet extends Model
     public function goods(): HasMany
     {
         return $this->hasMany(DeliveryGood::class);
+    }
+
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(DeliveryTransportSetStatusHistory::class)->latest('created_at');
     }
 }

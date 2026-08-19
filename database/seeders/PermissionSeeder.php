@@ -32,6 +32,10 @@ class PermissionSeeder extends Seeder
         DB::table('permissions')->truncate();
         Schema::enableForeignKeyConstraints();
 
+        // Spatie caches the permission list; without clearing it here, Permission::create()
+        // below would still see the pre-truncate permissions and throw "already exists".
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         foreach (self::RESOURCES as $resource) {
             foreach (['view', 'create', 'edit', 'delete'] as $action) {
                 Permission::create(['name' => "{$resource}.{$action}"]);
