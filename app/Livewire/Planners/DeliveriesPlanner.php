@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Planners;
 
+use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithTransportSetEvents;
 use App\Models\DeliveryTransportSet;
 use App\Support\Planner\PlannerEvent;
+use App\Support\Planner\PlannerResourceType;
 use App\Support\Planner\Resources\DriverPlannerResourceProvider;
 use App\Support\Planner\Resources\PlannerResourceProviderInterface;
+use App\Support\Planner\Resources\VehiclePlannerResourceProvider;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -25,6 +28,9 @@ class DeliveriesPlanner extends Component
 
     public int $pxPerHour = 80;
 
+    /** @var string {@see PlannerResourceType} value of the currently shown rows */
+    public string $resourceType = 'driver';
+
     /** @var array<int, int|string> selected resource ids; empty means "all" */
     public array $selectedResourceIds = [];
 
@@ -33,9 +39,34 @@ class DeliveriesPlanner extends Component
         $this->date = now()->toDateString();
     }
 
+    /**
+     * The single point where a resource type maps to its data source. Adding a new
+     * type (e.g. splitting tractors further) only touches this method and
+     * PlannerResourceType — nothing else in the component or Blade layer needs to change.
+     */
     private function resourceProvider(): PlannerResourceProviderInterface
     {
-        return new DriverPlannerResourceProvider;
+        return match (PlannerResourceType::from($this->resourceType)) {
+            PlannerResourceType::DRIVER => new DriverPlannerResourceProvider,
+            PlannerResourceType::TRACTOR => new VehiclePlannerResourceProvider(VehicleTypeEnum::TRACTOR),
+            PlannerResourceType::TRAILER => new VehiclePlannerResourceProvider(VehicleTypeEnum::TRAILER),
+        };
+    }
+
+    #[Computed]
+    public function resourceTypeEnum(): PlannerResourceType
+    {
+        return PlannerResourceType::from($this->resourceType);
+    }
+
+    /**
+     * Rows never mix resource types, so switching type also clears the filter —
+     * ids selected for drivers are meaningless once the rows are tractors/trailers.
+     */
+    public function setResourceType(string $resourceType): void
+    {
+        $this->resourceType = PlannerResourceType::from($resourceType)->value;
+        $this->selectedResourceIds = [];
     }
 
     public function previousDay(): void
@@ -75,8 +106,8 @@ class DeliveriesPlanner extends Component
     }
 
     /**
-     * All available resources, unfiltered — used to populate the filter dropdown
-     * so unchecking one option never removes the others from the list.
+     * All available resources of the current type, unfiltered — used to populate the
+     * filter dropdown so unchecking one option never removes the others from the list.
      */
     #[Computed]
     public function allResources(): Collection
@@ -108,20 +139,21 @@ class DeliveriesPlanner extends Component
     }
 
     /**
-     * @return Collection<int, Collection<int, PlannerEvent>> events keyed by resource (driver) id
+     * @return Collection<int, Collection<int, PlannerEvent>> events keyed by resource id
      */
     #[Computed]
     public function eventsByResource(): Collection
     {
         $windowStart = $this->windowStart();
         $windowEnd = $this->windowEnd();
+        $foreignKey = $this->resourceProvider()->transportSetForeignKey();
 
         return $this->transportSetEventsBetween($windowStart, $windowEnd)
-            ->whereNotNull('driver_id')
+            ->whereNotNull($foreignKey)
             ->get()
             ->map(fn (DeliveryTransportSet $transportSet) => PlannerEvent::forWindow(
                 id: $transportSet->id,
-                resourceId: $transportSet->driver_id,
+                resourceId: $transportSet->{$foreignKey},
                 title: $this->transportSetEventTitle($transportSet),
                 color: $this->transportSetEventColor($transportSet),
                 startsAt: $transportSet->loading_at,

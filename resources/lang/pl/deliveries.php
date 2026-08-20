@@ -22,9 +22,13 @@ return [
     ],
 
     'planner' => [
-        'no_resources' => 'Brak aktywnych kierowców',
-        'drivers_filter_label' => 'Kierowcy',
+        'no_resources' => 'Brak aktywnych zasobów: :type',
         'all_drivers' => 'Wszyscy',
+        'resource_types' => [
+            'driver' => 'Kierowcy',
+            'tractor' => 'Ciągniki',
+            'trailer' => 'Naczepy',
+        ],
     ],
 
     'status' => [

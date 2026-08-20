@@ -22,9 +22,13 @@ return [
     ],
 
     'planner' => [
-        'no_resources' => 'No active drivers',
-        'drivers_filter_label' => 'Drivers',
+        'no_resources' => 'No active resources: :type',
         'all_drivers' => 'All',
+        'resource_types' => [
+            'driver' => 'Drivers',
+            'tractor' => 'Tractors',
+            'trailer' => 'Trailers',
+        ],
     ],
 
     'status' => [

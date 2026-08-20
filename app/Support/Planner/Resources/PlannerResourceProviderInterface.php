@@ -15,4 +15,11 @@ interface PlannerResourceProviderInterface
      * @return Collection<int, PlannerResource>
      */
     public function resources(): Collection;
+
+    /**
+     * The DeliveryTransportSet column that links an event to one of these resources
+     * (e.g. 'driver_id', 'vehicle_id', 'trailer_id'). Lets the Planner group events
+     * correctly regardless of which resource type is currently shown.
+     */
+    public function transportSetForeignKey(): string;
 }

@@ -1,17 +1,16 @@
-{{-- width:0 + min-width:100% forces this to always be exactly its parent's width instead
-     of being stretched by the wide, horizontally-scrollable grid below (a flex ancestor
-     higher up the shared layout has no min-width:0, so without this the grid's intrinsic
-     width would otherwise bubble up and make the whole page scroll horizontally). --}}
 <div style="width: 0; min-width: 100%;">
     <x-planner.toolbar :date="$date" />
 
-    {{-- .live is required here: the underlying entangle() only pushes to the server on
-         the next Livewire request otherwise, so unchecking/checking a driver would update
-         the dropdown label but never actually re-filter the grid. --}}
+    <x-planner.resource-type-switcher
+        :options="\App\Support\Planner\PlannerResourceType::getOptions()"
+        :active="$resourceType"
+    />
+
     <x-planner.resource-filter
-        label="{{ __('deliveries.planner.drivers_filter_label') }}"
+        name="planner-resource-filter-{{ $resourceType }}"
+        label="{{ $this->resourceTypeEnum->label() }}"
         :options="$this->resourceOptions"
-        :allLabel="__('deliveries.planner.all_drivers')"
+        :allLabel="$this->resourceTypeEnum->allLabel()"
         wire:model.live="selectedResourceIds"
     />
 
@@ -25,11 +24,11 @@
                     :events="$this->eventsByResource->get($resource->id)"
                     :hours="$this->hours"
                     :pxPerHour="$pxPerHour"
-                    wire:key="planner-row-{{ $resource->id }}"
+                    wire:key="planner-row-{{ $resourceType }}-{{ $resource->id }}"
                 />
             @empty
                 <div class="p-6 text-sm text-gray-400 dark:text-gray-500">
-                    {{ __('deliveries.planner.no_resources') }}
+                    {{ __('deliveries.planner.no_resources', ['type' => $this->resourceTypeEnum->label()]) }}
                 </div>
             @endforelse
         </div>

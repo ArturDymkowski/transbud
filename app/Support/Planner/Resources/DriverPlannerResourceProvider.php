@@ -16,4 +16,9 @@ class DriverPlannerResourceProvider implements PlannerResourceProviderInterface
             ->get(['id', 'name'])
             ->map(fn (Driver $driver) => new PlannerResource($driver->id, $driver->name));
     }
+
+    public function transportSetForeignKey(): string
+    {
+        return 'driver_id';
+    }
 }
