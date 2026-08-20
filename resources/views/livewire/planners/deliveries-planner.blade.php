@@ -23,7 +23,7 @@
                 <x-planner.row
                     :resource="$resource"
                     :events="$this->eventsByResource->get($resource->id)"
-                    :hoursCount="$this->hours->count()"
+                    :hours="$this->hours"
                     :pxPerHour="$pxPerHour"
                     wire:key="planner-row-{{ $resource->id }}"
                 />
