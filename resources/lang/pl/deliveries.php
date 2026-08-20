@@ -16,6 +16,17 @@ return [
     'edit_transport_set' => 'Edycja zestawu transportowego',
     'go_to_edit' => 'Przejdź do edycji',
 
+    'tabs' => [
+        'calendar' => 'Kalendarz',
+        'planner' => 'Planer',
+    ],
+
+    'planner' => [
+        'no_resources' => 'Brak aktywnych kierowców',
+        'drivers_filter_label' => 'Kierowcy',
+        'all_drivers' => 'Wszyscy',
+    ],
+
     'status' => [
         'status' => 'Status',
         'planned' => 'Zaplanowana',

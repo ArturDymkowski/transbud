@@ -125,6 +125,53 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
+    Alpine.data('multiSelect', (options, selected) => ({
+        options,
+        selected,
+        open: false,
+        search: '',
+
+        get filteredOptions() {
+            const term = this.search.trim().toLowerCase();
+
+            if (!term) {
+                return this.options;
+            }
+
+            return this.options.filter(option => option.label.toLowerCase().includes(term));
+        },
+
+        labelFor(value) {
+            const match = this.options.find(option => String(option.value) === String(value));
+
+            return match ? match.label : value;
+        },
+
+        isSelected(value) {
+            return this.selected.some(selectedValue => String(selectedValue) === String(value));
+        },
+
+        toggleOption(value) {
+            this.selected = this.isSelected(value)
+                ? this.selected.filter(selectedValue => String(selectedValue) !== String(value))
+                : [...this.selected, value];
+        },
+
+        toggle() {
+            this.open ? this.close() : this.openList();
+        },
+
+        openList() {
+            this.open = true;
+            this.search = '';
+            this.$nextTick(() => this.$refs.search && this.$refs.search.focus());
+        },
+
+        close() {
+            this.open = false;
+        },
+    }));
+
     Alpine.data('searchableSelect', (options, selected) => ({
         options,
         selected,

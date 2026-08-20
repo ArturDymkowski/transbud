@@ -4,6 +4,7 @@ return [
     'general' => [
         'close' => 'Zamknij',
         'save' => 'Zapisz',
+        'today' => 'Dzisiaj',
         'extra_info' => 'Informacje dodatkowe',
         'basic_info' => 'Informacje podstawowe',
         'not_selected' => '-- nie wybrano --',

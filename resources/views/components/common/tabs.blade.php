@@ -1,4 +1,4 @@
-@props(['tabs', 'active' => null])
+@props(['tabs', 'active' => null, 'icons' => []])
 
 @php($active = $active ?? array_key_first($tabs))
 
@@ -12,8 +12,11 @@
                     :class="activeTab === '{{ $key }}'
                         ? 'border-brand-500 text-brand-500 dark:text-brand-400'
                         : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
-                    class="shrink-0 border-b-2 px-1 py-3 text-sm font-medium transition-colors"
+                    class="flex shrink-0 items-center gap-1.5 border-b-2 px-1 py-3 text-sm font-medium transition-colors"
                 >
+                    @isset($icons[$key])
+                        <x-dynamic-component :component="$icons[$key]" class="h-4 w-4 shrink-0"/>
+                    @endisset
                     {{ $label }}
                 </button>
             @endforeach

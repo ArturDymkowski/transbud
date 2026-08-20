@@ -16,6 +16,17 @@ return [
     'edit_transport_set' => 'Edit transport set',
     'go_to_edit' => 'Go to edit',
 
+    'tabs' => [
+        'calendar' => 'Calendar',
+        'planner' => 'Planner',
+    ],
+
+    'planner' => [
+        'no_resources' => 'No active drivers',
+        'drivers_filter_label' => 'Drivers',
+        'all_drivers' => 'All',
+    ],
+
     'status' => [
         'status' => 'Status',
         'planned' => 'Planned',
