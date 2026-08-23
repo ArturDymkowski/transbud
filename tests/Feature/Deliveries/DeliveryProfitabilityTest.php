@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\CurrencyEnum;
-use App\Enums\DeliveryCostTypeEnum;
 use App\Livewire\Profitability\DeliveryProfitabilityPanel;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
@@ -105,52 +104,31 @@ test('margin is null and cost is zero-revenue when freight amount is not set', f
 });
 
 // --- Livewire panel ---------------------------------------------------------
+// The cost add/edit form itself lives in DeliveryCostModal (see
+// DeliveryCostModalTest); the panel only relays the open events to it and
+// reloads its own data when the modal reports back that a cost was saved.
 
-test('a cost can be added directly to a delivery', function () {
+test('opening the create/edit cost modal relays an event instead of mutating local state', function () {
     $delivery = createProfitabilityDelivery();
+    $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
 
     Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
-        ->call('openCreateCostModal')
-        ->set('costData.type', DeliveryCostTypeEnum::FUEL->value)
-        ->set('costData.amount', '350.50')
-        ->set('costData.description', 'Tankowanie')
-        ->call('saveCost')
-        ->assertHasNoErrors();
-
-    $cost = $delivery->costs()->sole();
-    expect($cost->amount)->toBe(35050);
-    expect($cost->delivery_transport_set_id)->toBeNull();
-    expect($cost->currency)->toBe(CurrencyEnum::PLN);
-    expect($cost->type)->toBe(DeliveryCostTypeEnum::FUEL);
-});
-
-test('a cost can be added to a specific transport set', function () {
-    $delivery = createProfitabilityDelivery();
-    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
-
-    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
-        ->call('openCreateCostModal', $transportSet->id)
-        ->set('costData.type', DeliveryCostTypeEnum::TOLL->value)
-        ->set('costData.amount', '80')
-        ->call('saveCost')
-        ->assertHasNoErrors();
-
-    $cost = $delivery->costs()->sole();
-    expect($cost->delivery_transport_set_id)->toBe($transportSet->id);
-    expect($cost->amount)->toBe(8000);
-});
-
-test('an existing cost can be edited', function () {
-    $delivery = createProfitabilityDelivery();
-    $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id, 'amount' => 10_000]);
-
-    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
+        ->call('openCreateCostModal', $cost->delivery_transport_set_id)
+        ->assertDispatched('open-create-cost-modal')
         ->call('openEditCostModal', $cost->id)
-        ->set('costData.amount', '200.00')
-        ->call('saveCost')
-        ->assertHasNoErrors();
+        ->assertDispatched('open-edit-cost-modal');
+});
 
-    expect($cost->fresh()->amount)->toBe(20_000);
+test('the cost-saved event reloads the delivery so totals reflect the new cost', function () {
+    $delivery = createProfitabilityDelivery(1_500_000);
+
+    $component = Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery]);
+    expect($component->instance()->profitability()->totalCostAmount)->toBe(0);
+
+    DeliveryCost::factory()->create(['delivery_id' => $delivery->id, 'amount' => 100_000]);
+    $component->dispatch('cost-saved');
+
+    expect($component->instance()->profitability()->totalCostAmount)->toBe(100_000);
 });
 
 test('a cost can be deleted', function () {
@@ -161,36 +139,6 @@ test('a cost can be deleted', function () {
         ->call('deleteCost', $cost->id);
 
     expect(DeliveryCost::find($cost->id))->toBeNull();
-});
-
-test('a cost cannot be assigned to a transport set belonging to another delivery', function () {
-    $delivery = createProfitabilityDelivery();
-    $otherDelivery = createProfitabilityDelivery();
-    $foreignTransportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $otherDelivery->id]);
-
-    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
-        ->call('openCreateCostModal')
-        ->set('costData.type', DeliveryCostTypeEnum::FUEL->value)
-        ->set('costData.amount', '100')
-        ->set('costData.delivery_transport_set_id', $foreignTransportSet->id)
-        ->call('saveCost')
-        ->assertHasErrors('costData.delivery_transport_set_id');
-
-    expect(DeliveryCost::count())->toBe(0);
-});
-
-test('a saved cost always inherits the delivery currency, not a user-supplied one', function () {
-    $delivery = createProfitabilityDelivery(1_500_000);
-    $delivery->update(['currency' => CurrencyEnum::EUR->value]);
-
-    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
-        ->call('openCreateCostModal')
-        ->set('costData.type', DeliveryCostTypeEnum::FUEL->value)
-        ->set('costData.amount', '100')
-        ->call('saveCost')
-        ->assertHasNoErrors();
-
-    expect($delivery->costs()->sole()->currency)->toBe(CurrencyEnum::EUR);
 });
 
 test('the profitability tab is visible on the delivery show page', function () {
