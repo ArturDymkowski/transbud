@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('contractor_address_id')->constrained()->cascadeOnDelete();
             $table->string('loading_address');
             $table->tinyInteger('status')->default(0);
+            $table->unsignedInteger('freight_amount')->nullable(); // grosze
+            $table->tinyInteger('currency')->default(0);
 
             $table->timestamps();
         });

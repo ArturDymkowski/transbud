@@ -8,6 +8,8 @@ return [
     'contractor' => 'Kontrahent',
     'contractor_address' => 'Adres kontrahenta',
     'loading_address' => 'Adres załadunku',
+    'freight_amount' => 'Kwota frachtu',
+    'currency' => 'Waluta',
     'confirm_delete_delivery' => 'Czy na pewno chcesz usunąć dostawę?',
     'confirm_delete_document' => 'Czy na pewno chcesz usunąć ten dokument?',
     'create_title' => 'Utwórz dostawę',
@@ -76,6 +78,44 @@ return [
     ],
 
     'documents' => 'Dokumenty',
+
+    'cost_type' => [
+        'fuel' => 'Paliwo',
+        'driver' => 'Kierowca',
+        'toll' => 'Opłaty drogowe',
+        'ferry' => 'Prom',
+        'parking' => 'Parking',
+        'service' => 'Serwis',
+        'other' => 'Inne',
+    ],
+
+    'cost' => [
+        'cost' => 'Koszt',
+        'costs' => 'Koszty',
+        'type' => 'Kategoria',
+        'amount' => 'Kwota',
+        'description' => 'Opis',
+        'add' => 'Dodaj koszt',
+        'edit' => 'Edytuj koszt',
+        'remove' => 'Usuń koszt',
+        'confirm_delete' => 'Czy na pewno chcesz usunąć ten koszt?',
+        'whole_delivery' => 'Cała dostawa',
+        'remaining_costs' => 'Koszty pozostałe',
+        'empty' => 'Brak kosztów.',
+    ],
+
+    'profitability' => [
+        'tab' => 'Opłacalność',
+        'summary' => 'Opłacalność dostawy',
+        'revenue' => 'Przychód',
+        'costs' => 'Koszty',
+        'profit' => 'Zysk',
+        'margin' => 'Marża',
+        'total' => 'Razem',
+        'total_costs' => 'Łączne koszty',
+        'by_transport_set' => 'Koszty zestawów',
+        'no_freight_amount' => 'Nie podano kwoty frachtu.',
+    ],
 
     'status_history' => [
         'tab' => 'Historia statusów',

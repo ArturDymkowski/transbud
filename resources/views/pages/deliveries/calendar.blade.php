@@ -24,7 +24,5 @@
         </x-slot:planner>
     </x-common.tabs>
 
-    {{-- Single shared instance: opened by both the calendar and the planner via the
-         `open-transport-set-modal` browser event, so there is exactly one modal on the page. --}}
     <livewire:modals.transport-set-edit-modal />
 @endsection

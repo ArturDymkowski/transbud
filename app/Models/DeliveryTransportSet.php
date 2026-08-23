@@ -55,6 +55,11 @@ class DeliveryTransportSet extends Model
         return $this->hasMany(DeliveryGood::class);
     }
 
+    public function costs(): HasMany
+    {
+        return $this->hasMany(DeliveryCost::class);
+    }
+
     public function statusHistories(): HasMany
     {
         return $this->hasMany(DeliveryTransportSetStatusHistory::class)->latest('created_at');

@@ -36,6 +36,13 @@
                 </div>
 
                 <div class="col-span-1">
+                    <x-form.input.text-input name="deliveryData.freight_amount"
+                                             label="{{ __('deliveries.freight_amount') }}"
+                                             :value="$delivery->freight_amount !== null ? \App\Helpers\MoneyHelper::format($delivery->freight_amount, $delivery->currency) : '-'"
+                                             disabled/>
+                </div>
+
+                <div class="col-span-1">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         {{ __('deliveries.status.status') }}
                     </label>

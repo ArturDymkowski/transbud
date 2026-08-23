@@ -8,6 +8,8 @@ return [
     'contractor' => 'Contractor',
     'contractor_address' => 'Contractor address',
     'loading_address' => 'Loading address',
+    'freight_amount' => 'Freight amount',
+    'currency' => 'Currency',
     'confirm_delete_delivery' => 'Are you sure you want to delete the delivery?',
     'confirm_delete_document' => 'Are you sure you want to delete this document?',
     'create_title' => 'Create delivery',
@@ -76,6 +78,44 @@ return [
     ],
 
     'documents' => 'Documents',
+
+    'cost_type' => [
+        'fuel' => 'Fuel',
+        'driver' => 'Driver',
+        'toll' => 'Toll',
+        'ferry' => 'Ferry',
+        'parking' => 'Parking',
+        'service' => 'Service',
+        'other' => 'Other',
+    ],
+
+    'cost' => [
+        'cost' => 'Cost',
+        'costs' => 'Costs',
+        'type' => 'Category',
+        'amount' => 'Amount',
+        'description' => 'Description',
+        'add' => 'Add cost',
+        'edit' => 'Edit cost',
+        'remove' => 'Remove cost',
+        'confirm_delete' => 'Are you sure you want to delete this cost?',
+        'whole_delivery' => 'Whole delivery',
+        'remaining_costs' => 'Remaining costs',
+        'empty' => 'No costs.',
+    ],
+
+    'profitability' => [
+        'tab' => 'Profitability',
+        'summary' => 'Delivery profitability',
+        'revenue' => 'Revenue',
+        'costs' => 'Costs',
+        'profit' => 'Profit',
+        'margin' => 'Margin',
+        'total' => 'Total',
+        'total_costs' => 'Total costs',
+        'by_transport_set' => 'Transport set costs',
+        'no_freight_amount' => 'No freight amount set.',
+    ],
 
     'status_history' => [
         'tab' => 'Status history',

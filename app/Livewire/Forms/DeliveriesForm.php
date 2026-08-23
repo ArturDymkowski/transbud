@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
+use App\Enums\CurrencyEnum;
 use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithDeliveryGoodsSync;
@@ -52,6 +53,10 @@ class DeliveriesForm extends Component
             $this->deliveryData = $this->delivery->only([
                 'number', 'contractor_id', 'contractor_address_id', 'loading_address',
             ]);
+            $this->deliveryData['freight_amount'] = $this->delivery->freight_amount !== null
+                ? number_format($this->delivery->freight_amount / 100, 2, '.', '')
+                : '';
+            $this->deliveryData['currency'] = $this->delivery->currency->value;
 
             $this->transportSetsData = $this->delivery->transportSets->map(fn ($transportSet) => [
                 'id' => $transportSet->id,
@@ -74,6 +79,8 @@ class DeliveriesForm extends Component
                 'contractor_id' => null,
                 'contractor_address_id' => null,
                 'loading_address' => '',
+                'freight_amount' => '',
+                'currency' => CurrencyEnum::PLN->value,
             ];
         }
     }
@@ -90,6 +97,8 @@ class DeliveriesForm extends Component
                 Rule::exists('contractor_addresses', 'id')->where('contractor_id', $this->deliveryData['contractor_id'] ?? null),
             ],
             'deliveryData.loading_address' => 'required|string|max:255',
+            'deliveryData.freight_amount' => 'nullable|numeric|min:0',
+            'deliveryData.currency' => ['required', new Enum(CurrencyEnum::class)],
 
             'transportSetsData' => 'array',
             'transportSetsData.*.driver_id' => [
@@ -161,6 +170,8 @@ class DeliveriesForm extends Component
             'deliveryData.contractor_id' => __('deliveries.contractor'),
             'deliveryData.contractor_address_id' => __('deliveries.contractor_address'),
             'deliveryData.loading_address' => __('deliveries.loading_address'),
+            'deliveryData.freight_amount' => __('deliveries.freight_amount'),
+            'deliveryData.currency' => __('deliveries.currency'),
 
             'transportSetsData.*.driver_id' => __('deliveries.transport_set.driver'),
             'transportSetsData.*.vehicle_id' => __('deliveries.transport_set.vehicle'),
@@ -368,6 +379,10 @@ class DeliveriesForm extends Component
             if (! $isUpdate) {
                 $this->deliveryData['number'] = $this->generateDeliveryNumber();
             }
+
+            $this->deliveryData['freight_amount'] = filled($this->deliveryData['freight_amount'] ?? null)
+                ? (int) round(((float) $this->deliveryData['freight_amount']) * 100)
+                : null;
 
             $this->delivery->fill($this->deliveryData);
             $this->delivery->status = $this->computeDeliveryStatus(collect($this->transportSetsData)->pluck('status'));

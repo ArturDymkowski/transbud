@@ -10,11 +10,15 @@
     />
     <x-common.tabs :tabs="[
         'view' => __('labels.tables.show'),
+        'profitability' => __('deliveries.profitability.tab'),
         'status_history' => __('deliveries.status_history.tab'),
     ]">
         <x-slot:view>
             <livewire:shows.deliveries-show :delivery="$delivery"/>
         </x-slot:view>
+        <x-slot:profitability>
+            <livewire:profitability.delivery-profitability-panel :delivery="$delivery"/>
+        </x-slot:profitability>
         <x-slot:status_history>
             @php
                 $statusHistories = $delivery->transportSets

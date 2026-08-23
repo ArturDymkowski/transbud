@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CurrencyEnum;
 use App\Enums\DeliveryStatusEnum;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
@@ -26,6 +27,19 @@ class DeliveryFactory extends Factory
             'contractor_address_id' => ContractorAddress::factory(),
             'loading_address' => $this->faker->address(),
             'status' => $this->faker->numberBetween(0, count(DeliveryStatusEnum::cases()) - 1),
+            'freight_amount' => null,
+            'currency' => CurrencyEnum::PLN->value,
         ];
+    }
+
+    /**
+     * Set a freight amount (in grosze) for profitability tests.
+     */
+    public function withFreightAmount(int $amountGrosze, CurrencyEnum $currency = CurrencyEnum::PLN): static
+    {
+        return $this->state(fn () => [
+            'freight_amount' => $amountGrosze,
+            'currency' => $currency->value,
+        ]);
     }
 }

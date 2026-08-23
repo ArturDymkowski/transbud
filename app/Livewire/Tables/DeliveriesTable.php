@@ -28,6 +28,7 @@ class DeliveriesTable extends Component
     {
         $query = Delivery::with(['contractor', 'contractorAddress'])
             ->withCount('transportSets')
+            ->withSum('costs', 'amount')
             ->search($this->search)
             ->when(filled($this->status), fn ($q) => $q->where('status', $this->status));
 

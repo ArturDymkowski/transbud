@@ -55,6 +55,8 @@
                     :sortDirection="$sortDirection"
                 />
 
+                <x-tables.th>{{ __('deliveries.profitability.margin') }}</x-tables.th>
+
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
@@ -78,6 +80,15 @@
                         <x-ui.status-badge :color="$delivery->status->color()">
                             {{ $delivery->status->label() }}
                         </x-ui.status-badge>
+                    </x-tables.td>
+                    <x-tables.td>
+                        @php($margin = $delivery->marginPercent())
+                        <x-ui.status-badge :color="\App\Support\Profitability\MarginColor::forPercent($margin)">
+                            {{ $margin !== null ? number_format($margin, 2, ',', ' ').'%' : '-' }}
+                        </x-ui.status-badge>
+                        <div class="mt-1 text-xs text-gray-400">
+                            {{ \App\Helpers\MoneyHelper::format($delivery->profitAmount(), $delivery->currency) }}
+                        </div>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('deliveries.show', $delivery->id)"/>
