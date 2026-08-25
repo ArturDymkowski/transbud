@@ -5,7 +5,6 @@
         pageTitle="{!! $permission->name !!}"
         :breadcrumbs="[
         __('permissions.plural_model_label') => route('permissions.index'),
-        __('permissions.singular_model_label') => route('permissions.edit', ['permission' => $permission]),
         __('labels.tables.edit') => null
     ]"
     />

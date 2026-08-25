@@ -3,7 +3,6 @@
 namespace App\Support\Profitability;
 
 use App\Enums\CurrencyEnum;
-use App\Enums\DeliveryCostTypeEnum;
 use App\Enums\MarginRatingEnum;
 use App\Models\Delivery;
 use App\Models\DeliveryCost;
@@ -68,23 +67,5 @@ final readonly class DeliveryProfitability
     public function marginColor(): string
     {
         return MarginRatingEnum::fromPercent($this->marginPercent)->color();
-    }
-
-    /**
-     * All costs (direct + every transport set's) summed by category, for the
-     * flat "Koszty" breakdown shown under the summary card.
-     *
-     * @return Collection<int, array{type: DeliveryCostTypeEnum, amount: int}>
-     */
-    public function costsByType(): Collection
-    {
-        return $this->directCosts
-            ->merge($this->transportSetBreakdowns->flatMap->costs)
-            ->groupBy(fn (DeliveryCost $cost) => $cost->type->value)
-            ->map(fn (Collection $costs) => [
-                'type' => $costs->first()->type,
-                'amount' => (int) $costs->sum('amount'),
-            ])
-            ->values();
     }
 }

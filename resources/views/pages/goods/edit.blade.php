@@ -5,7 +5,6 @@
         pageTitle="{!! $good->name !!}"
         :breadcrumbs="[
         __('goods.plural_model_label') => route('goods.index'),
-        __('goods.singular_model_label') => route('goods.edit', ['good' => $good]),
         __('labels.tables.edit') => null
     ]"
     />

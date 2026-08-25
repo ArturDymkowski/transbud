@@ -22,7 +22,6 @@ return [
     ],
 
     'nav' => [
-        'search_placeholder' => 'Szukaj lub wpisz polecenie...',
         'toggle_sidebar' => 'Przełącz pasek boczny',
         'toggle_mobile_menu' => 'Przełącz menu mobilne',
         'notifications' => 'Powiadomienia',
@@ -52,7 +51,7 @@ return [
         'showing_to' => 'do',
         'showing_of' => 'z',
         'showing_total' => 'łącznie',
-        'no_results' => 'Brak wyników'
+        'no_results' => 'Brak wyników',
     ],
 
     'tables' => [

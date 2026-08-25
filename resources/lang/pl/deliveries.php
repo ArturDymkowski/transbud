@@ -113,7 +113,6 @@ return [
         'margin' => 'Marża',
         'total' => 'Razem',
         'total_costs' => 'Łączne koszty',
-        'by_transport_set' => 'Koszty zestawów',
         'no_freight_amount' => 'Nie podano kwoty frachtu.',
     ],
 

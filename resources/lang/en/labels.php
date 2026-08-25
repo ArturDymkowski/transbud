@@ -22,7 +22,6 @@ return [
     ],
 
     'nav' => [
-        'search_placeholder' => 'Search or type command...',
         'toggle_sidebar' => 'Toggle Sidebar',
         'toggle_mobile_menu' => 'Toggle Mobile Menu',
         'notifications' => 'Notification',
@@ -52,7 +51,7 @@ return [
         'showing_to' => 'to',
         'showing_of' => 'of',
         'showing_total' => 'total',
-        'no_results' => 'No results'
+        'no_results' => 'No results',
     ],
 
     'tables' => [

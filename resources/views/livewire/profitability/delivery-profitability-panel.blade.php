@@ -42,44 +42,8 @@
         </div>
     </x-form.section>
 
-    <!-- Sekcja: Koszty wg kategorii -->
+    <!-- Sekcja: Koszty -->
     <x-form.section title="{{ __('deliveries.cost.costs') }}">
-        @if($editable)
-            <div class="flex items-center justify-end mb-4">
-                <x-ui.button wire:click="openCreateCostModal" size="sm" variant="outline">
-                    {{ __('deliveries.cost.add') }}
-                </x-ui.button>
-            </div>
-        @endif
-
-        <div class="max-w-full overflow-x-auto">
-            <table class="min-w-full">
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                @forelse($profitability->costsByType() as $row)
-                    <tr wire:key="cost-type-{{ $row['type']->value }}">
-                        <x-tables.td>{{ $row['type']->label() }}</x-tables.td>
-                        <x-tables.td class="text-right">{{ \App\Helpers\MoneyHelper::format($row['amount'], $profitability->currency) }}</x-tables.td>
-                    </tr>
-                @empty
-                    <tr>
-                        <x-tables.td>{{ __('deliveries.cost.empty') }}</x-tables.td>
-                    </tr>
-                @endforelse
-                </tbody>
-                @if($profitability->costsByType()->isNotEmpty())
-                    <tfoot>
-                    <tr class="border-gray-200 border-t font-semibold dark:border-gray-700">
-                        <x-tables.td>{{ __('deliveries.profitability.total') }}</x-tables.td>
-                        <x-tables.td class="text-right">{{ \App\Helpers\MoneyHelper::format($profitability->totalCostAmount, $profitability->currency) }}</x-tables.td>
-                    </tr>
-                    </tfoot>
-                @endif
-            </table>
-        </div>
-    </x-form.section>
-
-    <!-- Sekcja: Koszty zestawów -->
-    <x-form.section title="{{ __('deliveries.profitability.by_transport_set') }}">
         <div class="flex flex-col gap-4">
             @foreach($profitability->transportSetBreakdowns as $breakdown)
                 <div wire:key="cost-breakdown-set-{{ $breakdown->transportSet->id }}" class="flex flex-col gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-800">

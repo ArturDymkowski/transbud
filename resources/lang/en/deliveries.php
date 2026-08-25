@@ -113,7 +113,6 @@ return [
         'margin' => 'Margin',
         'total' => 'Total',
         'total_costs' => 'Total costs',
-        'by_transport_set' => 'Transport set costs',
         'no_freight_amount' => 'No freight amount set.',
     ],
 
