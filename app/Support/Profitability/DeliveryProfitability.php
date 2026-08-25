@@ -4,6 +4,7 @@ namespace App\Support\Profitability;
 
 use App\Enums\CurrencyEnum;
 use App\Enums\DeliveryCostTypeEnum;
+use App\Enums\MarginRatingEnum;
 use App\Models\Delivery;
 use App\Models\DeliveryCost;
 use App\Models\DeliveryTransportSet;
@@ -66,7 +67,7 @@ final readonly class DeliveryProfitability
      */
     public function marginColor(): string
     {
-        return MarginColor::forPercent($this->marginPercent);
+        return MarginRatingEnum::fromPercent($this->marginPercent)->color();
     }
 
     /**

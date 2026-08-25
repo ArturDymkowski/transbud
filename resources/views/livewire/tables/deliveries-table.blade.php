@@ -83,7 +83,7 @@
                     </x-tables.td>
                     <x-tables.td>
                         @php($margin = $delivery->marginPercent())
-                        <x-ui.status-badge :color="\App\Support\Profitability\MarginColor::forPercent($margin)">
+                        <x-ui.status-badge :color="\App\Enums\MarginRatingEnum::fromPercent($margin)->color()">
                             {{ $margin !== null ? number_format($margin, 2, ',', ' ').'%' : '-' }}
                         </x-ui.status-badge>
                         <div class="mt-1 text-xs text-gray-400">
