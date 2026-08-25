@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ContractorAddressSeeder::class,
             UnitSeeder::class,
             GoodSeeder::class,
+            DeliverySeeder::class,
         ]);
     }
 }

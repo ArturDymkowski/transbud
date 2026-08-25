@@ -27,6 +27,10 @@ class DriverSeeder extends Seeder
     /**
      * Run the database seed.
      *
+     * 12 drivers total, all produced by seedExpiringDrivers(): 2 fields x 3 offsets x
+     * 2 drivers each. No separate batch of "plain" random drivers is needed on top -
+     * pinning one expiry field still leaves the other one random, so the fleet stays varied.
+     *
      * @return void
      */
     public function run()
@@ -34,8 +38,6 @@ class DriverSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
         DB::table('drivers')->truncate();
         Schema::enableForeignKeyConstraints();
-
-        Driver::factory()->count(100)->create();
 
         $this->seedExpiringDrivers();
     }
