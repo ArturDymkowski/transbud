@@ -24,8 +24,6 @@ return [
     'nav' => [
         'toggle_sidebar' => 'Przełącz pasek boczny',
         'toggle_mobile_menu' => 'Przełącz menu mobilne',
-        'notifications' => 'Powiadomienia',
-        'view_all_notifications' => 'Zobacz wszystkie powiadomienia',
         'edit_profile' => 'Edytuj profil',
         'account_settings' => 'Ustawienia konta',
         'support' => 'Wsparcie',

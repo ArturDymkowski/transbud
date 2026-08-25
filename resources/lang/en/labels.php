@@ -24,8 +24,6 @@ return [
     'nav' => [
         'toggle_sidebar' => 'Toggle Sidebar',
         'toggle_mobile_menu' => 'Toggle Mobile Menu',
-        'notifications' => 'Notification',
-        'view_all_notifications' => 'View All Notification',
         'edit_profile' => 'Edit profile',
         'account_settings' => 'Account settings',
         'support' => 'Support',

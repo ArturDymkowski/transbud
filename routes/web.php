@@ -9,6 +9,7 @@ use App\Http\Controllers\Page\DeliveryController;
 use App\Http\Controllers\Page\DriverController;
 use App\Http\Controllers\Page\GoodController;
 use App\Http\Controllers\Page\PermissionController;
+use App\Http\Controllers\Page\ProfileController;
 use App\Http\Controllers\Page\RoleController;
 use App\Http\Controllers\Page\UnitController;
 use App\Http\Controllers\Page\UserController;
@@ -46,6 +47,8 @@ Route::get('/delivery-documents/{media}', function (Media $media) {
 // After login
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 
     Route::resource('/drivers', DriverController::class)->only(['index', 'edit', 'create', 'show'])
         ->middlewareFor(['index', 'show'], 'can:drivers.view')
