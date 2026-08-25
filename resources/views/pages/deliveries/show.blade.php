@@ -17,7 +17,7 @@
             <livewire:shows.deliveries-show :delivery="$delivery"/>
         </x-slot:view>
         <x-slot:profitability>
-            <livewire:profitability.delivery-profitability-panel :delivery="$delivery"/>
+            <livewire:profitability.delivery-profitability-panel :delivery="$delivery" :editable="false"/>
         </x-slot:profitability>
         <x-slot:status_history>
             @php

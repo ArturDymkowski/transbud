@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CurrencyEnum;
+use App\Livewire\Modals\DeliveryCostModal;
 use App\Livewire\Profitability\DeliveryProfitabilityPanel;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
@@ -112,11 +113,22 @@ test('opening the create/edit cost modal relays an event instead of mutating loc
     $delivery = createProfitabilityDelivery();
     $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
 
-    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
+    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery, 'editable' => true])
         ->call('openCreateCostModal', $cost->delivery_transport_set_id)
         ->assertDispatched('open-create-cost-modal')
         ->call('openEditCostModal', $cost->id)
         ->assertDispatched('open-edit-cost-modal');
+});
+
+test('the read-only panel does not relay open-modal events', function () {
+    $delivery = createProfitabilityDelivery();
+    $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
+
+    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery, 'editable' => false])
+        ->call('openCreateCostModal')
+        ->assertNotDispatched('open-create-cost-modal')
+        ->call('openEditCostModal', $cost->id)
+        ->assertNotDispatched('open-edit-cost-modal');
 });
 
 test('the cost-saved event reloads the delivery so totals reflect the new cost', function () {
@@ -131,14 +143,25 @@ test('the cost-saved event reloads the delivery so totals reflect the new cost',
     expect($component->instance()->profitability()->totalCostAmount)->toBe(100_000);
 });
 
-test('a cost can be deleted', function () {
+test('a cost can be deleted from the editable panel', function () {
     $delivery = createProfitabilityDelivery();
     $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
 
-    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery])
+    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery, 'editable' => true])
         ->call('deleteCost', $cost->id);
 
     expect(DeliveryCost::find($cost->id))->toBeNull();
+});
+
+test('the read-only panel refuses to delete a cost', function () {
+    $delivery = createProfitabilityDelivery();
+    $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
+
+    Livewire::test(DeliveryProfitabilityPanel::class, ['delivery' => $delivery, 'editable' => false])
+        ->call('deleteCost', $cost->id)
+        ->assertStatus(403);
+
+    expect(DeliveryCost::find($cost->id))->not->toBeNull();
 });
 
 test('the profitability tab is visible on the delivery show page', function () {
@@ -147,6 +170,27 @@ test('the profitability tab is visible on the delivery show page', function () {
     $this->get(route('deliveries.show', $delivery))
         ->assertOk()
         ->assertSee(trans('deliveries.profitability.tab'));
+});
+
+test('the show page renders the profitability tab as read-only, without add/edit/delete controls', function () {
+    $delivery = createProfitabilityDelivery();
+    DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
+
+    $this->get(route('deliveries.show', $delivery))
+        ->assertOk()
+        ->assertDontSee(trans('deliveries.cost.add'))
+        ->assertDontSeeLivewire(DeliveryCostModal::class);
+});
+
+test('the edit page renders the profitability tab as editable, with add/edit/delete controls', function () {
+    $delivery = createProfitabilityDelivery();
+    DeliveryCost::factory()->create(['delivery_id' => $delivery->id]);
+
+    $this->get(route('deliveries.edit', $delivery))
+        ->assertOk()
+        ->assertSee(trans('deliveries.profitability.tab'))
+        ->assertSee(trans('deliveries.cost.add'))
+        ->assertSeeLivewire(DeliveryCostModal::class);
 });
 
 test('the show page renders the full breakdown for direct and per-transport-set costs', function () {

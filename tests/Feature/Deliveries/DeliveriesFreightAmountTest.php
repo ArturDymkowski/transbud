@@ -29,6 +29,21 @@ test('freight amount is stored as grosze and is optional', function () {
     expect($delivery->currency)->toBe(CurrencyEnum::PLN);
 });
 
+test('a comma decimal separator is accepted (pl locale convention)', function () {
+    $contractor = Contractor::factory()->create();
+    $address = ContractorAddress::factory()->create(['contractor_id' => $contractor->id]);
+
+    Livewire::test(DeliveriesForm::class)
+        ->set('deliveryData.contractor_id', $contractor->id)
+        ->set('deliveryData.contractor_address_id', $address->id)
+        ->set('deliveryData.loading_address', 'Testowa 1')
+        ->set('deliveryData.freight_amount', '1500,50')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(Delivery::sole()->freight_amount)->toBe(150050);
+});
+
 test('freight amount can be left empty', function () {
     $contractor = Contractor::factory()->create();
     $address = ContractorAddress::factory()->create(['contractor_id' => $contractor->id]);

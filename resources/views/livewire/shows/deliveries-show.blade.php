@@ -64,7 +64,9 @@
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     {{ __('deliveries.transport_set_status.status') }}
                                 </label>
-                                {{ $transportSet->status->label() }}
+                                <x-ui.status-badge :color="$transportSet->status->color()">
+                                    {{ $transportSet->status->label() }}
+                                </x-ui.status-badge>
                             </div>
 
                             <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_driver"

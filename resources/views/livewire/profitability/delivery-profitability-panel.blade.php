@@ -2,7 +2,9 @@
 
 <div class="flex flex-col gap-6">
 
-    <livewire:modals.delivery-cost-modal :delivery="$delivery"/>
+    @if($editable)
+        <livewire:modals.delivery-cost-modal :delivery="$delivery"/>
+    @endif
 
     <!-- Sekcja: Podsumowanie -->
     <x-form.section title="{{ __('deliveries.profitability.summary') }}">
@@ -42,11 +44,13 @@
 
     <!-- Sekcja: Koszty wg kategorii -->
     <x-form.section title="{{ __('deliveries.cost.costs') }}">
-        <div class="flex items-center justify-end mb-4">
-            <x-ui.button wire:click="openCreateCostModal" size="sm" variant="outline">
-                {{ __('deliveries.cost.add') }}
-            </x-ui.button>
-        </div>
+        @if($editable)
+            <div class="flex items-center justify-end mb-4">
+                <x-ui.button wire:click="openCreateCostModal" size="sm" variant="outline">
+                    {{ __('deliveries.cost.add') }}
+                </x-ui.button>
+            </div>
+        @endif
 
         <div class="max-w-full overflow-x-auto">
             <table class="min-w-full">
@@ -81,9 +85,11 @@
                 <div wire:key="cost-breakdown-set-{{ $breakdown->transportSet->id }}" class="flex flex-col gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
                     <div class="flex items-center justify-between">
                         <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $breakdown->label() }}</h5>
-                        <x-ui.button wire:click="openCreateCostModal({{ $breakdown->transportSet->id }})" size="sm" variant="outline">
-                            {{ __('deliveries.cost.add') }}
-                        </x-ui.button>
+                        @if($editable)
+                            <x-ui.button wire:click="openCreateCostModal({{ $breakdown->transportSet->id }})" size="sm" variant="outline">
+                                {{ __('deliveries.cost.add') }}
+                            </x-ui.button>
+                        @endif
                     </div>
 
                     <table class="min-w-full">
@@ -94,12 +100,14 @@
                                 <x-tables.td>{{ $cost->description ?? '-' }}</x-tables.td>
                                 <x-tables.td class="text-right">{{ \App\Helpers\MoneyHelper::format($cost->amount, $profitability->currency) }}</x-tables.td>
                                 <x-tables.td class="flex justify-end gap-2">
-                                    <button type="button" wire:click="openEditCostModal({{ $cost->id }})" class="text-gray-400 hover:text-brand-500 dark:text-gray-500">
-                                        <x-heroicon-o-pencil-square class="w-5 h-5"/>
-                                    </button>
-                                    <x-tables.action-delete wire:click="deleteCost({{ $cost->id }})" :confirm="__('deliveries.cost.confirm_delete')" :label="__('deliveries.cost.remove')">
-                                        <x-heroicon-o-trash class="w-5 h-5 hover:text-red-500"/>
-                                    </x-tables.action-delete>
+                                    @if($editable)
+                                        <button type="button" wire:click="openEditCostModal({{ $cost->id }})" class="text-gray-400 hover:text-brand-500 dark:text-gray-500">
+                                            <x-heroicon-o-pencil-square class="w-5 h-5"/>
+                                        </button>
+                                        <x-tables.action-delete wire:click="deleteCost({{ $cost->id }})" :confirm="__('deliveries.cost.confirm_delete')" :label="__('deliveries.cost.remove')">
+                                            <x-heroicon-o-trash class="w-5 h-5 hover:text-red-500"/>
+                                        </x-tables.action-delete>
+                                    @endif
                                 </x-tables.td>
                             </tr>
                         @empty
@@ -124,9 +132,11 @@
             <div class="flex flex-col gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
                 <div class="flex items-center justify-between">
                     <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('deliveries.cost.remaining_costs') }}</h5>
-                    <x-ui.button wire:click="openCreateCostModal" size="sm" variant="outline">
-                        {{ __('deliveries.cost.add') }}
-                    </x-ui.button>
+                    @if($editable)
+                        <x-ui.button wire:click="openCreateCostModal" size="sm" variant="outline">
+                            {{ __('deliveries.cost.add') }}
+                        </x-ui.button>
+                    @endif
                 </div>
 
                 <table class="min-w-full">
@@ -137,12 +147,14 @@
                             <x-tables.td>{{ $cost->description ?? '-' }}</x-tables.td>
                             <x-tables.td class="text-right">{{ \App\Helpers\MoneyHelper::format($cost->amount, $profitability->currency) }}</x-tables.td>
                             <x-tables.td class="flex justify-end gap-2">
-                                <button type="button" wire:click="openEditCostModal({{ $cost->id }})" class="text-gray-400 hover:text-brand-500 dark:text-gray-500">
-                                    <x-heroicon-o-pencil-square class="w-5 h-5"/>
-                                </button>
-                                <x-tables.action-delete wire:click="deleteCost({{ $cost->id }})" :confirm="__('deliveries.cost.confirm_delete')" :label="__('deliveries.cost.remove')">
-                                    <x-heroicon-o-trash class="w-5 h-5 hover:text-red-500"/>
-                                </x-tables.action-delete>
+                                @if($editable)
+                                    <button type="button" wire:click="openEditCostModal({{ $cost->id }})" class="text-gray-400 hover:text-brand-500 dark:text-gray-500">
+                                        <x-heroicon-o-pencil-square class="w-5 h-5"/>
+                                    </button>
+                                    <x-tables.action-delete wire:click="deleteCost({{ $cost->id }})" :confirm="__('deliveries.cost.confirm_delete')" :label="__('deliveries.cost.remove')">
+                                        <x-heroicon-o-trash class="w-5 h-5 hover:text-red-500"/>
+                                    </x-tables.action-delete>
+                                @endif
                             </x-tables.td>
                         </tr>
                     @empty

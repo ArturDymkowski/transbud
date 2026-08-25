@@ -83,6 +83,19 @@ test('a cost can be added to a specific transport set', function () {
     expect($cost->amount)->toBe(8000);
 });
 
+test('a comma decimal separator is accepted (pl locale convention)', function () {
+    $delivery = createProfitabilityDeliveryForModal();
+
+    Livewire::test(DeliveryCostModal::class, ['delivery' => $delivery])
+        ->dispatch('open-create-cost-modal')
+        ->set('costData.type', DeliveryCostTypeEnum::FUEL->value)
+        ->set('costData.amount', '1500,50')
+        ->call('saveCost')
+        ->assertHasNoErrors();
+
+    expect($delivery->costs()->sole()->amount)->toBe(150050);
+});
+
 test('an existing cost can be edited', function () {
     $delivery = createProfitabilityDeliveryForModal();
     $cost = DeliveryCost::factory()->create(['delivery_id' => $delivery->id, 'amount' => 10_000]);

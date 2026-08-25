@@ -25,6 +25,22 @@ enum DeliveryTransportSetStatusEnum: int
         };
     }
 
+    /**
+     * Same palette as DeliveryStatusEnum::color() - the three "in progress"
+     * sub-phases (loading/unloading/in transit) share the delivery's IN_PROGRESS
+     * orange so a transport set's badge reads as the same conceptual phase.
+     */
+    public function color(): string
+    {
+        return match ($this) {
+            self::DRAFT => '#667085',
+            self::ASSIGNED => '#0ba5ec',
+            self::LOADING, self::UNLOADING, self::IN_TRANSIT => '#f79009',
+            self::COMPLETED => '#12b76a',
+            self::CANCELLED => '#f04438',
+        };
+    }
+
     public static function getOptions(): array
     {
         $options = [];

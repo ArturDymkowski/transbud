@@ -373,6 +373,12 @@ class DeliveriesForm extends Component
 
         $this->authorize($isUpdate ? 'deliveries.edit' : 'deliveries.create');
 
+        // Typing a comma as the decimal separator is allowed client-side (pl locale
+        // convention), so normalize it before the `numeric` rule/float cast see it.
+        if (isset($this->deliveryData['freight_amount'])) {
+            $this->deliveryData['freight_amount'] = str_replace(',', '.', (string) $this->deliveryData['freight_amount']);
+        }
+
         $this->validate();
 
         DB::transaction(function () use ($isUpdate) {

@@ -119,6 +119,12 @@ class DeliveryCostModal extends Component
     {
         $this->authorize('deliveries.edit');
 
+        // Typing a comma as the decimal separator is allowed client-side (pl locale
+        // convention), so normalize it before the `numeric` rule/float cast see it.
+        if (isset($this->costData['amount'])) {
+            $this->costData['amount'] = str_replace(',', '.', (string) $this->costData['amount']);
+        }
+
         $validated = $this->validate()['costData'];
 
         // Currency is not a form field: a cost always inherits the delivery's currency,

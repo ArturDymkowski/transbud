@@ -9,5 +9,15 @@
         __('labels.tables.edit') => null
     ]"
     />
-    <livewire:forms.deliveries-form :delivery="$delivery"/>
+    <x-common.tabs :tabs="[
+        'edit' => __('labels.tables.edit'),
+        'profitability' => __('deliveries.profitability.tab'),
+    ]">
+        <x-slot:edit>
+            <livewire:forms.deliveries-form :delivery="$delivery"/>
+        </x-slot:edit>
+        <x-slot:profitability>
+            <livewire:profitability.delivery-profitability-panel :delivery="$delivery" :editable="true"/>
+        </x-slot:profitability>
+    </x-common.tabs>
 @endsection

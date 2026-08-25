@@ -12,11 +12,18 @@ class DeliveryProfitabilityPanel extends Component
 {
     public Delivery $delivery;
 
-    public function mount(Delivery $delivery): void
+    /**
+     * Read-only on the delivery show page, editable on the edit page - the
+     * same panel is embedded in both, this just toggles the mutating UI/actions.
+     */
+    public bool $editable = false;
+
+    public function mount(Delivery $delivery, bool $editable = false): void
     {
         $this->authorize('deliveries.view');
 
         $this->delivery = $delivery;
+        $this->editable = $editable;
         $this->loadDelivery();
     }
 
@@ -44,11 +51,19 @@ class DeliveryProfitabilityPanel extends Component
     // directly - only dispatch/listen to browser events.
     public function openCreateCostModal(?int $transportSetId = null): void
     {
+        if (! $this->editable) {
+            return;
+        }
+
         $this->dispatch('open-create-cost-modal', transportSetId: $transportSetId);
     }
 
     public function openEditCostModal(int $costId): void
     {
+        if (! $this->editable) {
+            return;
+        }
+
         $this->dispatch('open-edit-cost-modal', costId: $costId);
     }
 
@@ -60,6 +75,7 @@ class DeliveryProfitabilityPanel extends Component
 
     public function deleteCost(int $costId): void
     {
+        abort_unless($this->editable, 403);
         $this->authorize('deliveries.edit');
 
         $this->delivery->costs()->whereKey($costId)->delete();

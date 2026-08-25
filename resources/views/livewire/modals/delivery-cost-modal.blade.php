@@ -17,20 +17,22 @@
                                  :options="$this->costTypeOptions"
                                  required="true"/>
 
-            <div x-data="quantityInput(@entangle('costData.amount'))">
+            <div wire:key="cost-amount-{{ $editingCostId ?? 'new' }}" x-data="decimalInput(@js($costData['amount'] ?? ''))">
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                     {{ __('deliveries.cost.amount') }} ({{ $delivery->currency->label() }}) <x-form.input.required-star/>
                 </label>
                 <input type="text"
                        inputmode="decimal"
                        name="costData.amount"
-                       :value="display"
+                       wire:model="costData.amount"
+                       x-on:keydown="onKeydown($event)"
                        x-on:input="onInput($event)"
                        @class([
                            'dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30',
                            'border-gray-300 dark:border-gray-700' => !$errors->has('costData.amount'),
                            'border-red-300 dark:border-red-700' => $errors->has('costData.amount'),
                        ])/>
+                <p class="mt-1 text-xs text-gray-400" x-show="preview" x-text="preview" x-cloak></p>
                 @error('costData.amount')
                     <div class="mt-1 text-xs text-red-500">{{ $message }}</div>
                 @enderror
