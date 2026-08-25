@@ -30,6 +30,17 @@ class DeliveryCostModal extends Component
     {
         $this->delivery = $delivery;
         $this->delivery->load(['costs', 'transportSets.driver', 'transportSets.vehicle', 'transportSets.trailer']);
+        $this->costData = $this->emptyCostData();
+    }
+
+    private function emptyCostData(?int $transportSetId = null): array
+    {
+        return [
+            'type' => DeliveryCostTypeEnum::FUEL->value,
+            'amount' => '',
+            'description' => '',
+            'delivery_transport_set_id' => $transportSetId,
+        ];
     }
 
     public function getCostTypeOptionsProperty(): array
@@ -55,12 +66,7 @@ class DeliveryCostModal extends Component
         $this->authorize('deliveries.edit');
 
         $this->editingCostId = null;
-        $this->costData = [
-            'type' => DeliveryCostTypeEnum::FUEL->value,
-            'amount' => '',
-            'description' => '',
-            'delivery_transport_set_id' => $transportSetId,
-        ];
+        $this->costData = $this->emptyCostData($transportSetId);
 
         $this->resetValidation();
         $this->isOpen = true;
@@ -89,7 +95,8 @@ class DeliveryCostModal extends Component
     public function closeModal(): void
     {
         $this->isOpen = false;
-        $this->reset('editingCostId', 'costData');
+        $this->editingCostId = null;
+        $this->costData = $this->emptyCostData();
     }
 
     protected function rules(): array
@@ -119,16 +126,12 @@ class DeliveryCostModal extends Component
     {
         $this->authorize('deliveries.edit');
 
-        // Typing a comma as the decimal separator is allowed client-side (pl locale
-        // convention), so normalize it before the `numeric` rule/float cast see it.
         if (isset($this->costData['amount'])) {
             $this->costData['amount'] = str_replace(',', '.', (string) $this->costData['amount']);
         }
 
         $validated = $this->validate()['costData'];
 
-        // Currency is not a form field: a cost always inherits the delivery's currency,
-        // so a mismatch is structurally impossible instead of merely validated against.
         $attributes = [
             'type' => $validated['type'],
             'amount' => (int) round(((float) $validated['amount']) * 100),

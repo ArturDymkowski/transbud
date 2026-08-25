@@ -27,6 +27,17 @@ function createProfitabilityDeliveryForModal(?int $freightAmountGrosze = 1_500_0
     ]);
 }
 
+test('costData.amount already exists on mount, before the modal is ever opened', function () {
+    // Regression guard: the amount field entangles 'costData.amount' via Alpine.
+    // If that key is still missing the first time the component renders, the
+    // entangled binding's write-back to the server never gets wired up correctly,
+    // and the field looks empty to validation no matter what gets typed into it.
+    $delivery = createProfitabilityDeliveryForModal();
+
+    Livewire::test(DeliveryCostModal::class, ['delivery' => $delivery])
+        ->assertSet('costData.amount', '');
+});
+
 test('the open-create-cost-modal event opens the modal for a new cost', function () {
     $delivery = createProfitabilityDeliveryForModal();
 
