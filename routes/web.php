@@ -36,13 +36,13 @@ Route::get('/driver-documents/{media}', function (Media $media) {
     abort_unless($media->model_type === Driver::class, 404);
 
     return response()->file($media->getPath());
-})->middleware('auth')->name('driver-documents.show');
+})->middleware(['auth', 'can:drivers.view'])->name('driver-documents.show');
 
 Route::get('/delivery-documents/{media}', function (Media $media) {
     abort_unless($media->model_type === Delivery::class, 404);
 
     return response()->file($media->getPath());
-})->middleware('auth')->name('delivery-documents.show');
+})->middleware(['auth', 'can:deliveries.view'])->name('delivery-documents.show');
 
 // After login
 Route::middleware('auth')->group(function () {
