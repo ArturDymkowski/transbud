@@ -7,51 +7,52 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait HasFullAddress
 {
-    protected function fullAddress(): Attribute
+    protected function fullAddressLines(): Attribute
     {
         return Attribute::make(
             get: function () {
-                $parts = [];
+                $lines = [];
 
                 // Ulica nr_domu/nr_mieszkania
-                $streetPart = trim($this->street ?? '');
+                $streetLine = trim($this->street ?? '');
                 if ($this->house_nr) {
-                    $streetPart .= ' ' . $this->house_nr;
+                    $streetLine .= ' '.$this->house_nr;
                     if ($this->apartment_nr) {
-                        $streetPart .= '/' . $this->apartment_nr;
+                        $streetLine .= '/'.$this->apartment_nr;
                     }
                 }
-                if ($streetPart) {
-                    $parts[] = $streetPart . '<br>';
+                if ($streetLine !== '') {
+                    $lines[] = $streetLine;
                 }
 
                 // Kod pocztowy miasto
-                $cityPart = '';
+                $cityLine = '';
                 if ($this->zipcode) {
-                    $cityPart = $this->zipcode;
+                    $cityLine = $this->zipcode;
                 }
                 if ($this->city) {
-                    $cityPart .= ($cityPart ? ' ' : '') . $this->city;
-                }
-                if ($cityPart) {
-                    $parts[] = $cityPart;
+                    $cityLine .= ($cityLine ? ' ' : '').$this->city;
                 }
 
-                // Kraj
+                // Kraj — dopisywany do linii miasta, a jeśli jej nie ma, staje się nią.
                 if ($this->country) {
-                    if (!empty($parts)) {
-                        $parts[] = ', ' . CountriesEnum::fromId($this->country->value)->label();
-                    } else {
-                        $parts[] = CountriesEnum::fromId($this->country->value)->label();
-                    }
+                    $countryLabel = CountriesEnum::fromId($this->country->value)->label();
+                    $cityLine = $cityLine !== '' ? $cityLine.', '.$countryLabel : $countryLabel;
                 }
 
-                if (empty($parts)) {
-                    return '-';
+                if ($cityLine !== '') {
+                    $lines[] = $cityLine;
                 }
 
-                return implode('', $parts);
+                return $lines;
             }
+        );
+    }
+
+    protected function fullAddressText(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->fullAddressLines === [] ? '-' : implode(', ', $this->fullAddressLines)
         );
     }
 }

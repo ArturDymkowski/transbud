@@ -74,7 +74,13 @@
                             {{ $delivery->contractor->name ?? '-' }}
                         </a>
                     </x-tables.td>
-                    <x-tables.td>{!! $delivery->contractorAddress->fullAddress ?? '-' !!}</x-tables.td>
+                    <x-tables.td>
+                        @forelse(($delivery->contractorAddress->fullAddressLines ?? []) as $addressLine)
+                            {{ $addressLine }}@if(!$loop->last)<br>@endif
+                        @empty
+                            -
+                        @endforelse
+                    </x-tables.td>
                     <x-tables.td>{{ $delivery->transport_sets_count }}</x-tables.td>
                     <x-tables.td>
                         <x-ui.status-badge :color="$delivery->status->color()">

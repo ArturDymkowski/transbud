@@ -83,7 +83,13 @@
                             </a>
                         </x-tables.td>
                     @endunless
-                    <x-tables.td>{!! $address->fullAddress ?? '-' !!}</x-tables.td>
+                    <x-tables.td>
+                        @forelse($address->fullAddressLines as $addressLine)
+                            {{ $addressLine }}@if(!$loop->last)<br>@endif
+                        @empty
+                            -
+                        @endforelse
+                    </x-tables.td>
                     <x-tables.td>
                         @if($readonly)
                             <x-ui.status-badge :color="$address->is_active ? '#12b76a' : '#f04438'">

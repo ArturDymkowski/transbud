@@ -55,7 +55,7 @@ trait WithDeliveryLookupOptions
         }
 
         foreach (ContractorAddress::where('contractor_id', $contractorId)->get() as $address) {
-            $options[$address->id] = str_replace('<br>', ', ', $address->fullAddress);
+            $options[$address->id] = $address->fullAddressText;
         }
 
         return $options;

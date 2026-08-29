@@ -24,7 +24,7 @@
                 <div class="col-span-1">
                     <x-form.input.text-input name="deliveryData.contractor_address"
                                              label="{{ __('deliveries.contractor_address') }}"
-                                             :value="str_replace('<br>', ', ', $delivery->contractorAddress->fullAddress ?? '-')"
+                                             :value="$delivery->contractorAddress->fullAddressText ?? '-'"
                                              disabled/>
                 </div>
 

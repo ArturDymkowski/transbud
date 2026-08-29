@@ -104,7 +104,13 @@
                     @unless($vehicle)
                         <x-tables.td>{{ $driver->phone ?? '-' }}</x-tables.td>
                         <x-tables.td>{{ $driver->pesel ?? '-' }}</x-tables.td>
-                        <x-tables.td>{!! $driver->fullAddress ?? '-' !!}</x-tables.td>
+                        <x-tables.td>
+                            @forelse($driver->fullAddressLines as $addressLine)
+                                {{ $addressLine }}@if(!$loop->last)<br>@endif
+                            @empty
+                                -
+                            @endforelse
+                        </x-tables.td>
                         <x-tables.td><x-ui.expiry-date-badge :date="$driver->driving_license_expiry_date"/></x-tables.td>
                         <x-tables.td><x-ui.expiry-date-badge :date="$driver->identity_card_expiry_date"/></x-tables.td>
                         <x-tables.td>
