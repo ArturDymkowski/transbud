@@ -17,9 +17,15 @@
         </x-tables.filter-bar>
     </x-slot:header>
 
+    {{-- Same split as drivers-table.blade.php: detaching a unit from a good is a
+         goods.edit action, deleting a unit outright is units.delete. --}}
+    @php($canBulkDeleteUnits = $good ? auth()->user()?->can('goods.edit') : auth()->user()?->can('units.delete'))
+
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($units->pluck('id')) }})">
         @unless($readonly)
-            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$good ? __('goods.confirm_remove_unit_assignments') : __('labels.tables.confirm_delete_selected')"/>
+            @if($canBulkDeleteUnits)
+                <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$good ? __('goods.confirm_remove_unit_assignments') : __('labels.tables.confirm_delete_selected')"/>
+            @endif
         @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
@@ -27,13 +33,15 @@
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @unless($readonly)
-                    <x-tables.th>
-                        <x-form.input.checkbox
-                            name="selectAll"
-                            @click="togglePage"
-                            x-bind:checked="isAllPageSelected()"
-                        />
-                    </x-tables.th>
+                    @if($canBulkDeleteUnits)
+                        <x-tables.th>
+                            <x-form.input.checkbox
+                                name="selectAll"
+                                @click="togglePage"
+                                x-bind:checked="isAllPageSelected()"
+                            />
+                        </x-tables.th>
+                    @endif
                 @endunless
 
                 <x-tables.th-sort
@@ -66,9 +74,11 @@
             @foreach($units as $unit)
                 <tr wire:key="unit-row-{{ $unit->id }}">
                     @unless($readonly)
-                        <x-tables.td>
-                            <x-form.input.checkbox name="check_{{ $unit->id }}" value="{{ $unit->id }}" x-model="selected" wire:key="checkbox-{{ $unit->id }}"/>
-                        </x-tables.td>
+                        @if($canBulkDeleteUnits)
+                            <x-tables.td>
+                                <x-form.input.checkbox name="check_{{ $unit->id }}" value="{{ $unit->id }}" x-model="selected" wire:key="checkbox-{{ $unit->id }}"/>
+                            </x-tables.td>
+                        @endif
                     @endunless
                     <x-tables.td>{{ $unit->id }}</x-tables.td>
                     <x-tables.td>{{ $unit->name }}</x-tables.td>

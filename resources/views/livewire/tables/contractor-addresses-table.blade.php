@@ -22,7 +22,9 @@
 
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($addresses->pluck('id')) }})">
         @unless($readonly)
-            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+            @can('contractor-addresses.delete')
+                <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+            @endcan
         @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
@@ -30,13 +32,15 @@
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @unless($readonly)
-                    <x-tables.th>
-                        <x-form.input.checkbox
-                            name="selectAll"
-                            @click="togglePage"
-                            x-bind:checked="isAllPageSelected()"
-                        />
-                    </x-tables.th>
+                    @can('contractor-addresses.delete')
+                        <x-tables.th>
+                            <x-form.input.checkbox
+                                name="selectAll"
+                                @click="togglePage"
+                                x-bind:checked="isAllPageSelected()"
+                            />
+                        </x-tables.th>
+                    @endcan
                 @endunless
 
                 <x-tables.th-sort
@@ -71,9 +75,11 @@
             @foreach($addresses as $address)
                 <tr wire:key="address-row-{{ $address->id }}">
                     @unless($readonly)
-                        <x-tables.td>
-                            <x-form.input.checkbox name="check_{{ $address->id }}" value="{{ $address->id }}" x-model="selected" wire:key="checkbox-{{ $address->id }}"/>
-                        </x-tables.td>
+                        @can('contractor-addresses.delete')
+                            <x-tables.td>
+                                <x-form.input.checkbox name="check_{{ $address->id }}" value="{{ $address->id }}" x-model="selected" wire:key="checkbox-{{ $address->id }}"/>
+                            </x-tables.td>
+                        @endcan
                     @endunless
                     <x-tables.td>{{ $address->id }}</x-tables.td>
                     @unless($contractor)

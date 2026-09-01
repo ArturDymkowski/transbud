@@ -4,19 +4,23 @@
     </x-slot:header>
 
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($permissions->pluck('id')) }})">
-        <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        @can('permissions.delete')
+            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <x-tables.th>
-                    <x-form.input.checkbox
-                        name="selectAll"
-                        @click="togglePage"
-                        x-bind:checked="isAllPageSelected()"
-                    />
-                </x-tables.th>
+                @can('permissions.delete')
+                    <x-tables.th>
+                        <x-form.input.checkbox
+                            name="selectAll"
+                            @click="togglePage"
+                            x-bind:checked="isAllPageSelected()"
+                        />
+                    </x-tables.th>
+                @endcan
 
                 <x-tables.th-sort
                     field="id"
@@ -40,9 +44,11 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @forelse($permissions as $permission)
                 <tr wire:key="permission-row-{{ $permission->id }}">
-                    <x-tables.td>
-                        <x-form.input.checkbox name="check_{{ $permission->id }}" value="{{ $permission->id }}" x-model="selected" wire:key="checkbox-{{ $permission->id }}"/>
-                    </x-tables.td>
+                    @can('permissions.delete')
+                        <x-tables.td>
+                            <x-form.input.checkbox name="check_{{ $permission->id }}" value="{{ $permission->id }}" x-model="selected" wire:key="checkbox-{{ $permission->id }}"/>
+                        </x-tables.td>
+                    @endcan
                     <x-tables.td>{{ $permission->id }}</x-tables.td>
                     <x-tables.td>{{ $permission->name }}</x-tables.td>
                     <x-tables.td>{{ $permission->roles_count }}</x-tables.td>

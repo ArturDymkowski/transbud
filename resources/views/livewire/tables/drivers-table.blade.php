@@ -26,9 +26,16 @@
         </x-tables.filter-bar>
     </x-slot:header>
 
+    {{-- Bulk delete/unassign permission is contextual: detaching a driver from a
+         vehicle is a vehicles.edit action, deleting a driver outright is drivers.delete
+         — same split as the per-row action icon below. --}}
+    @php($canBulkDeleteDrivers = $vehicle ? auth()->user()?->can('vehicles.edit') : auth()->user()?->can('drivers.delete'))
+
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($drivers->pluck('id')) }})">
         @unless($readonly)
-            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$vehicle ? __('vehicles.confirm_remove_driver_assignments') : __('labels.tables.confirm_delete_selected')"/>
+            @if($canBulkDeleteDrivers)
+                <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="$vehicle ? __('vehicles.confirm_remove_driver_assignments') : __('labels.tables.confirm_delete_selected')"/>
+            @endif
         @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
@@ -36,13 +43,15 @@
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @unless($readonly)
-                    <x-tables.th>
-                        <x-form.input.checkbox
-                            name="selectAll"
-                            @click="togglePage"
-                            x-bind:checked="isAllPageSelected()"
-                        />
-                    </x-tables.th>
+                    @if($canBulkDeleteDrivers)
+                        <x-tables.th>
+                            <x-form.input.checkbox
+                                name="selectAll"
+                                @click="togglePage"
+                                x-bind:checked="isAllPageSelected()"
+                            />
+                        </x-tables.th>
+                    @endif
                 @endunless
 
                 <x-tables.th-sort
@@ -95,9 +104,11 @@
             @foreach($drivers as $driver)
                 <tr wire:key="driver-row-{{ $driver->id }}">
                     @unless($readonly)
-                        <x-tables.td>
-                            <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" wire:key="checkbox-{{ $driver->id }}"/>
-                        </x-tables.td>
+                        @if($canBulkDeleteDrivers)
+                            <x-tables.td>
+                                <x-form.input.checkbox name="check_{{ $driver->id }}" value="{{ $driver->id }}" x-model="selected" wire:key="checkbox-{{ $driver->id }}"/>
+                            </x-tables.td>
+                        @endif
                     @endunless
                     <x-tables.td>{{ $driver->id }}</x-tables.td>
                     <x-tables.td>{{ $driver->name ?? '-' }}</x-tables.td>

@@ -1,8 +1,10 @@
 <?php
 
 use App\Livewire\Tables\PermissionsTable;
+use App\Models\User;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();
@@ -53,4 +55,33 @@ test('sorting by roles_count orders permissions', function () {
         ->set('perPage', 100)
         ->call('sortBy', 'roles_count')
         ->assertSeeInOrder([$adminOnlyPermission->name, $viewPermission->name]);
+});
+
+/**
+ * The bulk selection UI (checkboxes + "delete selected" bar) is a second path to
+ * deleteSelected(), which enforces permissions.delete server-side — the UI needs the
+ * same gate, or a view-only role sees a working-looking bulk-delete affordance that
+ * just 403s when used.
+ */
+test('bulk selection is hidden without permissions.delete and shown with it', function () {
+    $permission = Permission::where('name', 'roles.delete')->first();
+
+    $limitedRole = Role::create(['name' => 'Limited']);
+    $limitedRole->syncPermissions(Permission::where('name', 'permissions.view')->get());
+    $limited = User::factory()->create();
+    $limited->assignRole($limitedRole);
+    Livewire::actingAs($limited)->test(PermissionsTable::class)
+        ->assertDontSee('name="selectAll"', false)
+        ->assertDontSee('checkbox-'.$permission->id, false)
+        ->assertDontSee('wire:click="deleteSelected"', false);
+
+    // Livewire::actingAs() overrides the acting user for subsequent Livewire::test()
+    // calls too, so the "shows it" branch needs an explicit admin actor again —
+    // it can't just fall back to beforeEach's actingAsAdmin().
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(PermissionsTable::class)
+        ->assertSee('name="selectAll"', false)
+        ->assertSee('checkbox-'.$permission->id, false)
+        ->assertSee('wire:click="deleteSelected"', false);
 });

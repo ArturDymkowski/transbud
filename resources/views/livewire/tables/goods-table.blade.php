@@ -7,19 +7,23 @@
     </x-slot:header>
 
     <div class="max-w-full px-5 overflow-x-auto" x-data="tableSelection(@entangle('selected'), @entangle('idsOnPage'), {{ json_encode($goods->pluck('id')) }})">
-        <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        @can('goods.delete')
+            <x-tables.selection-bar deleteAction="deleteSelected" :confirmMessage="__('labels.tables.confirm_delete_selected')"/>
+        @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
         <table class="min-w-full">
             <thead>
             <tr class="border-gray-200 border-y dark:border-gray-700">
-                <x-tables.th>
-                    <x-form.input.checkbox
-                        name="selectAll"
-                        @click="togglePage"
-                        x-bind:checked="isAllPageSelected()"
-                    />
-                </x-tables.th>
+                @can('goods.delete')
+                    <x-tables.th>
+                        <x-form.input.checkbox
+                            name="selectAll"
+                            @click="togglePage"
+                            x-bind:checked="isAllPageSelected()"
+                        />
+                    </x-tables.th>
+                @endcan
 
                 <x-tables.th-sort
                     field="id"
@@ -52,9 +56,11 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($goods as $good)
                 <tr wire:key="good-row-{{ $good->id }}">
-                    <x-tables.td>
-                        <x-form.input.checkbox name="check_{{ $good->id }}" value="{{ $good->id }}" x-model="selected" wire:key="checkbox-{{ $good->id }}"/>
-                    </x-tables.td>
+                    @can('goods.delete')
+                        <x-tables.td>
+                            <x-form.input.checkbox name="check_{{ $good->id }}" value="{{ $good->id }}" x-model="selected" wire:key="checkbox-{{ $good->id }}"/>
+                        </x-tables.td>
+                    @endcan
                     <x-tables.td>{{ $good->id }}</x-tables.td>
                     <x-tables.td>{{ $good->name }}</x-tables.td>
                     <td class="px-4 py-4">

@@ -62,3 +62,32 @@ test('a user without the roles.delete permission cannot delete a role', function
 
     expect(Role::find($role->id))->not->toBeNull();
 });
+
+/**
+ * The bulk selection UI (checkboxes + "delete selected" bar) is a second path to
+ * deleteSelected(), which enforces roles.delete server-side — the UI needs the same
+ * gate, or a view-only role sees a working-looking bulk-delete affordance that just
+ * 403s when used.
+ */
+test('bulk selection is hidden without roles.delete and shown with it', function () {
+    $role = Role::create(['name' => 'Dispatcher']);
+
+    $limitedRole = Role::create(['name' => 'Limited']);
+    $limitedRole->syncPermissions(Permission::where('name', 'roles.view')->get());
+    $limited = User::factory()->create();
+    $limited->assignRole($limitedRole);
+    Livewire::actingAs($limited)->test(RolesTable::class)
+        ->assertDontSee('name="selectAll"', false)
+        ->assertDontSee('checkbox-'.$role->id, false)
+        ->assertDontSee('wire:click="deleteSelected"', false);
+
+    // Livewire::actingAs() overrides the acting user for subsequent Livewire::test()
+    // calls too, so the "shows it" branch needs an explicit admin actor again —
+    // it can't just fall back to beforeEach's actingAsAdmin().
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(RolesTable::class)
+        ->assertSee('name="selectAll"', false)
+        ->assertSee('checkbox-'.$role->id, false)
+        ->assertSee('wire:click="deleteSelected"', false);
+});

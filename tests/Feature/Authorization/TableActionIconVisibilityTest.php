@@ -226,3 +226,151 @@ test('units table embedded in a good only shows the unlink icon with goods.edit'
     Livewire::actingAs($editor)->test(UnitsTable::class, ['good' => $good])
         ->assertSee('deleteUnit('.$unit->id.')', false);
 });
+
+/**
+ * Bulk selection (header "select all" checkbox, per-row checkbox, and the
+ * "delete selected" bar) is a second path to the same deleteSelected() action as
+ * the row delete icon — it needs the identical permission gate, otherwise a
+ * view-only role sees a working-looking bulk-delete UI that just 403s when used.
+ */
+function assertBulkSelectionVisible(Testable $component, int $rowId, bool $visible): void
+{
+    $assertion = $visible ? 'assertSee' : 'assertDontSee';
+    $component->{$assertion}('name="selectAll"', false)
+        ->{$assertion}('checkbox-'.$rowId, false)
+        ->{$assertion}('wire:click="deleteSelected"', false);
+}
+
+test('contractors table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $contractor = Contractor::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(ContractorsTable::class), $contractor->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(ContractorsTable::class), $contractor->id, true);
+});
+
+test('vehicles table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $vehicle = Vehicle::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(VehiclesTable::class), $vehicle->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(VehiclesTable::class), $vehicle->id, true);
+});
+
+test('goods table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $good = Good::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(GoodsTable::class), $good->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(GoodsTable::class), $good->id, true);
+});
+
+test('users table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $target = User::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(UsersTable::class), $target->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(UsersTable::class), $target->id, true);
+});
+
+test('deliveries table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $delivery = Delivery::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(DeliveriesTable::class), $delivery->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(DeliveriesTable::class), $delivery->id, true);
+});
+
+test('contractor addresses table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $address = ContractorAddress::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(ContractorAddressesTable::class), $address->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(ContractorAddressesTable::class), $address->id, true);
+});
+
+test('drivers table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $driver = Driver::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(DriversTable::class), $driver->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(DriversTable::class), $driver->id, true);
+});
+
+test('drivers table embedded in a vehicle gates bulk selection on vehicles.edit', function () {
+    $vehicle = Vehicle::factory()->create();
+    $driver = Driver::factory()->create();
+    $vehicle->drivers()->attach($driver);
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(
+        Livewire::actingAs($user)->test(DriversTable::class, ['vehicle' => $vehicle]), $driver->id, false
+    );
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(
+        Livewire::actingAs($admin)->test(DriversTable::class, ['vehicle' => $vehicle]), $driver->id, true
+    );
+});
+
+test('units table hides bulk selection for a view-only role and shows it for Admin', function () {
+    $unit = Unit::factory()->create();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(Livewire::actingAs($user)->test(UnitsTable::class), $unit->id, false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    assertBulkSelectionVisible(Livewire::actingAs($admin)->test(UnitsTable::class), $unit->id, true);
+});
+
+test('units table embedded in a good gates bulk selection on goods.edit', function () {
+    $good = Good::factory()->create();
+    $unit = Unit::factory()->create();
+    $good->units()->attach($unit);
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    assertBulkSelectionVisible(
+        Livewire::actingAs($user)->test(UnitsTable::class, ['good' => $good]), $unit->id, false
+    );
+
+    $roleWithGoodsEdit = Role::create(['name' => 'Goods Editor']);
+    $roleWithGoodsEdit->givePermissionTo(['units.view', 'goods.view', 'goods.edit']);
+    $editor = User::factory()->create();
+    $editor->assignRole($roleWithGoodsEdit);
+    assertBulkSelectionVisible(
+        Livewire::actingAs($editor)->test(UnitsTable::class, ['good' => $good]), $unit->id, true
+    );
+});
