@@ -14,4 +14,5 @@ return [
     'role_section' => 'Role',
     'create_title' => 'Create user',
     'confirm_delete_user' => 'Are you sure you want to delete the user?',
+    'cannot_change_own_role' => 'You cannot change your own role.',
 ];

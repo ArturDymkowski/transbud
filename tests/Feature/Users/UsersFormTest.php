@@ -177,3 +177,40 @@ test('a role can be unassigned from a user by selecting no role', function () {
 
     expect($user->refresh()->roles)->toBeEmpty();
 });
+
+test('is_super_admin cannot be set through the form, even if injected into the payload', function () {
+    Livewire::test(UsersForm::class)
+        ->set(validUserPayload())
+        ->set('userData.is_super_admin', true)
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    $user = User::where('email', 'jan.kowalski@example.com')->first();
+    expect($user->is_super_admin)->toBeFalse();
+});
+
+test('a user editing their own account cannot change their own role, even with users.edit permission', function () {
+    $roleB = Role::create(['name' => 'Accountant']);
+
+    $self = User::factory()->create()->fresh();
+    $self->assignRole('Admin');
+    $this->actingAs($self);
+
+    Livewire::test(UsersForm::class, ['user' => $self])
+        ->set('userData.role_id', $roleB->id)
+        ->assertSet('isEditingSelf', true)
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    expect($self->refresh()->roles->pluck('name')->all())->toBe(['Admin']);
+});
+
+test('the role field is disabled in the form when editing your own account', function () {
+    $self = User::factory()->create()->fresh();
+    $self->assignRole('Admin');
+    $this->actingAs($self);
+
+    $html = Livewire::test(UsersForm::class, ['user' => $self])->html();
+
+    expect($html)->toContain('disabled');
+});

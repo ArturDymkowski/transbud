@@ -15,6 +15,8 @@ class UsersForm extends Component
 
     public ?User $user = null;
 
+    public bool $isEditingSelf = false;
+
     public function mount(?User $user = null)
     {
         if ($user && $user->exists) {
@@ -22,6 +24,8 @@ class UsersForm extends Component
         } else {
             $this->user = new User;
         }
+
+        $this->isEditingSelf = $this->user->exists && $this->user->id === auth()->id();
 
         $this->userData = $this->user->only(['name', 'email']);
         $this->userData['password'] = '';
@@ -79,9 +83,11 @@ class UsersForm extends Component
             $this->user->save();
         }
 
-        $this->user->syncRoles(array_filter([
-            filled($this->userData['role_id'] ?? null) ? (int) $this->userData['role_id'] : null,
-        ]));
+        if (! $this->isEditingSelf) {
+            $this->user->syncRoles(array_filter([
+                filled($this->userData['role_id'] ?? null) ? (int) $this->userData['role_id'] : null,
+            ]));
+        }
 
         return $this->flashSavedAndRedirect($isUpdate, 'users.index');
     }

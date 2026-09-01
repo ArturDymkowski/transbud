@@ -78,12 +78,22 @@ class MenuHelper
                 'name' => __('permissions.plural_model_label'),
                 'path' => route('permissions.index'),
             ],
+            [
+                // Not a Spatie permission on purpose — see App\Http\Middleware\EnsureSuperAdmin.
+                'superAdminOnly' => true,
+                'icon' => 'heroicon-o-finger-print',
+                'name' => __('login_audit_log.plural_model_label'),
+                'path' => route('login-audit-log.index'),
+            ],
         ];
 
-        return array_values(array_filter(
-            $items,
-            fn (array $item) => empty($item['permission']) || (auth()->user()?->can($item['permission']) ?? false)
-        ));
+        return array_values(array_filter($items, function (array $item) {
+            if (! empty($item['superAdminOnly'])) {
+                return (bool) auth()->user()?->is_super_admin;
+            }
+
+            return empty($item['permission']) || (auth()->user()?->can($item['permission']) ?? false);
+        }));
     }
 
     public static function getMenuGroups()

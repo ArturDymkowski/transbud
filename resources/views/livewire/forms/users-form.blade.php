@@ -55,7 +55,11 @@
                 <x-form.input.select name="userData.role_id"
                                      label="{{ __('users.role') }}"
                                      wire:model="userData.role_id"
-                                     :options="$this->roleOptions"/>
+                                     :options="$this->roleOptions"
+                                     @disabled($isEditingSelf)/>
+                @if($isEditingSelf)
+                    <p class="mt-1.5 text-xs text-gray-400">{{ __('users.cannot_change_own_role') }}</p>
+                @endif
             </div>
 
         </div>

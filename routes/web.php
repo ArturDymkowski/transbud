@@ -8,6 +8,7 @@ use App\Http\Controllers\Page\ContractorController;
 use App\Http\Controllers\Page\DeliveryController;
 use App\Http\Controllers\Page\DriverController;
 use App\Http\Controllers\Page\GoodController;
+use App\Http\Controllers\Page\LoginAuditLogController;
 use App\Http\Controllers\Page\PermissionController;
 use App\Http\Controllers\Page\ProfileController;
 use App\Http\Controllers\Page\RoleController;
@@ -102,4 +103,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/permissions', PermissionController::class)->only(['index', 'edit'])
         ->middlewareFor('index', 'can:permissions.view')
         ->middlewareFor('edit', 'can:permissions.edit');
+
+    Route::get('/login-audit-log', [LoginAuditLogController::class, 'index'])
+        ->middleware('super-admin')
+        ->name('login-audit-log.index');
 });
