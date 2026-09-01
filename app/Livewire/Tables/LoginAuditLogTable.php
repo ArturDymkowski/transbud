@@ -27,11 +27,6 @@ class LoginAuditLogTable extends Component
     public function mount(): void
     {
         abort_unless(auth()->user()?->is_super_admin, 403);
-
-        // Overrides WithTableSorting's 'id' default — can't redeclare the property
-        // itself with a different default (PHP forbids incompatible trait property
-        // redeclaration), so it's set here instead.
-        $this->sortField = 'created_at';
     }
 
     protected function filterFields(): array
