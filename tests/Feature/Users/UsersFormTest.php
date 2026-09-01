@@ -205,12 +205,37 @@ test('a user editing their own account cannot change their own role, even with u
     expect($self->refresh()->roles->pluck('name')->all())->toBe(['Admin']);
 });
 
+/**
+ * Scoped to the actual <select> tag (matched by its id) rather than a plain
+ * `toContain('disabled')` — the page also has Tailwind `disabled:...` variant
+ * classes elsewhere (e.g. on buttons), which would make a bare substring check
+ * pass regardless of whether the field itself is really disabled.
+ */
+function roleSelectTag(string $html): string
+{
+    preg_match('/<select[^>]*id="userData\.role_id"[^>]*>/s', $html, $matches);
+
+    return $matches[0] ?? '';
+}
+
 test('the role field is disabled in the form when editing your own account', function () {
     $self = User::factory()->create()->fresh();
     $self->assignRole('Admin');
     $this->actingAs($self);
 
     $html = Livewire::test(UsersForm::class, ['user' => $self])->html();
+    $selectTag = roleSelectTag($html);
 
-    expect($html)->toContain('disabled');
+    expect($selectTag)->not->toBe('');
+    expect($selectTag)->toContain('disabled');
+});
+
+test('the role field is not disabled when editing a different account', function () {
+    $other = User::factory()->create();
+
+    $html = Livewire::test(UsersForm::class, ['user' => $other])->html();
+    $selectTag = roleSelectTag($html);
+
+    expect($selectTag)->not->toBe('');
+    expect($selectTag)->not->toContain('disabled');
 });

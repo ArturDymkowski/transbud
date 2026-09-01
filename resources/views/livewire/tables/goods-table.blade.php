@@ -63,15 +63,20 @@
                     <x-tables.td>{{ $good->defaultUnit?->name ?? '-' }}</x-tables.td>
                     <x-tables.td>
                         <x-form.input.toggle wire:change="toggleActive({{ $good->id }})"
-                                             name="{{ $good->id }}" :isActive="$good->is_active" wire:key="toggle-{{ $good->id }}"/>
+                                             name="{{ $good->id }}" :isActive="$good->is_active" wire:key="toggle-{{ $good->id }}"
+                                             :disabled="! auth()->user()?->can('goods.edit')"/>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('goods.show', $good->id)"/>
-                        <x-tables.action-edit :route="route('goods.edit', $good->id)"/>
-                        <x-tables.action-delete
-                            wire:click="deleteGood({{ $good->id }})"
-                            :confirm="__('goods.confirm_delete_good')"
-                        />
+                        @can('goods.edit')
+                            <x-tables.action-edit :route="route('goods.edit', $good->id)"/>
+                        @endcan
+                        @can('goods.delete')
+                            <x-tables.action-delete
+                                wire:click="deleteGood({{ $good->id }})"
+                                :confirm="__('goods.confirm_delete_good')"
+                            />
+                        @endcan
                     </x-tables.td>
                 </tr>
             @endforeach

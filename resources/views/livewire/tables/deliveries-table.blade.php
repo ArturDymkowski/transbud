@@ -98,11 +98,15 @@
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('deliveries.show', $delivery->id)"/>
-                        <x-tables.action-edit :route="route('deliveries.edit', $delivery->id)"/>
-                        <x-tables.action-delete
-                            wire:click="deleteDelivery({{ $delivery->id }})"
-                            :confirm="__('deliveries.confirm_delete_delivery')"
-                        />
+                        @can('deliveries.edit')
+                            <x-tables.action-edit :route="route('deliveries.edit', $delivery->id)"/>
+                        @endcan
+                        @can('deliveries.delete')
+                            <x-tables.action-delete
+                                wire:click="deleteDelivery({{ $delivery->id }})"
+                                :confirm="__('deliveries.confirm_delete_delivery')"
+                            />
+                        @endcan
                     </x-tables.td>
                 </tr>
             @endforeach

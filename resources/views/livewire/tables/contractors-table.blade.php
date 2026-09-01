@@ -67,15 +67,20 @@
                     <x-tables.td>{{ $contractor->regon ?? '-' }}</x-tables.td>
                     <x-tables.td>
                         <x-form.input.toggle wire:change="toggleActive({{ $contractor->id }})"
-                                             name="{{ $contractor->id }}" :isActive="$contractor->active" wire:key="toggle-{{ $contractor->id }}"/>
+                                             name="{{ $contractor->id }}" :isActive="$contractor->active" wire:key="toggle-{{ $contractor->id }}"
+                                             :disabled="! auth()->user()?->can('contractors.edit')"/>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('contractors.show', $contractor->id)"/>
-                        <x-tables.action-edit :route="route('contractors.edit', $contractor->id)"/>
-                        <x-tables.action-delete
-                            wire:click="deleteContractor({{ $contractor->id }})"
-                            :confirm="__('contractors.confirm_delete_contractor')"
-                        />
+                        @can('contractors.edit')
+                            <x-tables.action-edit :route="route('contractors.edit', $contractor->id)"/>
+                        @endcan
+                        @can('contractors.delete')
+                            <x-tables.action-delete
+                                wire:click="deleteContractor({{ $contractor->id }})"
+                                :confirm="__('contractors.confirm_delete_contractor')"
+                            />
+                        @endcan
                     </x-tables.td>
                 </tr>
             @endforeach

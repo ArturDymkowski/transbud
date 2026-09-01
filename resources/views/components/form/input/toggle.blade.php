@@ -1,6 +1,7 @@
+@php($isDisabled = (bool) $attributes->get('disabled'))
 <div x-data="{ switcherToggle: @js($isActive) }">
     <label for="{{ $name }}"
-           class="flex cursor-pointer items-center gap-3 text-sm font-medium text-gray-700 select-none dark:text-gray-400">
+           class="flex items-center gap-3 text-sm font-medium text-gray-700 select-none dark:text-gray-400 {{ $isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}">
         <div class="relative">
             <input {{ $attributes }} type="checkbox" id="{{ $name }}" class="sr-only" @change="switcherToggle = !switcherToggle" />
             <div class="block h-6 w-11 rounded-full"

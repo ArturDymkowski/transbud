@@ -97,17 +97,22 @@
                             </x-ui.status-badge>
                         @else
                             <x-form.input.toggle wire:change="toggleActive({{ $address->id }})"
-                                                 name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"/>
+                                                 name="{{ $address->id }}" :isActive="$address->is_active" wire:key="toggle-{{ $address->id }}"
+                                                 :disabled="! auth()->user()?->can('contractor-addresses.edit')"/>
                         @endif
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('contractor-addresses.show', $address->id)"/>
                         @unless($readonly)
-                            <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
-                            <x-tables.action-delete
-                                wire:click="deleteAddress({{ $address->id }})"
-                                :confirm="__('address_book.confirm_delete_address')"
-                            />
+                            @can('contractor-addresses.edit')
+                                <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
+                            @endcan
+                            @can('contractor-addresses.delete')
+                                <x-tables.action-delete
+                                    wire:click="deleteAddress({{ $address->id }})"
+                                    :confirm="__('address_book.confirm_delete_address')"
+                                />
+                            @endcan
                         @endunless
                     </x-tables.td>
                 </tr>

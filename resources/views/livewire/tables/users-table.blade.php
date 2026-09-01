@@ -66,15 +66,20 @@
                     <x-tables.td>{{ $user->roles->first()?->name ?? '-' }}</x-tables.td>
                     <x-tables.td>
                         <x-form.input.toggle wire:change="toggleActive({{ $user->id }})"
-                                             name="{{ $user->id }}" :isActive="$user->is_active" wire:key="toggle-{{ $user->id }}"/>
+                                             name="{{ $user->id }}" :isActive="$user->is_active" wire:key="toggle-{{ $user->id }}"
+                                             :disabled="! auth()->user()?->can('users.edit')"/>
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('users.show', $user->id)"/>
-                        <x-tables.action-edit :route="route('users.edit', $user->id)"/>
-                        <x-tables.action-delete
-                            wire:click="deleteUser({{ $user->id }})"
-                            :confirm="__('users.confirm_delete_user')"
-                        />
+                        @can('users.edit')
+                            <x-tables.action-edit :route="route('users.edit', $user->id)"/>
+                        @endcan
+                        @can('users.delete')
+                            <x-tables.action-delete
+                                wire:click="deleteUser({{ $user->id }})"
+                                :confirm="__('users.confirm_delete_user')"
+                            />
+                        @endcan
                     </x-tables.td>
                 </tr>
             @endforeach
