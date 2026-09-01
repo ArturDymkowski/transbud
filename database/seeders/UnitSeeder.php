@@ -17,6 +17,8 @@ class UnitSeeder extends Seeder
     public function run()
     {
         Schema::disableForeignKeyConstraints();
+        DB::table('good_unit')->truncate();
+        DB::table('goods')->truncate();
         DB::table('units')->truncate();
         Schema::enableForeignKeyConstraints();
 

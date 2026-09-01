@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Class UserTableSeeder.
@@ -21,9 +19,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        Schema::disableForeignKeyConstraints();
-        DB::table('users')->truncate();
-        Schema::enableForeignKeyConstraints();
+        User::withTrashed()->where('is_super_admin', false)->forceDelete();
 
         $admin = User::factory()->create([
             'name' => 'Admin',
