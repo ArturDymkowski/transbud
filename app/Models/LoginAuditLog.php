@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * the session was never explicitly logged out of (browser closed, expired, ...).
  *
  * Deliberately has no web-facing route beyond the super-admin-only listing (see
- * App\Http\Middleware\EnsureSuperAdmin) — TODO.md / RISKS.md R18.
+ * App\Http\Middleware\EnsureSuperAdmin).
  */
 class LoginAuditLog extends Model
 {

@@ -2,15 +2,17 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Contractor;
 use Livewire\Component;
 
 class ContractorsForm extends Component
 {
-    use WithSavedRedirect;
+    use WithDemoLimits, WithSavedRedirect;
 
     public array $contractorData = [];
+
     public ?Contractor $contractor = null;
 
     public function mount(?Contractor $contractor = null)
@@ -18,7 +20,7 @@ class ContractorsForm extends Component
         if ($contractor && $contractor->exists) {
             $this->contractor = $contractor;
         } else {
-            $this->contractor = new Contractor();
+            $this->contractor = new Contractor;
         }
 
         $this->contractorData = $this->contractor->only([
@@ -59,6 +61,10 @@ class ContractorsForm extends Component
     public function save()
     {
         $this->authorize($this->contractor->exists ? 'contractors.edit' : 'contractors.create');
+
+        if (! $this->contractor->exists) {
+            $this->ensureDemoRecordLimitsAllow(Contractor::class);
+        }
 
         $this->validate();
 

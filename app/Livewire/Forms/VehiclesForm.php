@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\VehicleTypeEnum;
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Vehicle;
 use Illuminate\Validation\Rules\Enum;
@@ -10,9 +11,10 @@ use Livewire\Component;
 
 class VehiclesForm extends Component
 {
-    use WithSavedRedirect;
+    use WithDemoLimits, WithSavedRedirect;
 
     public array $vehicleData = [];
+
     public ?Vehicle $vehicle = null;
 
     public function mount(?Vehicle $vehicle = null)
@@ -20,7 +22,7 @@ class VehiclesForm extends Component
         if ($vehicle && $vehicle->exists) {
             $this->vehicle = $vehicle;
         } else {
-            $this->vehicle = new Vehicle();
+            $this->vehicle = new Vehicle;
         }
 
         $this->vehicleData = $this->vehicle->only([
@@ -37,8 +39,8 @@ class VehiclesForm extends Component
     protected function rules(): array
     {
         return [
-            'vehicleData.registration_number' => 'required|string|max:255|unique:vehicles,registration_number,' . ($this->vehicle?->id ?? 'NULL'),
-            'vehicleData.vin' => 'required|string|max:255|unique:vehicles,vin,' . ($this->vehicle?->id ?? 'NULL'),
+            'vehicleData.registration_number' => 'required|string|max:255|unique:vehicles,registration_number,'.($this->vehicle?->id ?? 'NULL'),
+            'vehicleData.vin' => 'required|string|max:255|unique:vehicles,vin,'.($this->vehicle?->id ?? 'NULL'),
             'vehicleData.type' => ['required', new Enum(VehicleTypeEnum::class)],
             'vehicleData.technical_inspection_expiry_date' => 'nullable|date',
             'vehicleData.insurance_expiry_date' => 'nullable|date',
@@ -63,6 +65,10 @@ class VehiclesForm extends Component
     public function save()
     {
         $this->authorize($this->vehicle->exists ? 'vehicles.edit' : 'vehicles.create');
+
+        if (! $this->vehicle->exists) {
+            $this->ensureDemoRecordLimitsAllow(Vehicle::class);
+        }
 
         $this->validate();
 

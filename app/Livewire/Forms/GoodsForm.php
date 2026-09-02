@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Livewire\Concerns\WithUnitOptions;
 use App\Models\Good;
@@ -9,7 +10,7 @@ use Livewire\Component;
 
 class GoodsForm extends Component
 {
-    use WithSavedRedirect, WithUnitOptions;
+    use WithDemoLimits, WithSavedRedirect, WithUnitOptions;
 
     public array $goodData = [];
 
@@ -51,6 +52,10 @@ class GoodsForm extends Component
     public function save()
     {
         $this->authorize($this->good->exists ? 'goods.edit' : 'goods.create');
+
+        if (! $this->good->exists) {
+            $this->ensureDemoRecordLimitsAllow(Good::class);
+        }
 
         $this->validate();
 

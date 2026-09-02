@@ -11,11 +11,11 @@ use App\Models\Driver;
 use Livewire\Livewire;
 
 /**
- * Regression tests for the stored-XSS fix in HasFullAddress (see ISSUES.md I6):
- * address fields used to be rendered with {!! !!} (raw HTML), so a <script> typed
- * into e.g. "street" would execute for anyone viewing the table. The trait now
- * exposes plain-text data (fullAddressLines/fullAddressText) and the views render
- * each line through {{ }}, so the tag must show up escaped, never literally.
+ * Regression tests for the stored-XSS fix in HasFullAddress: address fields used
+ * to be rendered with {!! !!} (raw HTML), so a <script> typed into e.g. "street"
+ * would execute for anyone viewing the table. The trait now exposes plain-text
+ * data (fullAddressLines/fullAddressText) and the views render each line through
+ * {{ }}, so the tag must show up escaped, never literally.
  */
 function maliciousStreetValue(): string
 {

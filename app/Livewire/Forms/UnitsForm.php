@@ -2,15 +2,17 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Unit;
 use Livewire\Component;
 
 class UnitsForm extends Component
 {
-    use WithSavedRedirect;
+    use WithDemoLimits, WithSavedRedirect;
 
     public array $unitData = [];
+
     public ?Unit $unit = null;
 
     public function mount(?Unit $unit = null)
@@ -18,7 +20,7 @@ class UnitsForm extends Component
         if ($unit && $unit->exists) {
             $this->unit = $unit;
         } else {
-            $this->unit = new Unit();
+            $this->unit = new Unit;
         }
 
         $this->unitData = $this->unit->only(['name']);
@@ -27,7 +29,7 @@ class UnitsForm extends Component
     protected function rules(): array
     {
         return [
-            'unitData.name' => 'required|string|max:255|unique:units,name,' . ($this->unit?->id ?? 'NULL'),
+            'unitData.name' => 'required|string|max:255|unique:units,name,'.($this->unit?->id ?? 'NULL'),
         ];
     }
 
@@ -41,6 +43,10 @@ class UnitsForm extends Component
     public function save()
     {
         $this->authorize($this->unit->exists ? 'units.edit' : 'units.create');
+
+        if (! $this->unit->exists) {
+            $this->ensureDemoRecordLimitsAllow(Unit::class);
+        }
 
         $this->validate();
 

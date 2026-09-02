@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
 use App\Enums\VehicleTypeEnum;
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithDriverDocuments;
 use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Livewire\Concerns\WithSavedRedirect;
@@ -16,7 +17,7 @@ use Livewire\WithFileUploads;
 
 class DriversForm extends Component
 {
-    use WithDriverDocuments, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
+    use WithDemoLimits, WithDriverDocuments, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
 
     public array $driverData = [];
 
@@ -103,11 +104,24 @@ class DriversForm extends Component
     {
         $this->authorize($this->driver->exists ? 'drivers.edit' : 'drivers.create');
 
+        if (! $this->driver->exists) {
+            $this->ensureDemoRecordLimitsAllow(Driver::class);
+        }
+
         $this->validate();
 
         $fileKeys = array_keys($this->mediaCollectionsMap());
         $files = array_intersect_key($this->driverData, array_flip($fileKeys));
         $attributes = array_diff_key($this->driverData, array_flip($fileKeys), ['tractor_id' => null, 'trailer_id' => null]);
+
+        // Checked before touching the database: rejecting an over-quota upload
+        // after the driver row is already saved would leave an orphaned,
+        // document-less driver behind instead of blocking the whole action.
+        foreach ($files as $file) {
+            if ($file instanceof TemporaryUploadedFile) {
+                $this->ensureDemoDiskHasRoomFor('driver_documents', $file);
+            }
+        }
 
         $isUpdate = $this->driver->exists;
 
@@ -146,6 +160,8 @@ class DriversForm extends Component
         if (! $file instanceof TemporaryUploadedFile) {
             return;
         }
+
+        $this->ensureDemoDiskHasRoomFor('driver_documents', $file);
 
         $this->driver
             ->addMedia($file->getRealPath())

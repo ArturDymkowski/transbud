@@ -10,6 +10,7 @@ use App\Livewire\Concerns\WithDeliveryGoodsSync;
 use App\Livewire\Concerns\WithDeliveryLookupOptions;
 use App\Livewire\Concerns\WithDeliveryResourceAvailability;
 use App\Livewire\Concerns\WithDeliveryStatusComputation;
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithDriverVehicleOptions;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\ContractorAddress;
@@ -29,7 +30,7 @@ use Livewire\WithFileUploads;
 
 class DeliveriesForm extends Component
 {
-    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryResourceAvailability, WithDeliveryStatusComputation, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
+    use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryResourceAvailability, WithDeliveryStatusComputation, WithDemoLimits, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
 
     private const NUMBER_PREFIX = 'DOS-';
 
@@ -373,6 +374,10 @@ class DeliveriesForm extends Component
 
         $this->authorize($isUpdate ? 'deliveries.edit' : 'deliveries.create');
 
+        if (! $isUpdate) {
+            $this->ensureDemoRecordLimitsAllow(Delivery::class);
+        }
+
         // Typing a comma as the decimal separator is allowed client-side (pl locale
         // convention), so normalize it before the `numeric` rule/float cast see it.
         if (isset($this->deliveryData['freight_amount'])) {
@@ -400,6 +405,8 @@ class DeliveriesForm extends Component
                 if (! $file instanceof TemporaryUploadedFile) {
                     continue;
                 }
+
+                $this->ensureDemoDiskHasRoomFor('delivery_documents', $file);
 
                 $this->delivery
                     ->addMedia($file->getRealPath())

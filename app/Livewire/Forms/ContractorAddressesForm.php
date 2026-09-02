@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\CountriesEnum;
 use App\Livewire\Concerns\WithContractorOptions;
+use App\Livewire\Concerns\WithDemoLimits;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\ContractorAddress;
 use Illuminate\Validation\Rules\Enum;
@@ -11,7 +12,7 @@ use Livewire\Component;
 
 class ContractorAddressesForm extends Component
 {
-    use WithContractorOptions, WithSavedRedirect;
+    use WithContractorOptions, WithDemoLimits, WithSavedRedirect;
 
     public array $addressData = [];
 
@@ -59,6 +60,10 @@ class ContractorAddressesForm extends Component
     public function save()
     {
         $this->authorize($this->contractorAddress->exists ? 'contractor-addresses.edit' : 'contractor-addresses.create');
+
+        if (! $this->contractorAddress->exists) {
+            $this->ensureDemoRecordLimitsAllow(ContractorAddress::class);
+        }
 
         $this->validate();
 
