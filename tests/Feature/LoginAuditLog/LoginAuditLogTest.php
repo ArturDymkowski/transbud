@@ -7,7 +7,7 @@ use Illuminate\Auth\Events\Logout;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 
-test('a successful login is recorded in the audit log', function () {
+test('a successful login is recorded in the audit log exactly once', function () {
     $user = User::factory()->create(['password' => Hash::make('correct-password')]);
 
     $this->post(route('login.store'), [
@@ -19,9 +19,16 @@ test('a successful login is recorded in the audit log', function () {
         'email' => $user->email,
         'successful' => true,
     ]);
+    // Not just assertDatabaseHas: that only proves a matching row exists, not that
+    // there's exactly one. This is the regression check for I11 — the listener used
+    // to be wired up twice (once via Laravel's own event auto-discovery, which picks
+    // up any typed handle() method in app/Listeners automatically, and once more via
+    // an unnecessary explicit Event::listen() in AppServiceProvider), so every login
+    // silently wrote two identical rows.
+    $this->assertDatabaseCount('login_audit_log', 1);
 });
 
-test('a failed login attempt is recorded in the audit log', function () {
+test('a failed login attempt is recorded in the audit log exactly once', function () {
     $user = User::factory()->create(['password' => Hash::make('correct-password')]);
 
     $this->post(route('login.store'), [
@@ -33,9 +40,10 @@ test('a failed login attempt is recorded in the audit log', function () {
         'email' => $user->email,
         'successful' => false,
     ]);
+    $this->assertDatabaseCount('login_audit_log', 1);
 });
 
-test('a failed login attempt for an email with no matching account is still recorded', function () {
+test('a failed login attempt for an email with no matching account is still recorded exactly once', function () {
     $this->post(route('login.store'), [
         'email' => 'nobody@example.com',
         'password' => 'whatever',
@@ -45,6 +53,7 @@ test('a failed login attempt for an email with no matching account is still reco
         'email' => 'nobody@example.com',
         'successful' => false,
     ]);
+    $this->assertDatabaseCount('login_audit_log', 1);
 });
 
 test('logging out closes the login_audit_log row for the current session', function () {

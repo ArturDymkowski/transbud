@@ -38,6 +38,8 @@ class LoginController extends Controller
 
         $this->ensureIsNotRateLimited($request);
 
+        $request->session()->regenerate();
+
         $credentials = $request->only('email', 'password');
         $remember = $request->filled('remember');
 
