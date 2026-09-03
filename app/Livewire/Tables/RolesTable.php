@@ -35,7 +35,7 @@ class RolesTable extends Component
         $role = Role::findOrFail($id);
 
         if ($this->roleHasUsers($id)) {
-            $this->dispatch('notify', message: __('roles.confirm_delete_role_in_use'));
+            $this->dispatch('notify', message: __('roles.confirm_delete_role_in_use'), type: 'error');
 
             return;
         }
@@ -68,7 +68,7 @@ class RolesTable extends Component
         $this->selected = [];
 
         if (! empty($inUseIds)) {
-            $this->dispatch('notify', message: __('roles.confirm_delete_role_in_use'));
+            $this->dispatch('notify', message: __('roles.confirm_delete_role_in_use'), type: 'error');
 
             return;
         }

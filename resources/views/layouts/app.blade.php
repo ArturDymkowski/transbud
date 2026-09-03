@@ -135,19 +135,21 @@
     <div x-data="{
         show: false,
         message: '',
+        type: 'success',
 
         init() {
             @if (session()->has('success'))
                 this.flash('{{ session('success') }}');
             @endif
         },
-        flash(msg) {
+        flash(msg, type = 'success') {
             this.message = msg;
+            this.type = type;
             this.show = true;
             setTimeout(() => this.show = false, 3000);
         }
      }"
-         x-on:notify.window="flash($event.detail.message)"
+         x-on:notify.window="flash($event.detail.message, $event.detail.type)"
          x-show="show"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform translate-x-8"
@@ -155,9 +157,14 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 transform translate-x-0"
          x-transition:leave-end="opacity-0 transform translate-x-8"
-         class="fixed top-20 right-5 z-[9999] flex items-center p-4 mb-4 bg-white rounded-lg shadow-xl dark:bg-gray-800 dark:text-gray-400"
+         class="fixed top-20 right-5 z-[9999] max-w-sm rounded-xl bg-white shadow-theme-lg dark:bg-gray-dark"
          style="display: none;">
-                <x-ui.alert variant="success" message="@this.message" />
+        <div x-show="type === 'success'">
+            <x-ui.alert variant="success" message="placeholder" />
+        </div>
+        <div x-show="type === 'error'">
+            <x-ui.alert variant="error" message="placeholder" />
+        </div>
     </div>
 
     @livewireScripts

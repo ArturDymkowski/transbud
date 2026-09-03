@@ -48,13 +48,13 @@ class UsersTable extends Component
         $this->authorize('users.delete');
 
         if (in_array(auth()->id(), $this->selected)) {
-            $this->dispatch('notify', message: __('users.cannot_delete_self'));
+            $this->dispatch('notify', message: __('users.cannot_delete_self'), type: 'error');
 
             return;
         }
 
         if ($this->anySelectedRequiresSuperAdmin($this->selected)) {
-            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'));
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'), type: 'error');
 
             return;
         }
@@ -69,13 +69,13 @@ class UsersTable extends Component
         $user = User::findOrFail($id);
 
         if ($user->id === auth()->id()) {
-            $this->dispatch('notify', message: __('users.cannot_delete_self'));
+            $this->dispatch('notify', message: __('users.cannot_delete_self'), type: 'error');
 
             return;
         }
 
         if ($this->requiresSuperAdminToManage($user)) {
-            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'));
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'), type: 'error');
 
             return;
         }
@@ -91,13 +91,13 @@ class UsersTable extends Component
         $user = User::findOrFail($userId);
 
         if ($user->id === auth()->id()) {
-            $this->dispatch('notify', message: __('users.cannot_change_own_status'));
+            $this->dispatch('notify', message: __('users.cannot_change_own_status'), type: 'error');
 
             return;
         }
 
         if ($this->requiresSuperAdminToManage($user)) {
-            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'));
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'), type: 'error');
 
             return;
         }
