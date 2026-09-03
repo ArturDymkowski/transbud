@@ -81,6 +81,14 @@ class VehiclesTable extends Component
         $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
+    public function restoreVehicle(int $id): void
+    {
+        $this->authorize('vehicles.edit');
+
+        Vehicle::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
     public function getTypeOptionsProperty(): array
     {
         return collect(VehicleTypeEnum::cases())

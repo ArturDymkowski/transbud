@@ -66,6 +66,14 @@ class GoodsTable extends Component
         $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
+    public function restoreGood(int $id): void
+    {
+        $this->authorize('goods.edit');
+
+        Good::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
     public function getTrashedOptionsProperty(): array
     {
         return [

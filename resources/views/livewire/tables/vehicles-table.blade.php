@@ -100,21 +100,34 @@
                     <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->insurance_expiry_date"/></x-tables.td>
                     <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->tachograph_inspection_expiry_date"/></x-tables.td>
                     <x-tables.td>
-                        <x-form.input.toggle wire:change="toggleActive({{ $vehicle->id }})"
-                                             name="{{ $vehicle->id }}" :isActive="$vehicle->is_active" wire:key="toggle-{{ $vehicle->id }}"
-                                             :disabled="! auth()->user()?->can('vehicles.edit')"/>
+                        @if($vehicle->trashed())
+                            <span class="text-gray-400">-</span>
+                        @else
+                            <x-form.input.toggle wire:change="toggleActive({{ $vehicle->id }})"
+                                                 name="{{ $vehicle->id }}" :isActive="$vehicle->is_active" wire:key="toggle-{{ $vehicle->id }}"
+                                                 :disabled="! auth()->user()?->can('vehicles.edit')"/>
+                        @endif
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('vehicles.show', $vehicle->id)"/>
-                        @can('vehicles.edit')
-                            <x-tables.action-edit :route="route('vehicles.edit', $vehicle->id)"/>
-                        @endcan
-                        @can('vehicles.delete')
-                            <x-tables.action-delete
-                                wire:click="deleteVehicle({{ $vehicle->id }})"
-                                :confirm="__('vehicles.confirm_delete_vehicle')"
-                            />
-                        @endcan
+                        @if($vehicle->trashed())
+                            @can('vehicles.edit')
+                                <x-tables.action-restore
+                                    wire:click="restoreVehicle({{ $vehicle->id }})"
+                                    :confirm="__('labels.tables.confirm_restore')"
+                                />
+                            @endcan
+                        @else
+                            @can('vehicles.edit')
+                                <x-tables.action-edit :route="route('vehicles.edit', $vehicle->id)"/>
+                            @endcan
+                            @can('vehicles.delete')
+                                <x-tables.action-delete
+                                    wire:click="deleteVehicle({{ $vehicle->id }})"
+                                    :confirm="__('vehicles.confirm_delete_vehicle')"
+                                />
+                            @endcan
+                        @endif
                     </x-tables.td>
                 </tr>
             @endforeach

@@ -78,6 +78,15 @@ test('deleteSelected removes all selected drivers', function () {
     $drivers->each(fn (Driver $driver) => $this->assertSoftDeleted($driver));
 });
 
+test('restoreDriver restores a soft deleted driver', function () {
+    $driver = Driver::factory()->create();
+    $driver->delete();
+
+    Livewire::test(DriversTable::class)->call('restoreDriver', $driver->id);
+
+    expect($driver->fresh()->trashed())->toBeFalse();
+});
+
 test('date range filters show a labeled badge above the table', function () {
     $component = Livewire::test(DriversTable::class)
         ->set('drivingLicenseExpiryDateFrom', '2026-01-01')

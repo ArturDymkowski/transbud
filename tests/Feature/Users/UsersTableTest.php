@@ -216,3 +216,38 @@ test('deleteSelected allows a Super Admin to delete a selection containing an Ad
 
     $this->assertSoftDeleted($targetAdmin);
 });
+
+test('restoreUser restores a soft deleted regular user', function () {
+    $user = User::factory()->create();
+    $user->delete();
+
+    Livewire::test(UsersTable::class)->call('restoreUser', $user->id);
+
+    expect($user->fresh()->trashed())->toBeFalse();
+});
+
+test('restoreUser refuses to restore a soft deleted Admin when done by a plain Admin', function () {
+    $targetAdmin = User::factory()->create();
+    $targetAdmin->assignRole('Admin');
+    $targetAdmin->delete();
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    Livewire::test(UsersTable::class)->call('restoreUser', $targetAdmin->id);
+
+    expect($targetAdmin->fresh()->trashed())->toBeTrue();
+});
+
+test('restoreUser allows a Super Admin to restore a soft deleted Admin', function () {
+    $targetAdmin = User::factory()->create();
+    $targetAdmin->assignRole('Admin');
+    $targetAdmin->delete();
+
+    actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)->call('restoreUser', $targetAdmin->id);
+
+    expect($targetAdmin->fresh()->trashed())->toBeFalse();
+});

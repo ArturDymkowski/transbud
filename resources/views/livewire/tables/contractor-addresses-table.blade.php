@@ -97,7 +97,9 @@
                         @endforelse
                     </x-tables.td>
                     <x-tables.td>
-                        @if($readonly)
+                        @if($address->trashed())
+                            <span class="text-gray-400">-</span>
+                        @elseif($readonly)
                             <x-ui.status-badge :color="$address->is_active ? '#12b76a' : '#f04438'">
                                 {{ $address->is_active ? __('labels.tables.yes') : __('labels.tables.no') }}
                             </x-ui.status-badge>
@@ -110,15 +112,24 @@
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('contractor-addresses.show', $address->id)"/>
                         @unless($readonly)
-                            @can('contractor-addresses.edit')
-                                <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
-                            @endcan
-                            @can('contractor-addresses.delete')
-                                <x-tables.action-delete
-                                    wire:click="deleteAddress({{ $address->id }})"
-                                    :confirm="__('address_book.confirm_delete_address')"
-                                />
-                            @endcan
+                            @if($address->trashed())
+                                @can('contractor-addresses.edit')
+                                    <x-tables.action-restore
+                                        wire:click="restoreAddress({{ $address->id }})"
+                                        :confirm="__('labels.tables.confirm_restore')"
+                                    />
+                                @endcan
+                            @else
+                                @can('contractor-addresses.edit')
+                                    <x-tables.action-edit :route="route('contractor-addresses.edit', $address->id)"/>
+                                @endcan
+                                @can('contractor-addresses.delete')
+                                    <x-tables.action-delete
+                                        wire:click="deleteAddress({{ $address->id }})"
+                                        :confirm="__('address_book.confirm_delete_address')"
+                                    />
+                                @endcan
+                            @endif
                         @endunless
                     </x-tables.td>
                 </tr>

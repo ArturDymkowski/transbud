@@ -72,21 +72,34 @@
                     <x-tables.td>{{ $contractor->nip ?? '-' }}</x-tables.td>
                     <x-tables.td>{{ $contractor->regon ?? '-' }}</x-tables.td>
                     <x-tables.td>
-                        <x-form.input.toggle wire:change="toggleActive({{ $contractor->id }})"
-                                             name="{{ $contractor->id }}" :isActive="$contractor->active" wire:key="toggle-{{ $contractor->id }}"
-                                             :disabled="! auth()->user()?->can('contractors.edit')"/>
+                        @if($contractor->trashed())
+                            <span class="text-gray-400">-</span>
+                        @else
+                            <x-form.input.toggle wire:change="toggleActive({{ $contractor->id }})"
+                                                 name="{{ $contractor->id }}" :isActive="$contractor->active" wire:key="toggle-{{ $contractor->id }}"
+                                                 :disabled="! auth()->user()?->can('contractors.edit')"/>
+                        @endif
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('contractors.show', $contractor->id)"/>
-                        @can('contractors.edit')
-                            <x-tables.action-edit :route="route('contractors.edit', $contractor->id)"/>
-                        @endcan
-                        @can('contractors.delete')
-                            <x-tables.action-delete
-                                wire:click="deleteContractor({{ $contractor->id }})"
-                                :confirm="__('contractors.confirm_delete_contractor')"
-                            />
-                        @endcan
+                        @if($contractor->trashed())
+                            @can('contractors.edit')
+                                <x-tables.action-restore
+                                    wire:click="restoreContractor({{ $contractor->id }})"
+                                    :confirm="__('labels.tables.confirm_restore')"
+                                />
+                            @endcan
+                        @else
+                            @can('contractors.edit')
+                                <x-tables.action-edit :route="route('contractors.edit', $contractor->id)"/>
+                            @endcan
+                            @can('contractors.delete')
+                                <x-tables.action-delete
+                                    wire:click="deleteContractor({{ $contractor->id }})"
+                                    :confirm="__('contractors.confirm_delete_contractor')"
+                                />
+                            @endcan
+                        @endif
                     </x-tables.td>
                 </tr>
             @endforeach

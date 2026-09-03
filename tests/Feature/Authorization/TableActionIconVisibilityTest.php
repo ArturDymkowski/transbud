@@ -228,6 +228,130 @@ test('units table embedded in a good only shows the unlink icon with goods.edit'
 });
 
 /**
+ * The "Przywróć" (restore) icon replaces edit/delete on a soft-deleted row and is
+ * gated on the same x.edit permission used by restoreX() in each table component
+ * (see ISSUES.md I2 / RISKS.md R9) — a view-only role must not see it either.
+ */
+test('contractors table hides restore for a view-only role and shows it for Admin', function () {
+    $contractor = Contractor::factory()->create();
+    $contractor->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(ContractorsTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreContractor('.$contractor->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(ContractorsTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreContractor('.$contractor->id.')', false);
+});
+
+test('vehicles table hides restore for a view-only role and shows it for Admin', function () {
+    $vehicle = Vehicle::factory()->create();
+    $vehicle->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(VehiclesTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreVehicle('.$vehicle->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(VehiclesTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreVehicle('.$vehicle->id.')', false);
+});
+
+test('goods table hides restore for a view-only role and shows it for Admin', function () {
+    $good = Good::factory()->create();
+    $good->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(GoodsTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreGood('.$good->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(GoodsTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreGood('.$good->id.')', false);
+});
+
+test('users table hides restore for a view-only role and shows it for Admin', function () {
+    $target = User::factory()->create();
+    $target->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(UsersTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreUser('.$target->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(UsersTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreUser('.$target->id.')', false);
+});
+
+test('contractor addresses table hides restore for a view-only role and shows it for Admin', function () {
+    $address = ContractorAddress::factory()->create();
+    $address->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(ContractorAddressesTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreAddress('.$address->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(ContractorAddressesTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreAddress('.$address->id.')', false);
+});
+
+test('drivers table hides restore for a view-only role and shows it for Admin', function () {
+    $driver = Driver::factory()->create();
+    $driver->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(DriversTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreDriver('.$driver->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(DriversTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreDriver('.$driver->id.')', false);
+});
+
+test('units table hides restore for a view-only role and shows it for Admin', function () {
+    $unit = Unit::factory()->create();
+    $unit->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(UnitsTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreUnit('.$unit->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(UnitsTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreUnit('.$unit->id.')', false);
+});
+
+/**
  * Bulk selection (header "select all" checkbox, per-row checkbox, and the
  * "delete selected" bar) is a second path to the same deleteSelected() action as
  * the row delete icon — it needs the identical permission gate, otherwise a

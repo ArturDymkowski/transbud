@@ -67,6 +67,14 @@ class ContractorsTable extends Component
         $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
+    public function restoreContractor(int $id): void
+    {
+        $this->authorize('contractors.edit');
+
+        Contractor::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
     public function getTrashedOptionsProperty(): array
     {
         return [

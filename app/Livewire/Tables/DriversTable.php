@@ -188,6 +188,18 @@ class DriversTable extends Component
         $this->dispatch('edit-driver', id: $id);
     }
 
+    public function restoreDriver(int $id): void
+    {
+        if ($this->readonly) {
+            return;
+        }
+
+        $this->authorize('drivers.edit');
+
+        Driver::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
     #[On('driver-updated')]
     public function refreshTable(): void
     {

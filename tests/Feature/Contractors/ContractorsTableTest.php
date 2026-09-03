@@ -75,3 +75,12 @@ test('trashed filter can include soft deleted contractors', function () {
         ->set('trashed', 'with')
         ->assertSee('Deleted Contractor');
 });
+
+test('restoreContractor restores a soft deleted contractor', function () {
+    $contractor = Contractor::factory()->create();
+    $contractor->delete();
+
+    Livewire::test(ContractorsTable::class)->call('restoreContractor', $contractor->id);
+
+    expect($contractor->fresh()->trashed())->toBeFalse();
+});

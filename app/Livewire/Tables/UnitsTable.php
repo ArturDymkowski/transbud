@@ -165,6 +165,18 @@ class UnitsTable extends Component
         $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
+    public function restoreUnit(int $id): void
+    {
+        if ($this->readonly) {
+            return;
+        }
+
+        $this->authorize('units.edit');
+
+        Unit::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
     public function getTrashedOptionsProperty(): array
     {
         return [

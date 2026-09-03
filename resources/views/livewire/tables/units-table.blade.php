@@ -84,34 +84,47 @@
                     <x-tables.td>{{ $unit->name }}</x-tables.td>
                     @unless($good)
                         <x-tables.td>
-                            <x-form.input.toggle wire:change="toggleActive({{ $unit->id }})"
-                                                 name="{{ $unit->id }}" :isActive="$unit->is_active" wire:key="toggle-{{ $unit->id }}"
-                                                 :disabled="! auth()->user()?->can('units.edit')"/>
+                            @if($unit->trashed())
+                                <span class="text-gray-400">-</span>
+                            @else
+                                <x-form.input.toggle wire:change="toggleActive({{ $unit->id }})"
+                                                     name="{{ $unit->id }}" :isActive="$unit->is_active" wire:key="toggle-{{ $unit->id }}"
+                                                     :disabled="! auth()->user()?->can('units.edit')"/>
+                            @endif
                         </x-tables.td>
                     @endunless
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('units.show', $unit->id)"/>
                         @unless($readonly)
-                            @can('units.edit')
-                                <x-tables.action-edit :route="route('units.edit', $unit->id)"/>
-                            @endcan
-                            @if($good)
-                                @can('goods.edit')
-                                    <x-tables.action-delete
-                                        wire:click="deleteUnit({{ $unit->id }})"
-                                        :confirm="__('goods.confirm_remove_unit_assignment')"
-                                        :label="__('goods.remove_unit_assignment')"
-                                    >
-                                        <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
-                                    </x-tables.action-delete>
-                                @endcan
-                            @else
-                                @can('units.delete')
-                                    <x-tables.action-delete
-                                        wire:click="deleteUnit({{ $unit->id }})"
-                                        :confirm="__('units.confirm_delete_unit')"
+                            @if($unit->trashed())
+                                @can('units.edit')
+                                    <x-tables.action-restore
+                                        wire:click="restoreUnit({{ $unit->id }})"
+                                        :confirm="__('labels.tables.confirm_restore')"
                                     />
                                 @endcan
+                            @else
+                                @can('units.edit')
+                                    <x-tables.action-edit :route="route('units.edit', $unit->id)"/>
+                                @endcan
+                                @if($good)
+                                    @can('goods.edit')
+                                        <x-tables.action-delete
+                                            wire:click="deleteUnit({{ $unit->id }})"
+                                            :confirm="__('goods.confirm_remove_unit_assignment')"
+                                            :label="__('goods.remove_unit_assignment')"
+                                        >
+                                            <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                                        </x-tables.action-delete>
+                                    @endcan
+                                @else
+                                    @can('units.delete')
+                                        <x-tables.action-delete
+                                            wire:click="deleteUnit({{ $unit->id }})"
+                                            :confirm="__('units.confirm_delete_unit')"
+                                        />
+                                    @endcan
+                                @endif
                             @endif
                         @endunless
                     </x-tables.td>

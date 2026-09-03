@@ -76,3 +76,12 @@ test('deleteSelected soft deletes all selected goods', function () {
 
     $goods->each(fn (Good $good) => $this->assertSoftDeleted($good));
 });
+
+test('restoreGood restores a soft deleted good', function () {
+    $good = Good::factory()->create();
+    $good->delete();
+
+    Livewire::test(GoodsTable::class)->call('restoreGood', $good->id);
+
+    expect($good->fresh()->trashed())->toBeFalse();
+});

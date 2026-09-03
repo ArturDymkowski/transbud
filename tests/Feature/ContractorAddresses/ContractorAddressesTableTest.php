@@ -113,6 +113,15 @@ test('deleteAddress removes a single address', function () {
     $this->assertSoftDeleted($address);
 });
 
+test('restoreAddress restores a soft deleted address', function () {
+    $address = ContractorAddress::factory()->create();
+    $address->delete();
+
+    Livewire::test(ContractorAddressesTable::class)->call('restoreAddress', $address->id);
+
+    expect($address->fresh()->trashed())->toBeFalse();
+});
+
 test('toggleActive flips the is_active flag', function () {
     $address = ContractorAddress::factory()->create(['is_active' => true]);
 

@@ -99,6 +99,15 @@ test('deleteSelected soft deletes all selected vehicles', function () {
     $vehicles->each(fn (Vehicle $vehicle) => $this->assertSoftDeleted($vehicle));
 });
 
+test('restoreVehicle restores a soft deleted vehicle', function () {
+    $vehicle = Vehicle::factory()->create();
+    $vehicle->delete();
+
+    Livewire::test(VehiclesTable::class)->call('restoreVehicle', $vehicle->id);
+
+    expect($vehicle->fresh()->trashed())->toBeFalse();
+});
+
 test('date range filters show a labeled badge above the table', function () {
     $component = Livewire::test(VehiclesTable::class)
         ->set('insuranceExpiryDateFrom', '2026-01-01')

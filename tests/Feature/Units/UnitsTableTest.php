@@ -78,6 +78,15 @@ test('deleteSelected soft deletes all selected units', function () {
     $units->each(fn (Unit $unit) => $this->assertSoftDeleted($unit));
 });
 
+test('restoreUnit restores a soft deleted unit', function () {
+    $unit = Unit::factory()->create();
+    $unit->delete();
+
+    Livewire::test(UnitsTable::class)->call('restoreUnit', $unit->id);
+
+    expect($unit->fresh()->trashed())->toBeFalse();
+});
+
 test('when scoped to a good, table only shows assigned units', function () {
     $good = Good::factory()->create();
     $assigned = Unit::factory()->create(['name' => 'assigned-unit']);

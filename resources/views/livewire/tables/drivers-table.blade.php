@@ -125,34 +125,47 @@
                         <x-tables.td><x-ui.expiry-date-badge :date="$driver->driving_license_expiry_date"/></x-tables.td>
                         <x-tables.td><x-ui.expiry-date-badge :date="$driver->identity_card_expiry_date"/></x-tables.td>
                         <x-tables.td>
-                            <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
-                                                 name="{{ $driver->id }}" :isActive="$driver->is_active" wire:key="toggle-{{ $driver->id }}"
-                                                 :disabled="! auth()->user()?->can('drivers.edit')"/>
+                            @if($driver->trashed())
+                                <span class="text-gray-400">-</span>
+                            @else
+                                <x-form.input.toggle wire:change="toggleActive({{ $driver->id }})"
+                                                     name="{{ $driver->id }}" :isActive="$driver->is_active" wire:key="toggle-{{ $driver->id }}"
+                                                     :disabled="! auth()->user()?->can('drivers.edit')"/>
+                            @endif
                         </x-tables.td>
                     @endunless
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('drivers.show', $driver->id)"/>
                         @unless($readonly)
-                            @can('drivers.edit')
-                                <x-tables.action-edit :route="route('drivers.edit', $driver->id)"/>
-                            @endcan
-                            @if($vehicle)
-                                @can('vehicles.edit')
-                                    <x-tables.action-delete
-                                        wire:click="deleteDriver({{ $driver->id }})"
-                                        :confirm="__('vehicles.confirm_remove_driver_assignment')"
-                                        :label="__('vehicles.remove_driver_assignment')"
-                                    >
-                                        <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
-                                    </x-tables.action-delete>
-                                @endcan
-                            @else
-                                @can('drivers.delete')
-                                    <x-tables.action-delete
-                                        wire:click="deleteDriver({{ $driver->id }})"
-                                        :confirm="__('drivers.confirm_delete_driver')"
+                            @if($driver->trashed())
+                                @can('drivers.edit')
+                                    <x-tables.action-restore
+                                        wire:click="restoreDriver({{ $driver->id }})"
+                                        :confirm="__('labels.tables.confirm_restore')"
                                     />
                                 @endcan
+                            @else
+                                @can('drivers.edit')
+                                    <x-tables.action-edit :route="route('drivers.edit', $driver->id)"/>
+                                @endcan
+                                @if($vehicle)
+                                    @can('vehicles.edit')
+                                        <x-tables.action-delete
+                                            wire:click="deleteDriver({{ $driver->id }})"
+                                            :confirm="__('vehicles.confirm_remove_driver_assignment')"
+                                            :label="__('vehicles.remove_driver_assignment')"
+                                        >
+                                            <x-heroicon-o-link-slash class="w-6 h-6 hover:text-red-500"/>
+                                        </x-tables.action-delete>
+                                    @endcan
+                                @else
+                                    @can('drivers.delete')
+                                        <x-tables.action-delete
+                                            wire:click="deleteDriver({{ $driver->id }})"
+                                            :confirm="__('drivers.confirm_delete_driver')"
+                                        />
+                                    @endcan
+                                @endif
                             @endif
                         @endunless
                     </x-tables.td>

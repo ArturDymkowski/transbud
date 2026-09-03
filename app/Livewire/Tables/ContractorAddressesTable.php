@@ -107,6 +107,18 @@ class ContractorAddressesTable extends Component
         $this->dispatch('notify', message: __('labels.general.updated_success'));
     }
 
+    public function restoreAddress(int $id): void
+    {
+        if ($this->readonly) {
+            return;
+        }
+
+        $this->authorize('contractor-addresses.edit');
+
+        ContractorAddress::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
     public function openCreateModal(): void
     {
         if ($this->readonly) {
