@@ -100,3 +100,119 @@ test('deleteSelected soft deletes all selected users', function () {
 
     $users->each(fn (User $user) => $this->assertSoftDeleted($user));
 });
+
+/**
+ * A plain Admin (even the shared, public-demo one) must never be able to
+ * touch another Admin's account, or their own — only a Super Admin may
+ * create/delete/(de)activate Admin accounts or grant/revoke the Admin role.
+ */
+function actingAsSuperAdmin(): User
+{
+    $superAdmin = User::factory()->create(['is_super_admin' => true]);
+    $superAdmin->assignRole('Admin');
+    test()->actingAs($superAdmin);
+
+    return $superAdmin;
+}
+
+test('toggleActive refuses to deactivate your own account, even as a Super Admin', function () {
+    $superAdmin = actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)->call('toggleActive', $superAdmin->id);
+
+    expect($superAdmin->refresh()->is_active)->toBeTrue();
+});
+
+test('toggleActive refuses to deactivate another Admin when done by a plain Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail(); // the admin from beforeEach's actingAsAdmin()
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    Livewire::test(UsersTable::class)->call('toggleActive', $targetAdmin->id);
+
+    expect($targetAdmin->refresh()->is_active)->toBeTrue();
+});
+
+test('toggleActive allows a Super Admin to deactivate another Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)->call('toggleActive', $targetAdmin->id);
+
+    expect($targetAdmin->refresh()->is_active)->toBeFalse();
+});
+
+test('deleteUser refuses to delete your own account, even as a Super Admin', function () {
+    $superAdmin = actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)->call('deleteUser', $superAdmin->id);
+
+    expect(User::find($superAdmin->id))->not->toBeNull();
+});
+
+test('deleteUser refuses to delete another Admin when done by a plain Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    Livewire::test(UsersTable::class)->call('deleteUser', $targetAdmin->id);
+
+    expect(User::find($targetAdmin->id))->not->toBeNull();
+});
+
+test('deleteUser allows a Super Admin to delete another Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)->call('deleteUser', $targetAdmin->id);
+
+    $this->assertSoftDeleted($targetAdmin);
+});
+
+test('deleteUser still allows a plain Admin to delete a regular (non-Admin) user', function () {
+    $regularUser = User::factory()->create();
+
+    Livewire::test(UsersTable::class)->call('deleteUser', $regularUser->id);
+
+    $this->assertSoftDeleted($regularUser);
+});
+
+test('deleteSelected refuses a selection that includes your own account', function () {
+    $admin = auth()->user();
+    $other = User::factory()->create();
+
+    Livewire::test(UsersTable::class)
+        ->set('selected', [$admin->id, $other->id])
+        ->call('deleteSelected');
+
+    expect(User::find($admin->id))->not->toBeNull()
+        ->and(User::find($other->id))->not->toBeNull();
+});
+
+test('deleteSelected refuses a selection containing an Admin when done by a plain Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    $regularUser = User::factory()->create();
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    Livewire::test(UsersTable::class)
+        ->set('selected', [$targetAdmin->id, $regularUser->id])
+        ->call('deleteSelected');
+
+    expect(User::find($targetAdmin->id))->not->toBeNull()
+        ->and(User::find($regularUser->id))->not->toBeNull();
+});
+
+test('deleteSelected allows a Super Admin to delete a selection containing an Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)
+        ->set('selected', [$targetAdmin->id])
+        ->call('deleteSelected');
+
+    $this->assertSoftDeleted($targetAdmin);
+});

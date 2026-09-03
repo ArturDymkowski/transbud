@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tables;
 
+use App\Livewire\Concerns\WithAdminProtection;
 use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
@@ -12,10 +13,12 @@ use Livewire\WithPagination;
 
 class UsersTable extends Component
 {
-    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+    use WithAdminProtection, WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;
 
     public string $search = '';
+
     public string $isActive = '';
+
     public string $trashed = '';
 
     protected function filterFields(): array
@@ -44,6 +47,18 @@ class UsersTable extends Component
     {
         $this->authorize('users.delete');
 
+        if (in_array(auth()->id(), $this->selected)) {
+            $this->dispatch('notify', message: __('users.cannot_delete_self'));
+
+            return;
+        }
+
+        if ($this->anySelectedRequiresSuperAdmin($this->selected)) {
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'));
+
+            return;
+        }
+
         $this->deleteSelectedRecords(User::class);
     }
 
@@ -51,7 +66,21 @@ class UsersTable extends Component
     {
         $this->authorize('users.delete');
 
-        User::where('id', $id)->delete();
+        $user = User::findOrFail($id);
+
+        if ($user->id === auth()->id()) {
+            $this->dispatch('notify', message: __('users.cannot_delete_self'));
+
+            return;
+        }
+
+        if ($this->requiresSuperAdminToManage($user)) {
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'));
+
+            return;
+        }
+
+        $user->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
 
@@ -60,6 +89,19 @@ class UsersTable extends Component
         $this->authorize('users.edit');
 
         $user = User::findOrFail($userId);
+
+        if ($user->id === auth()->id()) {
+            $this->dispatch('notify', message: __('users.cannot_change_own_status'));
+
+            return;
+        }
+
+        if ($this->requiresSuperAdminToManage($user)) {
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'));
+
+            return;
+        }
+
         $user->is_active = ! $user->is_active;
         $user->save();
 
@@ -81,14 +123,14 @@ class UsersTable extends Component
 
         if (filled($this->search)) {
             $filters[] = [
-                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'label' => __('labels.tables.search').': "'.$this->search.'"',
                 'property' => 'search',
             ];
         }
 
         if (filled($this->isActive)) {
             $filters[] = [
-                'label' => __('labels.tables.active') . ': ' . ($this->isActive === '1'
+                'label' => __('labels.tables.active').': '.($this->isActive === '1'
                         ? __('labels.tables.yes')
                         : __('labels.tables.no')),
                 'property' => 'isActive',

@@ -239,3 +239,80 @@ test('the role field is not disabled when editing a different account', function
     expect($selectTag)->not->toBe('');
     expect($selectTag)->not->toContain('disabled');
 });
+
+test('a plain Admin cannot demote another Admin away from the Admin role', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    $dispatcherRole = Role::create(['name' => 'Dispatcher']);
+
+    Livewire::test(UsersForm::class, ['user' => $targetAdmin])
+        ->set('userData.role_id', $dispatcherRole->id)
+        ->call('save')
+        ->assertHasErrors('userData.role_id');
+
+    expect($targetAdmin->refresh()->hasRole('Admin'))->toBeTrue();
+});
+
+test('a plain Admin cannot promote another user to the Admin role', function () {
+    $regularUser = User::factory()->create();
+    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+
+    Livewire::test(UsersForm::class, ['user' => $regularUser])
+        ->set('userData.role_id', $adminRole->id)
+        ->call('save')
+        ->assertHasErrors('userData.role_id');
+
+    expect($regularUser->refresh()->hasRole('Admin'))->toBeFalse();
+});
+
+test('a Super Admin can demote another Admin away from the Admin role', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+
+    $superAdmin = User::factory()->create(['is_super_admin' => true]);
+    $superAdmin->assignRole('Admin');
+    $this->actingAs($superAdmin);
+
+    $dispatcherRole = Role::create(['name' => 'Dispatcher']);
+
+    Livewire::test(UsersForm::class, ['user' => $targetAdmin])
+        ->set('userData.role_id', $dispatcherRole->id)
+        ->call('save')
+        ->assertHasNoErrors('userData.role_id')
+        ->assertRedirect(route('users.index'));
+
+    expect($targetAdmin->refresh()->hasRole('Dispatcher'))->toBeTrue();
+});
+
+test('a Super Admin can promote another user to the Admin role', function () {
+    $regularUser = User::factory()->create();
+    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+
+    $superAdmin = User::factory()->create(['is_super_admin' => true]);
+    $superAdmin->assignRole('Admin');
+    $this->actingAs($superAdmin);
+
+    Livewire::test(UsersForm::class, ['user' => $regularUser])
+        ->set('userData.role_id', $adminRole->id)
+        ->call('save')
+        ->assertHasNoErrors('userData.role_id')
+        ->assertRedirect(route('users.index'));
+
+    expect($regularUser->refresh()->hasRole('Admin'))->toBeTrue();
+});
+
+test('a plain Admin can still assign a non-Admin role to a regular user', function () {
+    $regularUser = User::factory()->create();
+    $dispatcherRole = Role::create(['name' => 'Dispatcher']);
+
+    Livewire::test(UsersForm::class, ['user' => $regularUser])
+        ->set('userData.role_id', $dispatcherRole->id)
+        ->call('save')
+        ->assertHasNoErrors('userData.role_id')
+        ->assertRedirect(route('users.index'));
+
+    expect($regularUser->refresh()->hasRole('Dispatcher'))->toBeTrue();
+});
