@@ -53,9 +53,9 @@ class DeliveryCostModal extends Component
         return ['' => __('deliveries.cost.whole_delivery')] + $this->delivery->transportSets
             ->mapWithKeys(fn ($transportSet) => [
                 $transportSet->id => collect([
-                    $transportSet->driver->name ?? null,
-                    $transportSet->vehicle->registration_number ?? null,
-                    $transportSet->trailer->registration_number ?? null,
+                    $transportSet->driver?->name,
+                    $transportSet->vehicle?->registration_number,
+                    $transportSet->trailer?->registration_number,
                 ])->filter()->implode(' / ') ?: ('#'.$transportSet->id),
             ])->all();
     }

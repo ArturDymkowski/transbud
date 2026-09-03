@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
 use App\Models\Contractor;
+use App\Models\Delivery;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -52,6 +54,16 @@ class ContractorsTable extends Component
     {
         $this->authorize('contractors.delete');
 
+        $hasActiveDelivery = Delivery::where('contractor_id', $id)
+            ->whereIn('status', [DeliveryStatusEnum::ASSIGNED->value, DeliveryStatusEnum::IN_PROGRESS->value])
+            ->exists();
+
+        if ($hasActiveDelivery) {
+            $this->dispatch('notify', message: __('labels.general.delete_blocked_active_delivery'), type: 'error');
+
+            return;
+        }
+
         Contractor::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
@@ -73,6 +85,15 @@ class ContractorsTable extends Component
 
         Contractor::where('id', $id)->restore();
         $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
+    public function forceDeleteContractor(int $id): void
+    {
+        $this->authorize('contractors.delete');
+
+        $contractor = Contractor::onlyTrashed()->findOrFail($id);
+        $contractor->forceDelete();
+        $this->dispatch('notify', message: __('labels.general.force_deleted_success'));
     }
 
     public function getTrashedOptionsProperty(): array

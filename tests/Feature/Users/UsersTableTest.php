@@ -251,3 +251,45 @@ test('restoreUser allows a Super Admin to restore a soft deleted Admin', functio
 
     expect($targetAdmin->fresh()->trashed())->toBeFalse();
 });
+
+test('forceDeleteUser permanently deletes a soft deleted regular user', function () {
+    $user = User::factory()->create();
+    $user->delete();
+
+    Livewire::test(UsersTable::class)->call('forceDeleteUser', $user->id);
+
+    $this->assertDatabaseMissing('users', ['id' => $user->id]);
+});
+
+test('forceDeleteUser refuses to delete your own account, even as a Super Admin', function () {
+    $superAdmin = actingAsSuperAdmin();
+    $superAdmin->delete();
+
+    Livewire::test(UsersTable::class)->call('forceDeleteUser', $superAdmin->id);
+
+    $this->assertDatabaseHas('users', ['id' => $superAdmin->id]);
+});
+
+test('forceDeleteUser refuses to delete another Admin when done by a plain Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin->delete();
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    Livewire::test(UsersTable::class)->call('forceDeleteUser', $targetAdmin->id);
+
+    $this->assertDatabaseHas('users', ['id' => $targetAdmin->id]);
+});
+
+test('forceDeleteUser allows a Super Admin to permanently delete another Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin->delete();
+
+    actingAsSuperAdmin();
+
+    Livewire::test(UsersTable::class)->call('forceDeleteUser', $targetAdmin->id);
+
+    $this->assertDatabaseMissing('users', ['id' => $targetAdmin->id]);
+});

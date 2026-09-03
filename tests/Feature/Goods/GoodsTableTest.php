@@ -1,6 +1,10 @@
 <?php
 
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Tables\GoodsTable;
+use App\Models\Delivery;
+use App\Models\DeliveryGood;
+use App\Models\DeliveryTransportSet;
 use App\Models\Good;
 use Livewire\Livewire;
 
@@ -67,6 +71,28 @@ test('deleteGood removes a single good', function () {
     $this->assertSoftDeleted($good);
 });
 
+test('deleteGood refuses to delete a good used in an active delivery', function () {
+    $good = Good::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::ASSIGNED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+    DeliveryGood::factory()->create(['delivery_transport_set_id' => $transportSet->id, 'good_id' => $good->id]);
+
+    Livewire::test(GoodsTable::class)->call('deleteGood', $good->id);
+
+    $this->assertNotSoftDeleted($good);
+});
+
+test('deleteGood allows deleting a good whose delivery is completed', function () {
+    $good = Good::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+    DeliveryGood::factory()->create(['delivery_transport_set_id' => $transportSet->id, 'good_id' => $good->id]);
+
+    Livewire::test(GoodsTable::class)->call('deleteGood', $good->id);
+
+    $this->assertSoftDeleted($good);
+});
+
 test('deleteSelected soft deletes all selected goods', function () {
     $goods = Good::factory()->count(3)->create();
 
@@ -85,3 +111,27 @@ test('restoreGood restores a soft deleted good', function () {
 
     expect($good->fresh()->trashed())->toBeFalse();
 });
+
+test('forceDeleteGood permanently deletes a soft deleted good', function () {
+    $good = Good::factory()->create();
+    $good->delete();
+
+    Livewire::test(GoodsTable::class)->call('forceDeleteGood', $good->id);
+
+    $this->assertDatabaseMissing('goods', ['id' => $good->id]);
+});
+
+test('forceDeleteGood nulls the delivery goods reference instead of deleting the delivery', function () {
+    $good = Good::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+    $deliveryGood = DeliveryGood::factory()->create(['delivery_transport_set_id' => $transportSet->id, 'good_id' => $good->id]);
+    $good->delete();
+
+    Livewire::test(GoodsTable::class)->call('forceDeleteGood', $good->id);
+
+    $this->assertDatabaseMissing('goods', ['id' => $good->id]);
+    $this->assertDatabaseHas('deliveries', ['id' => $delivery->id]);
+    $this->assertDatabaseHas('delivery_goods', ['id' => $deliveryGood->id, 'good_id' => null]);
+});
+

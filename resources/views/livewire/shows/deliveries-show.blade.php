@@ -17,14 +17,14 @@
                 <div class="col-span-1">
                     <x-form.input.text-input name="deliveryData.contractor"
                                              label="{{ __('deliveries.contractor') }}"
-                                             :value="$delivery->contractor->name ?? '-'"
+                                             :value="$delivery->contractor?->name ?? '-'"
                                              disabled/>
                 </div>
 
                 <div class="col-span-1">
                     <x-form.input.text-input name="deliveryData.contractor_address"
                                              label="{{ __('deliveries.contractor_address') }}"
-                                             :value="$delivery->contractorAddress->fullAddressText ?? '-'"
+                                             :value="$delivery->contractorAddress?->fullAddressText ?? '-'"
                                              disabled/>
                 </div>
 
@@ -71,17 +71,17 @@
 
                             <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_driver"
                                                      label="{{ __('deliveries.transport_set.driver') }}"
-                                                     :value="$transportSet->driver->name ?? '-'"
+                                                     :value="$transportSet->driver?->name ?? '-'"
                                                      disabled/>
 
                             <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_vehicle"
                                                      label="{{ __('vehicles.type.tractor') }}"
-                                                     :value="$transportSet->vehicle->registration_number ?? '-'"
+                                                     :value="$transportSet->vehicle?->registration_number ?? '-'"
                                                      disabled/>
 
                             <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_trailer"
                                                      label="{{ __('vehicles.type.trailer') }}"
-                                                     :value="$transportSet->trailer->registration_number ?? '-'"
+                                                     :value="$transportSet->trailer?->registration_number ?? '-'"
                                                      disabled/>
 
                             <x-form.input.text-input name="transportSet_{{ $transportSet->id }}_loading_at"
@@ -107,8 +107,8 @@
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                 @forelse($transportSet->goods as $good)
                                     <tr wire:key="show-good-{{ $good->id }}">
-                                        <x-tables.td>{{ $good->good->name ?? '-' }}</x-tables.td>
-                                        <x-tables.td>{{ $good->unit->name ?? '-' }}</x-tables.td>
+                                        <x-tables.td>{{ $good->good?->name ?? '-' }}</x-tables.td>
+                                        <x-tables.td>{{ $good->unit?->name ?? '-' }}</x-tables.td>
                                         <x-tables.td>{{ $good->quantity }}</x-tables.td>
                                     </tr>
                                 @empty

@@ -35,9 +35,9 @@ final readonly class TransportSetCostBreakdown
     public function label(): string
     {
         $parts = collect([
-            $this->transportSet->driver->name ?? null,
-            $this->transportSet->vehicle->registration_number ?? null,
-            $this->transportSet->trailer->registration_number ?? null,
+            $this->transportSet->driver?->name,
+            $this->transportSet->vehicle?->registration_number,
+            $this->transportSet->trailer?->registration_number,
         ])->filter();
 
         return $parts->isNotEmpty() ? $parts->implode(' / ') : ('#'.$this->transportSet->id);

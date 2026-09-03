@@ -227,11 +227,6 @@ test('units table embedded in a good only shows the unlink icon with goods.edit'
         ->assertSee('deleteUnit('.$unit->id.')', false);
 });
 
-/**
- * The "Przywróć" (restore) icon replaces edit/delete on a soft-deleted row and is
- * gated on the same x.edit permission used by restoreX() in each table component
- * (see ISSUES.md I2 / RISKS.md R9) — a view-only role must not see it either.
- */
 test('contractors table hides restore for a view-only role and shows it for Admin', function () {
     $contractor = Contractor::factory()->create();
     $contractor->delete();
@@ -349,6 +344,125 @@ test('units table hides restore for a view-only role and shows it for Admin', fu
     Livewire::actingAs($admin)->test(UnitsTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreUnit('.$unit->id.')', false);
+});
+
+test('contractors table hides force delete for a view-only role and shows it for Admin', function () {
+    $contractor = Contractor::factory()->create();
+    $contractor->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(ContractorsTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteContractor('.$contractor->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(ContractorsTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteContractor('.$contractor->id.')', false);
+});
+
+test('vehicles table hides force delete for a view-only role and shows it for Admin', function () {
+    $vehicle = Vehicle::factory()->create();
+    $vehicle->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(VehiclesTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteVehicle('.$vehicle->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(VehiclesTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteVehicle('.$vehicle->id.')', false);
+});
+
+test('goods table hides force delete for a view-only role and shows it for Admin', function () {
+    $good = Good::factory()->create();
+    $good->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(GoodsTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteGood('.$good->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(GoodsTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteGood('.$good->id.')', false);
+});
+
+test('users table hides force delete for a view-only role and shows it for Admin', function () {
+    $target = User::factory()->create();
+    $target->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(UsersTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteUser('.$target->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(UsersTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteUser('.$target->id.')', false);
+});
+
+test('contractor addresses table hides force delete for a view-only role and shows it for Admin', function () {
+    $address = ContractorAddress::factory()->create();
+    $address->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(ContractorAddressesTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteAddress('.$address->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(ContractorAddressesTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteAddress('.$address->id.')', false);
+});
+
+test('drivers table hides force delete for a view-only role and shows it for Admin', function () {
+    $driver = Driver::factory()->create();
+    $driver->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(DriversTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteDriver('.$driver->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(DriversTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteDriver('.$driver->id.')', false);
+});
+
+test('units table hides force delete for a view-only role and shows it for Admin', function () {
+    $unit = Unit::factory()->create();
+    $unit->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(UnitsTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteUnit('.$unit->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(UnitsTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteUnit('.$unit->id.')', false);
 });
 
 /**

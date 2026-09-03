@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
+use App\Models\DeliveryGood;
 use App\Models\Good;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -51,6 +53,16 @@ class GoodsTable extends Component
     {
         $this->authorize('goods.delete');
 
+        $hasActiveDelivery = DeliveryGood::where('good_id', $id)
+            ->whereHas('transportSet.delivery', fn ($q) => $q->whereIn('status', [DeliveryStatusEnum::ASSIGNED->value, DeliveryStatusEnum::IN_PROGRESS->value]))
+            ->exists();
+
+        if ($hasActiveDelivery) {
+            $this->dispatch('notify', message: __('labels.general.delete_blocked_active_delivery'), type: 'error');
+
+            return;
+        }
+
         Good::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
@@ -72,6 +84,15 @@ class GoodsTable extends Component
 
         Good::where('id', $id)->restore();
         $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
+    public function forceDeleteGood(int $id): void
+    {
+        $this->authorize('goods.delete');
+
+        $good = Good::onlyTrashed()->findOrFail($id);
+        $good->forceDelete();
+        $this->dispatch('notify', message: __('labels.general.force_deleted_success'));
     }
 
     public function getTrashedOptionsProperty(): array

@@ -1,7 +1,10 @@
 <?php
 
 use App\Enums\CountriesEnum;
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Tables\DriversTable;
+use App\Models\Delivery;
+use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Livewire\Livewire;
@@ -68,6 +71,26 @@ test('deleteDriver removes a single driver', function () {
     $this->assertSoftDeleted($driver);
 });
 
+test('deleteDriver refuses to delete a driver used in an active delivery', function () {
+    $driver = Driver::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::ASSIGNED]);
+    DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'driver_id' => $driver->id]);
+
+    Livewire::test(DriversTable::class)->call('deleteDriver', $driver->id);
+
+    $this->assertNotSoftDeleted($driver);
+});
+
+test('deleteDriver allows deleting a driver whose delivery is completed', function () {
+    $driver = Driver::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'driver_id' => $driver->id]);
+
+    Livewire::test(DriversTable::class)->call('deleteDriver', $driver->id);
+
+    $this->assertSoftDeleted($driver);
+});
+
 test('deleteSelected removes all selected drivers', function () {
     $drivers = Driver::factory()->count(3)->create();
 
@@ -86,6 +109,29 @@ test('restoreDriver restores a soft deleted driver', function () {
 
     expect($driver->fresh()->trashed())->toBeFalse();
 });
+
+test('forceDeleteDriver permanently deletes a soft deleted driver', function () {
+    $driver = Driver::factory()->create();
+    $driver->delete();
+
+    Livewire::test(DriversTable::class)->call('forceDeleteDriver', $driver->id);
+
+    $this->assertDatabaseMissing('drivers', ['id' => $driver->id]);
+});
+
+test('forceDeleteDriver nulls the transport set reference instead of deleting the delivery', function () {
+    $driver = Driver::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'driver_id' => $driver->id]);
+    $driver->delete();
+
+    Livewire::test(DriversTable::class)->call('forceDeleteDriver', $driver->id);
+
+    $this->assertDatabaseMissing('drivers', ['id' => $driver->id]);
+    $this->assertDatabaseHas('deliveries', ['id' => $delivery->id]);
+    $this->assertDatabaseHas('delivery_transport_sets', ['id' => $transportSet->id, 'driver_id' => null]);
+});
+
 
 test('date range filters show a labeled badge above the table', function () {
     $component = Livewire::test(DriversTable::class)

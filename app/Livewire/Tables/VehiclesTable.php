@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\DeliveryStatusEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
+use App\Models\DeliveryTransportSet;
 use App\Models\Vehicle;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -66,6 +68,16 @@ class VehiclesTable extends Component
     {
         $this->authorize('vehicles.delete');
 
+        $hasActiveDelivery = DeliveryTransportSet::where(fn ($q) => $q->where('vehicle_id', $id)->orWhere('trailer_id', $id))
+            ->whereHas('delivery', fn ($q) => $q->whereIn('status', [DeliveryStatusEnum::ASSIGNED->value, DeliveryStatusEnum::IN_PROGRESS->value]))
+            ->exists();
+
+        if ($hasActiveDelivery) {
+            $this->dispatch('notify', message: __('labels.general.delete_blocked_active_delivery'), type: 'error');
+
+            return;
+        }
+
         Vehicle::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
@@ -87,6 +99,15 @@ class VehiclesTable extends Component
 
         Vehicle::where('id', $id)->restore();
         $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
+    public function forceDeleteVehicle(int $id): void
+    {
+        $this->authorize('vehicles.delete');
+
+        $vehicle = Vehicle::onlyTrashed()->findOrFail($id);
+        $vehicle->forceDelete();
+        $this->dispatch('notify', message: __('labels.general.force_deleted_success'));
     }
 
     public function getTypeOptionsProperty(): array

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
             $table->string('number')->unique();
-            $table->foreignId('contractor_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('contractor_address_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('contractor_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('contractor_address_id')->nullable()->constrained()->nullOnDelete();
             $table->string('loading_address');
             $table->tinyInteger('status')->default(0);
             $table->unsignedInteger('freight_amount')->nullable(); // grosze

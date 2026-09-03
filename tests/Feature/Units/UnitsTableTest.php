@@ -1,6 +1,10 @@
 <?php
 
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Tables\UnitsTable;
+use App\Models\Delivery;
+use App\Models\DeliveryGood;
+use App\Models\DeliveryTransportSet;
 use App\Models\Good;
 use App\Models\Unit;
 use Livewire\Livewire;
@@ -68,6 +72,28 @@ test('deleteUnit removes a single unit', function () {
     $this->assertSoftDeleted($unit);
 });
 
+test('deleteUnit refuses to delete a unit used in an active delivery', function () {
+    $unit = Unit::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::ASSIGNED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+    DeliveryGood::factory()->create(['delivery_transport_set_id' => $transportSet->id, 'unit_id' => $unit->id]);
+
+    Livewire::test(UnitsTable::class)->call('deleteUnit', $unit->id);
+
+    $this->assertNotSoftDeleted($unit);
+});
+
+test('deleteUnit allows deleting a unit whose delivery is completed', function () {
+    $unit = Unit::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+    DeliveryGood::factory()->create(['delivery_transport_set_id' => $transportSet->id, 'unit_id' => $unit->id]);
+
+    Livewire::test(UnitsTable::class)->call('deleteUnit', $unit->id);
+
+    $this->assertSoftDeleted($unit);
+});
+
 test('deleteSelected soft deletes all selected units', function () {
     $units = Unit::factory()->count(3)->create();
 
@@ -85,6 +111,39 @@ test('restoreUnit restores a soft deleted unit', function () {
     Livewire::test(UnitsTable::class)->call('restoreUnit', $unit->id);
 
     expect($unit->fresh()->trashed())->toBeFalse();
+});
+
+test('forceDeleteUnit permanently deletes a soft deleted unit', function () {
+    $unit = Unit::factory()->create();
+    $unit->delete();
+
+    Livewire::test(UnitsTable::class)->call('forceDeleteUnit', $unit->id);
+
+    $this->assertDatabaseMissing('units', ['id' => $unit->id]);
+});
+
+test('forceDeleteUnit nulls the delivery goods reference instead of deleting the delivery', function () {
+    $unit = Unit::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+    $deliveryGood = DeliveryGood::factory()->create(['delivery_transport_set_id' => $transportSet->id, 'unit_id' => $unit->id]);
+    $unit->delete();
+
+    Livewire::test(UnitsTable::class)->call('forceDeleteUnit', $unit->id);
+
+    $this->assertDatabaseMissing('units', ['id' => $unit->id]);
+    $this->assertDatabaseHas('deliveries', ['id' => $delivery->id]);
+    $this->assertDatabaseHas('delivery_goods', ['id' => $deliveryGood->id, 'unit_id' => null]);
+});
+
+test('forceDeleteUnit refuses to delete a unit used as a good\'s default unit', function () {
+    $unit = Unit::factory()->create();
+    Good::factory()->create(['default_unit_id' => $unit->id]);
+    $unit->delete();
+
+    Livewire::test(UnitsTable::class)->call('forceDeleteUnit', $unit->id);
+
+    $this->assertDatabaseHas('units', ['id' => $unit->id]);
 });
 
 test('when scoped to a good, table only shows assigned units', function () {

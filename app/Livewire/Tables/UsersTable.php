@@ -100,6 +100,28 @@ class UsersTable extends Component
         $this->dispatch('notify', message: __('labels.general.restored_success'));
     }
 
+    public function forceDeleteUser(int $id): void
+    {
+        $this->authorize('users.delete');
+
+        $user = User::onlyTrashed()->findOrFail($id);
+
+        if ($user->id === auth()->id()) {
+            $this->dispatch('notify', message: __('users.cannot_delete_self'), type: 'error');
+
+            return;
+        }
+
+        if ($this->requiresSuperAdminToManage($user)) {
+            $this->dispatch('notify', message: __('users.admin_accounts_require_super_admin'), type: 'error');
+
+            return;
+        }
+
+        $user->forceDelete();
+        $this->dispatch('notify', message: __('labels.general.force_deleted_success'));
+    }
+
     public function toggleActive(int $userId): void
     {
         $this->authorize('users.edit');

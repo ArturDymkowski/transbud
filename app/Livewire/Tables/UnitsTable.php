@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
+use App\Models\DeliveryGood;
 use App\Models\Good;
 use App\Models\Unit;
 use Livewire\Component;
@@ -98,6 +100,16 @@ class UnitsTable extends Component
 
         $this->authorize('units.delete');
 
+        $hasActiveDelivery = DeliveryGood::where('unit_id', $id)
+            ->whereHas('transportSet.delivery', fn ($q) => $q->whereIn('status', [DeliveryStatusEnum::ASSIGNED->value, DeliveryStatusEnum::IN_PROGRESS->value]))
+            ->exists();
+
+        if ($hasActiveDelivery) {
+            $this->dispatch('notify', message: __('labels.general.delete_blocked_active_delivery'), type: 'error');
+
+            return;
+        }
+
         Unit::where('id', $id)->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
     }
@@ -175,6 +187,26 @@ class UnitsTable extends Component
 
         Unit::where('id', $id)->restore();
         $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
+    public function forceDeleteUnit(int $id): void
+    {
+        if ($this->readonly) {
+            return;
+        }
+
+        $this->authorize('units.delete');
+
+        $unit = Unit::onlyTrashed()->findOrFail($id);
+
+        if (Good::withTrashed()->where('default_unit_id', $id)->exists()) {
+            $this->dispatch('notify', message: __('labels.general.force_delete_blocked'), type: 'error');
+
+            return;
+        }
+
+        $unit->forceDelete();
+        $this->dispatch('notify', message: __('labels.general.force_deleted_success'));
     }
 
     public function getTrashedOptionsProperty(): array

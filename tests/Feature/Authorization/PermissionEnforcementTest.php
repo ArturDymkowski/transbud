@@ -66,6 +66,21 @@ test('a user with the User role cannot restore a driver through the Livewire act
     expect($driver->fresh()->trashed())->toBeTrue();
 });
 
+test('a user with the User role cannot permanently delete a driver through the Livewire action', function () {
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    $this->actingAs($user);
+
+    $driver = Driver::factory()->create();
+    $driver->delete();
+
+    Livewire::test(DriversTable::class)
+        ->call('forceDeleteDriver', $driver->id)
+        ->assertForbidden();
+
+    expect(Driver::withTrashed()->find($driver->id))->not->toBeNull();
+});
+
 test('a user with no role is forbidden everywhere', function () {
     $user = User::factory()->create();
     $this->actingAs($user);

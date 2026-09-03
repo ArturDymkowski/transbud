@@ -48,9 +48,9 @@
                                 <x-tables.td>
                                     @php
                                         $transportSetLabel = collect([
-                                            $entry['transport_set']->driver->name ?? null,
-                                            $entry['transport_set']->vehicle->registration_number ?? null,
-                                            $entry['transport_set']->trailer->registration_number ?? null,
+                                            $entry['transport_set']->driver?->name,
+                                            $entry['transport_set']->vehicle?->registration_number,
+                                            $entry['transport_set']->trailer?->registration_number,
                                         ])->filter()->implode(', ');
                                     @endphp
                                     {{ $transportSetLabel !== '' ? $transportSetLabel : ('#'.$entry['transport_set']->id) }}

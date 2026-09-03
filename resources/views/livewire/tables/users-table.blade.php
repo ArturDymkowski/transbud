@@ -88,6 +88,15 @@
                                     :confirm="__('labels.tables.confirm_restore')"
                                 />
                             @endcan
+                            @can('users.delete')
+                                <x-tables.action-delete
+                                    wire:click="forceDeleteUser({{ $user->id }})"
+                                    :confirm="__('labels.tables.confirm_force_delete')"
+                                    :label="__('labels.tables.force_delete')"
+                                >
+                                    <x-heroicon-o-x-mark class="w-6 h-6 hover:text-red-500"/>
+                                </x-tables.action-delete>
+                            @endcan
                         @else
                             @can('users.edit')
                                 <x-tables.action-edit :route="route('users.edit', $user->id)"/>

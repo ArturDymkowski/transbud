@@ -1,9 +1,11 @@
 <?php
 
 use App\Enums\CountriesEnum;
+use App\Enums\DeliveryStatusEnum;
 use App\Livewire\Tables\ContractorAddressesTable;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
+use App\Models\Delivery;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -113,6 +115,32 @@ test('deleteAddress removes a single address', function () {
     $this->assertSoftDeleted($address);
 });
 
+test('deleteAddress refuses to delete an address with an active delivery', function () {
+    $address = ContractorAddress::factory()->create();
+    Delivery::factory()->create([
+        'contractor_id' => $address->contractor_id,
+        'contractor_address_id' => $address->id,
+        'status' => DeliveryStatusEnum::ASSIGNED,
+    ]);
+
+    Livewire::test(ContractorAddressesTable::class)->call('deleteAddress', $address->id);
+
+    $this->assertNotSoftDeleted($address);
+});
+
+test('deleteAddress allows deleting an address whose delivery is completed', function () {
+    $address = ContractorAddress::factory()->create();
+    Delivery::factory()->create([
+        'contractor_id' => $address->contractor_id,
+        'contractor_address_id' => $address->id,
+        'status' => DeliveryStatusEnum::COMPLETED,
+    ]);
+
+    Livewire::test(ContractorAddressesTable::class)->call('deleteAddress', $address->id);
+
+    $this->assertSoftDeleted($address);
+});
+
 test('restoreAddress restores a soft deleted address', function () {
     $address = ContractorAddress::factory()->create();
     $address->delete();
@@ -121,6 +149,31 @@ test('restoreAddress restores a soft deleted address', function () {
 
     expect($address->fresh()->trashed())->toBeFalse();
 });
+
+test('forceDeleteAddress permanently deletes a soft deleted address', function () {
+    $address = ContractorAddress::factory()->create();
+    $address->delete();
+
+    Livewire::test(ContractorAddressesTable::class)->call('forceDeleteAddress', $address->id);
+
+    $this->assertDatabaseMissing('contractor_addresses', ['id' => $address->id]);
+});
+
+test('forceDeleteAddress nulls the delivery reference instead of deleting the delivery', function () {
+    $address = ContractorAddress::factory()->create();
+    $delivery = Delivery::factory()->create([
+        'contractor_id' => $address->contractor_id,
+        'contractor_address_id' => $address->id,
+        'status' => DeliveryStatusEnum::COMPLETED,
+    ]);
+    $address->delete();
+
+    Livewire::test(ContractorAddressesTable::class)->call('forceDeleteAddress', $address->id);
+
+    $this->assertDatabaseMissing('contractor_addresses', ['id' => $address->id]);
+    $this->assertDatabaseHas('deliveries', ['id' => $delivery->id, 'contractor_address_id' => null]);
+});
+
 
 test('toggleActive flips the is_active flag', function () {
     $address = ContractorAddress::factory()->create(['is_active' => true]);

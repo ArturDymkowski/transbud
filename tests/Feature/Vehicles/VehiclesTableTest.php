@@ -1,7 +1,10 @@
 <?php
 
+use App\Enums\DeliveryStatusEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Tables\VehiclesTable;
+use App\Models\Delivery;
+use App\Models\DeliveryTransportSet;
 use App\Models\Vehicle;
 use Livewire\Livewire;
 
@@ -89,6 +92,36 @@ test('deleteVehicle removes a single vehicle', function () {
     $this->assertSoftDeleted($vehicle);
 });
 
+test('deleteVehicle refuses to delete a vehicle used as an active delivery\'s tractor', function () {
+    $vehicle = Vehicle::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::ASSIGNED]);
+    DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'vehicle_id' => $vehicle->id]);
+
+    Livewire::test(VehiclesTable::class)->call('deleteVehicle', $vehicle->id);
+
+    $this->assertNotSoftDeleted($vehicle);
+});
+
+test('deleteVehicle refuses to delete a vehicle used as an active delivery\'s trailer', function () {
+    $vehicle = Vehicle::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::IN_PROGRESS]);
+    DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'trailer_id' => $vehicle->id]);
+
+    Livewire::test(VehiclesTable::class)->call('deleteVehicle', $vehicle->id);
+
+    $this->assertNotSoftDeleted($vehicle);
+});
+
+test('deleteVehicle allows deleting a vehicle whose delivery is completed', function () {
+    $vehicle = Vehicle::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'vehicle_id' => $vehicle->id]);
+
+    Livewire::test(VehiclesTable::class)->call('deleteVehicle', $vehicle->id);
+
+    $this->assertSoftDeleted($vehicle);
+});
+
 test('deleteSelected soft deletes all selected vehicles', function () {
     $vehicles = Vehicle::factory()->count(3)->create();
 
@@ -107,6 +140,29 @@ test('restoreVehicle restores a soft deleted vehicle', function () {
 
     expect($vehicle->fresh()->trashed())->toBeFalse();
 });
+
+test('forceDeleteVehicle permanently deletes a soft deleted vehicle', function () {
+    $vehicle = Vehicle::factory()->create();
+    $vehicle->delete();
+
+    Livewire::test(VehiclesTable::class)->call('forceDeleteVehicle', $vehicle->id);
+
+    $this->assertDatabaseMissing('vehicles', ['id' => $vehicle->id]);
+});
+
+test('forceDeleteVehicle nulls the transport set reference instead of deleting the delivery', function () {
+    $vehicle = Vehicle::factory()->create();
+    $delivery = Delivery::factory()->create(['status' => DeliveryStatusEnum::COMPLETED]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id, 'vehicle_id' => $vehicle->id]);
+    $vehicle->delete();
+
+    Livewire::test(VehiclesTable::class)->call('forceDeleteVehicle', $vehicle->id);
+
+    $this->assertDatabaseMissing('vehicles', ['id' => $vehicle->id]);
+    $this->assertDatabaseHas('deliveries', ['id' => $delivery->id]);
+    $this->assertDatabaseHas('delivery_transport_sets', ['id' => $transportSet->id, 'vehicle_id' => null]);
+});
+
 
 test('date range filters show a labeled badge above the table', function () {
     $component = Livewire::test(VehiclesTable::class)

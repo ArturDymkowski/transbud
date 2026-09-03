@@ -76,12 +76,16 @@
                     <x-tables.td>{{ $delivery->number }}</x-tables.td>
                     <x-tables.td>{{ $delivery->loading_address }}</x-tables.td>
                     <x-tables.td>
-                        <a href="{{ route('contractors.edit', $delivery->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
-                            {{ $delivery->contractor->name ?? '-' }}
-                        </a>
+                        @if($delivery->contractor)
+                            <a href="{{ route('contractors.edit', $delivery->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
+                                {{ $delivery->contractor->name }}
+                            </a>
+                        @else
+                            -
+                        @endif
                     </x-tables.td>
                     <x-tables.td>
-                        @forelse(($delivery->contractorAddress->fullAddressLines ?? []) as $addressLine)
+                        @forelse(($delivery->contractorAddress?->fullAddressLines ?? []) as $addressLine)
                             {{ $addressLine }}@if(!$loop->last)<br>@endif
                         @empty
                             -
