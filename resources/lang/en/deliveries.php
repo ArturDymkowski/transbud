@@ -64,6 +64,7 @@ return [
         'driver_busy' => 'The selected driver is already busy at this time.',
         'vehicle_busy' => 'The selected tractor is already busy at this time.',
         'trailer_busy' => 'The selected trailer is already busy at this time.',
+        'not_found' => 'One of the transport sets no longer exists in this delivery. Refresh the page and try again.',
     ],
 
     'transport_set_status' => [

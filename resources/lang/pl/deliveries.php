@@ -64,6 +64,7 @@ return [
         'driver_busy' => 'Wybrany kierowca jest już zajęty w tym terminie.',
         'vehicle_busy' => 'Wybrany ciągnik jest już zajęty w tym terminie.',
         'trailer_busy' => 'Wybrana naczepa jest już zajęta w tym terminie.',
+        'not_found' => 'Jeden z zestawów transportowych nie istnieje już w tej dostawie. Odśwież stronę i spróbuj ponownie.',
     ],
 
     'transport_set_status' => [

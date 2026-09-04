@@ -23,6 +23,7 @@ use Closure;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -435,6 +436,13 @@ class DeliveriesForm extends Component
 
             if (! empty($transportSetData['id'])) {
                 $transportSet = $this->delivery->transportSets()->whereKey($transportSetData['id'])->first();
+
+                if (! $transportSet) {
+                    throw ValidationException::withMessages([
+                        'transportSetsData' => trans('deliveries.transport_set.not_found'),
+                    ]);
+                }
+
                 $previousStatus = $transportSet->status->value;
                 $transportSet->update($attributes);
 
