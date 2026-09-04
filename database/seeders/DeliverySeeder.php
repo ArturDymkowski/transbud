@@ -15,11 +15,13 @@ use App\Models\Good;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use RuntimeException;
 
 /**
  * A dozen or so deliveries in the current month and the previous one (always relative to
@@ -40,6 +42,8 @@ class DeliverySeeder extends Seeder
     private const GOODS_PER_TRANSPORT_SET = [1, 3];
 
     private const COSTS_PER_DELIVERY = [1, 4];
+
+    private const MAX_SLOT_ATTEMPTS = 50;
 
     public function run(): void
     {
@@ -111,15 +115,15 @@ class DeliverySeeder extends Seeder
         Collection $goods,
         ?User $admin,
     ): DeliveryTransportSet {
-        $loadingAt = $this->roundToHalfHour(fake()->dateTimeBetween($monthStart, $monthEnd));
-        // 4-72h duration in 30-minute steps, so unloading also lands on a full/half hour.
-        $unloadingAt = $loadingAt->copy()->addMinutes(fake()->numberBetween(8, 144) * 30);
+        [$loadingAt, $unloadingAt, $driver, $tractor, $trailer] = $this->pickAvailableSlot(
+            $monthStart, $monthEnd, $drivers, $tractors, $trailers
+        );
         $status = $this->transportSetStatusFor($loadingAt, $unloadingAt);
 
         $transportSet = $delivery->transportSets()->create([
-            'driver_id' => $drivers->random()->id,
-            'vehicle_id' => $tractors->random()->id,
-            'trailer_id' => $trailers->random()->id,
+            'driver_id' => $driver->id,
+            'vehicle_id' => $tractor->id,
+            'trailer_id' => $trailer->id,
             'loading_at' => $loadingAt,
             'unloading_at' => $unloadingAt,
             'status' => $status->value,
@@ -133,6 +137,65 @@ class DeliverySeeder extends Seeder
         $this->attachGoods($transportSet, $goods);
 
         return $transportSet;
+    }
+
+    /**
+     * Redraws a loading/unloading window (up to MAX_SLOT_ATTEMPTS times) until a driver,
+     * tractor and trailer are all simultaneously free for it - mirrors the same
+     * busy/overlap rule as WithDeliveryResourceAvailability, so seeded data never violates
+     * the very validation the app enforces on save.
+     *
+     * @return array{0: Carbon, 1: Carbon, 2: Model, 3: Model, 4: Model}
+     */
+    private function pickAvailableSlot(
+        Carbon $monthStart,
+        Carbon $monthEnd,
+        Collection $drivers,
+        Collection $tractors,
+        Collection $trailers,
+    ): array {
+        for ($attempt = 0; $attempt < self::MAX_SLOT_ATTEMPTS; $attempt++) {
+            $loadingAt = $this->roundToHalfHour(fake()->dateTimeBetween($monthStart, $monthEnd));
+            // 4-72h duration in 30-minute steps, so unloading also lands on a full/half hour.
+            $unloadingAt = $loadingAt->copy()->addMinutes(fake()->numberBetween(8, 144) * 30);
+
+            $driver = $this->availableResource($drivers, 'driver_id', $loadingAt, $unloadingAt);
+            $tractor = $this->availableResource($tractors, 'vehicle_id', $loadingAt, $unloadingAt);
+            $trailer = $this->availableResource($trailers, 'trailer_id', $loadingAt, $unloadingAt);
+
+            if ($driver && $tractor && $trailer) {
+                return [$loadingAt, $unloadingAt, $driver, $tractor, $trailer];
+            }
+        }
+
+        throw new RuntimeException(
+            'DeliverySeeder: nie udało się znaleźć wolnego terminu dla zestawu transportowego po '.
+            self::MAX_SLOT_ATTEMPTS.' próbach - flota (kierowcy/ciągniki/naczepy) jest zbyt mała '.
+            'względem liczby generowanych dostaw. Zwiększ flotę albo zmniejsz DELIVERIES_PER_MONTH/'.
+            'TRANSPORT_SETS_PER_DELIVERY.'
+        );
+    }
+
+    /**
+     * Same overlap rule as WithDeliveryResourceAvailability::validateResourceAvailability() -
+     * a resource already booked on a non-draft, non-cancelled transport set overlapping this
+     * window is unavailable, regardless of which delivery it belongs to.
+     */
+    private function availableResource(Collection $pool, string $column, Carbon $loadingAt, Carbon $unloadingAt): ?Model
+    {
+        $busyIds = DeliveryTransportSet::query()
+            ->whereIn($column, $pool->pluck('id'))
+            ->whereNotIn('status', [
+                DeliveryTransportSetStatusEnum::DRAFT->value,
+                DeliveryTransportSetStatusEnum::CANCELLED->value,
+            ])
+            ->where('loading_at', '<', $unloadingAt)
+            ->where('unloading_at', '>', $loadingAt)
+            ->pluck($column);
+
+        $available = $pool->whereNotIn('id', $busyIds);
+
+        return $available->isNotEmpty() ? $available->random() : null;
     }
 
     /**

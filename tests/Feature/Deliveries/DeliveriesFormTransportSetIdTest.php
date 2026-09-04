@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Livewire\Forms\DeliveriesForm;
 use App\Models\Contractor;
 use App\Models\ContractorAddress;
@@ -25,10 +24,7 @@ function createDeliveryWithMatchingAddressForTransportSetIdTest(): Delivery
 
 test('saving with a transport set id belonging to another delivery fails validation instead of erroring', function () {
     $delivery = createDeliveryWithMatchingAddressForTransportSetIdTest();
-    $transportSet = DeliveryTransportSet::factory()->create([
-        'delivery_id' => $delivery->id,
-        'status' => DeliveryTransportSetStatusEnum::DRAFT,
-    ]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
 
     $otherDelivery = createDeliveryWithMatchingAddressForTransportSetIdTest();
     $foreignTransportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $otherDelivery->id]);
@@ -44,10 +40,7 @@ test('saving with a transport set id belonging to another delivery fails validat
 
 test('saving with a nonexistent transport set id fails validation instead of erroring', function () {
     $delivery = createDeliveryWithMatchingAddressForTransportSetIdTest();
-    DeliveryTransportSet::factory()->create([
-        'delivery_id' => $delivery->id,
-        'status' => DeliveryTransportSetStatusEnum::DRAFT,
-    ]);
+    DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
 
     Livewire::test(DeliveriesForm::class, ['delivery' => $delivery])
         ->set('transportSetsData.0.id', 999999)

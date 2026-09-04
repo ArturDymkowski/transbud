@@ -14,7 +14,7 @@ trait WithDeliveryResourceAvailability
         mixed $value,
         ?string $loadingAt,
         ?string $unloadingAt,
-        ?int $excludeTransportSetId,
+        ?int $excludeDeliveryId,
         string $busyMessage,
     ): void {
         if (! $value || ! $loadingAt || ! $unloadingAt) {
@@ -27,7 +27,7 @@ trait WithDeliveryResourceAvailability
                 DeliveryTransportSetStatusEnum::DRAFT->value,
                 DeliveryTransportSetStatusEnum::CANCELLED->value,
             ])
-            ->when($excludeTransportSetId, fn ($query) => $query->where('id', '!=', $excludeTransportSetId))
+            ->when($excludeDeliveryId, fn ($query) => $query->where('delivery_id', '!=', $excludeDeliveryId))
             ->where('loading_at', '<', $unloadingAt)
             ->where('unloading_at', '>', $loadingAt)
             ->exists();

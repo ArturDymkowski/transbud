@@ -109,7 +109,7 @@ class DeliveriesForm extends Component
                 'exists:drivers,id',
                 function (string $attribute, mixed $value, Closure $fail) {
                     $row = $this->transportSetsData[$this->rowIndexFromAttribute($attribute)];
-                    $this->validateResourceAvailability($fail, 'driver_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $row['id'] ?? null, __('deliveries.transport_set.driver_busy'));
+                    $this->validateResourceAvailability($fail, 'driver_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $this->delivery?->id, __('deliveries.transport_set.driver_busy'));
                 },
             ],
             'transportSetsData.*.vehicle_id' => [
@@ -118,7 +118,7 @@ class DeliveriesForm extends Component
                 Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRACTOR->value),
                 function (string $attribute, mixed $value, Closure $fail) {
                     $row = $this->transportSetsData[$this->rowIndexFromAttribute($attribute)];
-                    $this->validateResourceAvailability($fail, 'vehicle_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $row['id'] ?? null, __('deliveries.transport_set.vehicle_busy'));
+                    $this->validateResourceAvailability($fail, 'vehicle_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $this->delivery?->id, __('deliveries.transport_set.vehicle_busy'));
                 },
             ],
             'transportSetsData.*.trailer_id' => [
@@ -127,7 +127,7 @@ class DeliveriesForm extends Component
                 Rule::exists('vehicles', 'id')->where('type', VehicleTypeEnum::TRAILER->value),
                 function (string $attribute, mixed $value, Closure $fail) {
                     $row = $this->transportSetsData[$this->rowIndexFromAttribute($attribute)];
-                    $this->validateResourceAvailability($fail, 'trailer_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $row['id'] ?? null, __('deliveries.transport_set.trailer_busy'));
+                    $this->validateResourceAvailability($fail, 'trailer_id', $value, $row['loading_at'] ?? null, $row['unloading_at'] ?? null, $this->delivery?->id, __('deliveries.transport_set.trailer_busy'));
                 },
             ],
             'transportSetsData.*.loading_at' => [
