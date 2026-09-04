@@ -465,6 +465,40 @@ test('units table hides force delete for a view-only role and shows it for Admin
         ->assertSee('forceDeleteUnit('.$unit->id.')', false);
 });
 
+test('deliveries table hides restore for a view-only role and shows it for Admin', function () {
+    $delivery = Delivery::factory()->create();
+    $delivery->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(DeliveriesTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('restoreDelivery('.$delivery->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(DeliveriesTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('restoreDelivery('.$delivery->id.')', false);
+});
+
+test('deliveries table hides force delete for a view-only role and shows it for Admin', function () {
+    $delivery = Delivery::factory()->create();
+    $delivery->delete();
+
+    $user = User::factory()->create();
+    $user->assignRole('User');
+    Livewire::actingAs($user)->test(DeliveriesTable::class)
+        ->set('trashed', 'only')
+        ->assertDontSee('forceDeleteDelivery('.$delivery->id.')', false);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('Admin');
+    Livewire::actingAs($admin)->test(DeliveriesTable::class)
+        ->set('trashed', 'only')
+        ->assertSee('forceDeleteDelivery('.$delivery->id.')', false);
+});
+
 /**
  * Bulk selection (header "select all" checkbox, per-row checkbox, and the
  * "delete selected" bar) is a second path to the same deleteSelected() action as

@@ -19,9 +19,11 @@ class DeliveriesTable extends Component
 
     public string $status = '';
 
+    public string $trashed = '';
+
     protected function filterFields(): array
     {
-        return ['search', 'status'];
+        return ['search', 'status', 'trashed'];
     }
 
     public function render()
@@ -30,7 +32,9 @@ class DeliveriesTable extends Component
             ->withCount('transportSets')
             ->withSum('costs', 'amount')
             ->search($this->search)
-            ->when(filled($this->status), fn ($q) => $q->where('status', $this->status));
+            ->when(filled($this->status), fn ($q) => $q->where('status', $this->status))
+            ->when($this->trashed === 'with', fn ($q) => $q->withTrashed())
+            ->when($this->trashed === 'only', fn ($q) => $q->onlyTrashed());
 
         if ($this->sortField === 'contractor_name') {
             $query->join('contractors', 'contractors.id', '=', 'deliveries.contractor_id')
@@ -53,6 +57,16 @@ class DeliveriesTable extends Component
     {
         $this->authorize('deliveries.delete');
 
+        $hasActiveDelivery = Delivery::whereIn('id', $this->selected)
+            ->whereIn('status', [DeliveryStatusEnum::ASSIGNED->value, DeliveryStatusEnum::IN_PROGRESS->value])
+            ->exists();
+
+        if ($hasActiveDelivery) {
+            $this->dispatch('notify', message: __('labels.general.delete_blocked_active_delivery'), type: 'error');
+
+            return;
+        }
+
         $this->deleteSelectedRecords(Delivery::class);
     }
 
@@ -60,13 +74,47 @@ class DeliveriesTable extends Component
     {
         $this->authorize('deliveries.delete');
 
-        Delivery::destroy($id);
+        $delivery = Delivery::findOrFail($id);
+
+        if (in_array($delivery->status, [DeliveryStatusEnum::ASSIGNED, DeliveryStatusEnum::IN_PROGRESS], true)) {
+            $this->dispatch('notify', message: __('labels.general.delete_blocked_active_delivery'), type: 'error');
+
+            return;
+        }
+
+        $delivery->delete();
         $this->dispatch('notify', message: __('labels.general.deleted_success'));
+    }
+
+    public function restoreDelivery(int $id): void
+    {
+        $this->authorize('deliveries.edit');
+
+        Delivery::where('id', $id)->restore();
+        $this->dispatch('notify', message: __('labels.general.restored_success'));
+    }
+
+    public function forceDeleteDelivery(int $id): void
+    {
+        $this->authorize('deliveries.delete');
+
+        $delivery = Delivery::onlyTrashed()->findOrFail($id);
+        $delivery->forceDelete();
+        $this->dispatch('notify', message: __('labels.general.force_deleted_success'));
     }
 
     public function getStatusOptionsProperty(): array
     {
         return ['' => __('labels.tables.all')] + DeliveryStatusEnum::getOptions();
+    }
+
+    public function getTrashedOptionsProperty(): array
+    {
+        return [
+            '' => __('labels.tables.without_trashed'),
+            'with' => __('labels.tables.with_trashed'),
+            'only' => __('labels.tables.only_trashed'),
+        ];
     }
 
     public function getActiveFiltersProperty(): array
@@ -84,6 +132,13 @@ class DeliveriesTable extends Component
             $filters[] = [
                 'label' => __('deliveries.status.status').': '.DeliveryStatusEnum::from((int) $this->status)->label(),
                 'property' => 'status',
+            ];
+        }
+
+        if (filled($this->trashed)) {
+            $filters[] = [
+                'label' => $this->trashedOptions[$this->trashed],
+                'property' => 'trashed',
             ];
         }
 

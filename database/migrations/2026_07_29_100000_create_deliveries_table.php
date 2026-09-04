@@ -22,6 +22,7 @@ return new class extends Migration
             $table->tinyInteger('currency')->default(0);
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

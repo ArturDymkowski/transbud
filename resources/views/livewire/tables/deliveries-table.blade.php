@@ -3,6 +3,7 @@
         <x-tables.filter-bar searchModel="search">
             <!-- Status -->
             <x-form.input.select :label="__('deliveries.status.status')" :options="$this->statusOptions" name="status" wire:model.live="status"/>
+            <x-form.input.select :label="__('labels.tables.trashed')" :options="$this->trashedOptions" name="trashed" wire:model.live="trashed"/>
         </x-tables.filter-bar>
     </x-slot:header>
 
@@ -108,15 +109,33 @@
                     </x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         <x-tables.action-show :route="route('deliveries.show', $delivery->id)"/>
-                        @can('deliveries.edit')
-                            <x-tables.action-edit :route="route('deliveries.edit', $delivery->id)"/>
-                        @endcan
-                        @can('deliveries.delete')
-                            <x-tables.action-delete
-                                wire:click="deleteDelivery({{ $delivery->id }})"
-                                :confirm="__('deliveries.confirm_delete_delivery')"
-                            />
-                        @endcan
+                        @if($delivery->trashed())
+                            @can('deliveries.edit')
+                                <x-tables.action-restore
+                                    wire:click="restoreDelivery({{ $delivery->id }})"
+                                    :confirm="__('labels.tables.confirm_restore')"
+                                />
+                            @endcan
+                            @can('deliveries.delete')
+                                <x-tables.action-delete
+                                    wire:click="forceDeleteDelivery({{ $delivery->id }})"
+                                    :confirm="__('labels.tables.confirm_force_delete')"
+                                    :label="__('labels.tables.force_delete')"
+                                >
+                                    <x-heroicon-o-x-mark class="w-6 h-6 hover:text-red-500"/>
+                                </x-tables.action-delete>
+                            @endcan
+                        @else
+                            @can('deliveries.edit')
+                                <x-tables.action-edit :route="route('deliveries.edit', $delivery->id)"/>
+                            @endcan
+                            @can('deliveries.delete')
+                                <x-tables.action-delete
+                                    wire:click="deleteDelivery({{ $delivery->id }})"
+                                    :confirm="__('deliveries.confirm_delete_delivery')"
+                                />
+                            @endcan
+                        @endif
                     </x-tables.td>
                 </tr>
             @endforeach
