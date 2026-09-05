@@ -3,7 +3,7 @@
 <div>
     @if($createRoute)
         <div class="flex w-full justify-end mb-4">
-            <x-ui.button><a href="{{ $createRoute }}">{{ __('labels.tables.create') }}</a></x-ui.button>
+            <x-ui.button :href="$createRoute">{{ __('labels.tables.create') }}</x-ui.button>
         </div>
     @endif
 

@@ -1,10 +1,11 @@
 @props([
-    'size' => 'md',          
+    'size' => 'md',
     'variant' => 'primary',
     'startIcon' => null,
     'endIcon' => null,
     'className' => '',
     'disabled' => false,
+    'href' => null,
 ])
 
 @php
@@ -30,15 +31,18 @@
 
     // final classes (merge user className too)
     $classes = trim("{$base} {$sizeClass} {$variantClass} {$className} {$disabledClass}");
+
+    $tag = $href && ! $disabled ? 'a' : 'button';
+    $tagAttributes = $tag === 'a'
+        ? ['class' => $classes, 'href' => $href]
+        : ['class' => $classes, 'type' => $attributes->get('type', 'button')];
 @endphp
 
-<button
-    {{ $attributes->merge(['class' => $classes, 'type' => $attributes->get('type', 'button')]) }}
+<{{ $tag }}
+    {{ $attributes->merge($tagAttributes) }}
     @if($disabled) disabled @endif
 >
     {{-- start icon: priority — named slot 'startIcon' first, then startIcon prop if it's a HtmlString --}}
-    @if (isset($__env) && $slot->isEmpty() === false) @endif
-
     @hasSection('startIcon')
         <span class="flex items-center">
             @yield('startIcon')
@@ -58,4 +62,4 @@
     @elseif($endIcon)
         <span class="flex items-center">{!! $endIcon !!}</span>
     @endif
-</button>
+</{{ $tag }}>
