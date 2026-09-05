@@ -13,8 +13,8 @@
         @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @can('deliveries.delete')
                     <x-tables.th>
@@ -65,18 +65,18 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($deliveries as $delivery)
-                <tr wire:key="delivery-row-{{ $delivery->id }}">
+                <tr wire:key="delivery-row-{{ $delivery->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @can('deliveries.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $delivery->id }}" value="{{ $delivery->id }}" x-model="selected" wire:key="checkbox-{{ $delivery->id }}"/>
                         </x-tables.td>
                     @endcan
-                    <x-tables.td>{{ $delivery->id }}</x-tables.td>
-                    <x-tables.td>{{ $delivery->number }}</x-tables.td>
-                    <x-tables.td>{{ $delivery->loading_address }}</x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td label="ID">{{ $delivery->id }}</x-tables.td>
+                    <x-tables.td :label="__('deliveries.number')">{{ $delivery->number }}</x-tables.td>
+                    <x-tables.td :label="__('deliveries.loading_address')">{{ $delivery->loading_address }}</x-tables.td>
+                    <x-tables.td :label="__('deliveries.contractor')">
                         @if($delivery->contractor)
                             <a href="{{ route('contractors.edit', $delivery->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
                                 {{ $delivery->contractor->name }}
@@ -85,20 +85,20 @@
                             -
                         @endif
                     </x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td :label="__('deliveries.contractor_address')">
                         @forelse(($delivery->contractorAddress?->fullAddressLines ?? []) as $addressLine)
                             {{ $addressLine }}@if(!$loop->last)<br>@endif
                         @empty
                             -
                         @endforelse
                     </x-tables.td>
-                    <x-tables.td>{{ $delivery->transport_sets_count }}</x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td :label="__('deliveries.transport_set.transport_sets')">{{ $delivery->transport_sets_count }}</x-tables.td>
+                    <x-tables.td :label="__('deliveries.status.status')">
                         <x-ui.status-badge :color="$delivery->status->color()">
                             {{ $delivery->status->label() }}
                         </x-ui.status-badge>
                     </x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td :label="__('deliveries.profitability.margin')">
                         @php($margin = $delivery->marginPercent())
                         <x-ui.status-badge :color="\App\Enums\MarginRatingEnum::fromPercent($margin)->color()">
                             {{ $margin !== null ? number_format($margin, 2, ',', ' ').'%' : '-' }}

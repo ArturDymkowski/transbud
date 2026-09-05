@@ -21,8 +21,8 @@
         @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @can('vehicles.delete')
                     <x-tables.th>
@@ -84,22 +84,22 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($vehicles as $vehicle)
-                <tr wire:key="vehicle-row-{{ $vehicle->id }}">
+                <tr wire:key="vehicle-row-{{ $vehicle->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @can('vehicles.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $vehicle->id }}" value="{{ $vehicle->id }}" x-model="selected" wire:key="checkbox-{{ $vehicle->id }}"/>
                         </x-tables.td>
                     @endcan
-                    <x-tables.td>{{ $vehicle->id }}</x-tables.td>
-                    <x-tables.td>{{ $vehicle->registration_number }}</x-tables.td>
-                    <x-tables.td>{{ $vehicle->vin }}</x-tables.td>
-                    <x-tables.td>{{ $vehicle->type?->label() ?? '-' }}</x-tables.td>
-                    <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->technical_inspection_expiry_date"/></x-tables.td>
-                    <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->insurance_expiry_date"/></x-tables.td>
-                    <x-tables.td><x-ui.expiry-date-badge :date="$vehicle->tachograph_inspection_expiry_date"/></x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td label="ID">{{ $vehicle->id }}</x-tables.td>
+                    <x-tables.td :label="__('vehicles.registration_number')">{{ $vehicle->registration_number }}</x-tables.td>
+                    <x-tables.td :label="__('vehicles.vin')">{{ $vehicle->vin }}</x-tables.td>
+                    <x-tables.td :label="__('vehicles.type.type')">{{ $vehicle->type?->label() ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('vehicles.technical_inspection_expiry_date')"><x-ui.expiry-date-badge :date="$vehicle->technical_inspection_expiry_date"/></x-tables.td>
+                    <x-tables.td :label="__('vehicles.insurance_expiry_date')"><x-ui.expiry-date-badge :date="$vehicle->insurance_expiry_date"/></x-tables.td>
+                    <x-tables.td :label="__('vehicles.tachograph_inspection_expiry_date')"><x-ui.expiry-date-badge :date="$vehicle->tachograph_inspection_expiry_date"/></x-tables.td>
+                    <x-tables.td :label="__('labels.tables.active')">
                         @if($vehicle->trashed())
                             <span class="text-gray-400">-</span>
                         @else

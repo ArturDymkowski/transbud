@@ -28,8 +28,8 @@
         @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @unless($readonly)
                     @can('contractor-addresses.delete')
@@ -71,9 +71,9 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($addresses as $address)
-                <tr wire:key="address-row-{{ $address->id }}">
+                <tr wire:key="address-row-{{ $address->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @unless($readonly)
                         @can('contractor-addresses.delete')
                             <x-tables.td>
@@ -81,22 +81,22 @@
                             </x-tables.td>
                         @endcan
                     @endunless
-                    <x-tables.td>{{ $address->id }}</x-tables.td>
+                    <x-tables.td label="ID">{{ $address->id }}</x-tables.td>
                     @unless($contractor)
-                        <x-tables.td>
+                        <x-tables.td :label="__('address_book.contractor')">
                             <a href="{{ route('contractors.edit', $address->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
                                 {{ $address->contractor->name ?? '-' }}
                             </a>
                         </x-tables.td>
                     @endunless
-                    <x-tables.td>
+                    <x-tables.td :label="__('labels.address.address')">
                         @forelse($address->fullAddressLines as $addressLine)
                             {{ $addressLine }}@if(!$loop->last)<br>@endif
                         @empty
                             -
                         @endforelse
                     </x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td :label="__('labels.tables.active')">
                         @if($address->trashed())
                             <span class="text-gray-400">-</span>
                         @elseif($readonly)

@@ -12,8 +12,8 @@
         @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @can('goods.delete')
                     <x-tables.th>
@@ -53,21 +53,19 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($goods as $good)
-                <tr wire:key="good-row-{{ $good->id }}">
+                <tr wire:key="good-row-{{ $good->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @can('goods.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $good->id }}" value="{{ $good->id }}" x-model="selected" wire:key="checkbox-{{ $good->id }}"/>
                         </x-tables.td>
                     @endcan
-                    <x-tables.td>{{ $good->id }}</x-tables.td>
-                    <x-tables.td>{{ $good->name }}</x-tables.td>
-                    <td class="px-4 py-4">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $good->description ?? '-' }}</div>
-                    </td>
-                    <x-tables.td>{{ $good->defaultUnit?->name ?? '-' }}</x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td label="ID">{{ $good->id }}</x-tables.td>
+                    <x-tables.td :label="__('goods.name')">{{ $good->name }}</x-tables.td>
+                    <x-tables.td :label="__('goods.description')">{{ $good->description ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('goods.default_unit')">{{ $good->defaultUnit?->name ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('labels.tables.active')">
                         @if($good->trashed())
                             <span class="text-gray-400">-</span>
                         @else

@@ -120,23 +120,23 @@
                     </h5>
 
                     <div class="max-w-full overflow-x-auto">
-                        <table class="min-w-full">
-                            <thead>
+                        <table class="min-w-full max-md:block">
+                            <thead class="max-md:hidden">
                             <tr class="border-gray-200 border-y dark:border-gray-700">
                                 <x-tables.th>{{ __('deliveries.goods.good') }}</x-tables.th>
                                 <x-tables.th>{{ __('deliveries.goods.unit') }}</x-tables.th>
                                 <x-tables.th>{{ __('deliveries.goods.quantity') }}</x-tables.th>
                             </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
                             @forelse(($transportSetData['goods'] ?? []) as $good)
-                                <tr wire:key="preview-good-{{ $good['id'] }}">
-                                    <x-tables.td>{{ $this->goodOptions[$good['good_id']] ?? '-' }}</x-tables.td>
-                                    <x-tables.td>{{ $this->goodUnitOptions($good['good_id'])[$good['unit_id']] ?? '-' }}</x-tables.td>
-                                    <x-tables.td>{{ $good['quantity'] }}</x-tables.td>
+                                <tr wire:key="preview-good-{{ $good['id'] }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                                    <x-tables.td :label="__('deliveries.goods.good')">{{ $this->goodOptions[$good['good_id']] ?? '-' }}</x-tables.td>
+                                    <x-tables.td :label="__('deliveries.goods.unit')">{{ $this->goodUnitOptions($good['good_id'])[$good['unit_id']] ?? '-' }}</x-tables.td>
+                                    <x-tables.td :label="__('deliveries.goods.quantity')">{{ $good['quantity'] }}</x-tables.td>
                                 </tr>
                             @empty
-                                <tr>
+                                <tr class="max-md:block">
                                     <x-tables.td>-</x-tables.td>
                                 </tr>
                             @endforelse

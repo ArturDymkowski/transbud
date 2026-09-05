@@ -29,8 +29,8 @@
         @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @unless($readonly)
                     @if($canBulkDeleteUnits)
@@ -70,9 +70,9 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($units as $unit)
-                <tr wire:key="unit-row-{{ $unit->id }}">
+                <tr wire:key="unit-row-{{ $unit->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @unless($readonly)
                         @if($canBulkDeleteUnits)
                             <x-tables.td>
@@ -80,10 +80,10 @@
                             </x-tables.td>
                         @endif
                     @endunless
-                    <x-tables.td>{{ $unit->id }}</x-tables.td>
-                    <x-tables.td>{{ $unit->name }}</x-tables.td>
+                    <x-tables.td label="ID">{{ $unit->id }}</x-tables.td>
+                    <x-tables.td :label="__('units.name')">{{ $unit->name }}</x-tables.td>
                     @unless($good)
-                        <x-tables.td>
+                        <x-tables.td :label="__('labels.tables.active')">
                             @if($unit->trashed())
                                 <span class="text-gray-400">-</span>
                             @else

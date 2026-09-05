@@ -33,8 +33,8 @@
 
             <x-form.section title="{{ __('deliveries.status_history.tab') }}">
                 <div class="max-w-full overflow-x-auto">
-                    <table class="min-w-full">
-                        <thead>
+                    <table class="min-w-full max-md:block">
+                        <thead class="max-md:hidden">
                         <tr class="border-gray-200 border-y dark:border-gray-700">
                             <x-tables.th>{{ __('deliveries.status_history.transport_set') }}</x-tables.th>
                             <x-tables.th>{{ __('deliveries.status_history.status') }}</x-tables.th>
@@ -42,10 +42,10 @@
                             <x-tables.th>{{ __('deliveries.status_history.changed_at') }}</x-tables.th>
                         </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
                         @forelse($statusHistories as $entry)
-                            <tr wire:key="status-history-{{ $entry['history']->id }}">
-                                <x-tables.td>
+                            <tr wire:key="status-history-{{ $entry['history']->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                                <x-tables.td :label="__('deliveries.status_history.transport_set')">
                                     @php
                                         $transportSetLabel = collect([
                                             $entry['transport_set']->driver?->name,
@@ -55,12 +55,12 @@
                                     @endphp
                                     {{ $transportSetLabel !== '' ? $transportSetLabel : ('#'.$entry['transport_set']->id) }}
                                 </x-tables.td>
-                                <x-tables.td>{{ $entry['history']->status->label() }}</x-tables.td>
-                                <x-tables.td>{{ $entry['history']->changedBy->name ?? __('deliveries.status_history.system') }}</x-tables.td>
-                                <x-tables.td>{{ $entry['history']->created_at?->format('Y-m-d H:i') }}</x-tables.td>
+                                <x-tables.td :label="__('deliveries.status_history.status')">{{ $entry['history']->status->label() }}</x-tables.td>
+                                <x-tables.td :label="__('deliveries.status_history.changed_by')">{{ $entry['history']->changedBy->name ?? __('deliveries.status_history.system') }}</x-tables.td>
+                                <x-tables.td :label="__('deliveries.status_history.changed_at')">{{ $entry['history']->created_at?->format('Y-m-d H:i') }}</x-tables.td>
                             </tr>
                         @empty
-                            <tr>
+                            <tr class="max-md:block">
                                 <x-tables.td>{{ __('deliveries.status_history.empty') }}</x-tables.td>
                             </tr>
                         @endforelse

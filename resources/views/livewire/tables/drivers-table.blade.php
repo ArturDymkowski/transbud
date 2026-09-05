@@ -39,8 +39,8 @@
         @endunless
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @unless($readonly)
                     @if($canBulkDeleteDrivers)
@@ -100,9 +100,9 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($drivers as $driver)
-                <tr wire:key="driver-row-{{ $driver->id }}">
+                <tr wire:key="driver-row-{{ $driver->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @unless($readonly)
                         @if($canBulkDeleteDrivers)
                             <x-tables.td>
@@ -110,21 +110,21 @@
                             </x-tables.td>
                         @endif
                     @endunless
-                    <x-tables.td>{{ $driver->id }}</x-tables.td>
-                    <x-tables.td>{{ $driver->name ?? '-' }}</x-tables.td>
+                    <x-tables.td label="ID">{{ $driver->id }}</x-tables.td>
+                    <x-tables.td :label="__('drivers.name')">{{ $driver->name ?? '-' }}</x-tables.td>
                     @unless($vehicle)
-                        <x-tables.td>{{ $driver->phone ?? '-' }}</x-tables.td>
-                        <x-tables.td>{{ $driver->pesel ?? '-' }}</x-tables.td>
-                        <x-tables.td>
+                        <x-tables.td :label="__('drivers.phone')">{{ $driver->phone ?? '-' }}</x-tables.td>
+                        <x-tables.td :label="__('drivers.pesel')">{{ $driver->pesel ?? '-' }}</x-tables.td>
+                        <x-tables.td :label="__('labels.address.address')">
                             @forelse($driver->fullAddressLines as $addressLine)
                                 {{ $addressLine }}@if(!$loop->last)<br>@endif
                             @empty
                                 -
                             @endforelse
                         </x-tables.td>
-                        <x-tables.td><x-ui.expiry-date-badge :date="$driver->driving_license_expiry_date"/></x-tables.td>
-                        <x-tables.td><x-ui.expiry-date-badge :date="$driver->identity_card_expiry_date"/></x-tables.td>
-                        <x-tables.td>
+                        <x-tables.td :label="__('drivers.driving_license_expiry_date')"><x-ui.expiry-date-badge :date="$driver->driving_license_expiry_date"/></x-tables.td>
+                        <x-tables.td :label="__('drivers.identity_card_expiry_date')"><x-ui.expiry-date-badge :date="$driver->identity_card_expiry_date"/></x-tables.td>
+                        <x-tables.td :label="__('labels.tables.active')">
                             @if($driver->trashed())
                                 <span class="text-gray-400">-</span>
                             @else

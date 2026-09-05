@@ -12,8 +12,8 @@
         @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @can('contractors.delete')
                     <x-tables.th>
@@ -57,21 +57,21 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($contractors as $contractor)
-                <tr wire:key="contractor-row-{{ $contractor->id }}">
+                <tr wire:key="contractor-row-{{ $contractor->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @can('contractors.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $contractor->id }}" value="{{ $contractor->id }}" x-model="selected" wire:key="checkbox-{{ $contractor->id }}"/>
                         </x-tables.td>
                     @endcan
-                    <x-tables.td>{{ $contractor->id }}</x-tables.td>
-                    <x-tables.td>{{ $contractor->name ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $contractor->email ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $contractor->phone ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $contractor->nip ?? '-' }}</x-tables.td>
-                    <x-tables.td>{{ $contractor->regon ?? '-' }}</x-tables.td>
-                    <x-tables.td>
+                    <x-tables.td label="ID">{{ $contractor->id }}</x-tables.td>
+                    <x-tables.td :label="__('contractors.name')">{{ $contractor->name ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('contractors.email')">{{ $contractor->email ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('contractors.phone')">{{ $contractor->phone ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('contractors.nip')">{{ $contractor->nip ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('contractors.regon')">{{ $contractor->regon ?? '-' }}</x-tables.td>
+                    <x-tables.td :label="__('labels.tables.active')">
                         @if($contractor->trashed())
                             <span class="text-gray-400">-</span>
                         @else

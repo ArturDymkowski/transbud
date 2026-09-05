@@ -9,8 +9,8 @@
         @endcan
         <x-tables.filter-badges :filters="$this->activeFilters"/>
 
-        <table class="min-w-full">
-            <thead>
+        <table class="min-w-full max-md:block">
+            <thead class="max-md:hidden">
             <tr class="border-gray-200 border-y dark:border-gray-700">
                 @can('permissions.delete')
                     <x-tables.th>
@@ -41,17 +41,17 @@
                 <x-tables.th>{{ __('labels.tables.actions') }}</x-tables.th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @forelse($permissions as $permission)
-                <tr wire:key="permission-row-{{ $permission->id }}">
+                <tr wire:key="permission-row-{{ $permission->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
                     @can('permissions.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $permission->id }}" value="{{ $permission->id }}" x-model="selected" wire:key="checkbox-{{ $permission->id }}"/>
                         </x-tables.td>
                     @endcan
-                    <x-tables.td>{{ $permission->id }}</x-tables.td>
-                    <x-tables.td>{{ $permission->name }}</x-tables.td>
-                    <x-tables.td>{{ $permission->roles_count }}</x-tables.td>
+                    <x-tables.td label="ID">{{ $permission->id }}</x-tables.td>
+                    <x-tables.td :label="__('permissions.name')">{{ $permission->name }}</x-tables.td>
+                    <x-tables.td :label="__('permissions.roles_count')">{{ $permission->roles_count }}</x-tables.td>
                     <x-tables.td class="flex space-x-2">
                         @can('permissions.edit')
                             <x-tables.action-edit :route="route('permissions.edit', $permission->id)"/>
@@ -65,8 +65,8 @@
                     </x-tables.td>
                 </tr>
             @empty
-                <tr>
-                    <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                <tr class="max-md:block">
+                    <td colspan="5" class="max-md:block px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                         {{ __('labels.tables.no_results') }}
                     </td>
                 </tr>

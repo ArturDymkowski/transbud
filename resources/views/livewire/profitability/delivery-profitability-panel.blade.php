@@ -56,13 +56,13 @@
                         @endif
                     </div>
 
-                    <table class="min-w-full">
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <table class="min-w-full max-md:block">
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
                         @forelse($breakdown->costs as $cost)
-                            <tr wire:key="cost-row-{{ $cost->id }}">
-                                <x-tables.td>{{ $cost->type->label() }}</x-tables.td>
-                                <x-tables.td>{{ $cost->description ?? '-' }}</x-tables.td>
-                                <x-tables.td class="text-right">{{ \App\Helpers\MoneyHelper::format($cost->amount, $profitability->currency) }}</x-tables.td>
+                            <tr wire:key="cost-row-{{ $cost->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                                <x-tables.td :label="__('deliveries.cost.type')">{{ $cost->type->label() }}</x-tables.td>
+                                <x-tables.td :label="__('deliveries.cost.description')">{{ $cost->description ?? '-' }}</x-tables.td>
+                                <x-tables.td :label="__('deliveries.cost.amount')" class="text-right">{{ \App\Helpers\MoneyHelper::format($cost->amount, $profitability->currency) }}</x-tables.td>
                                 <x-tables.td class="flex justify-end gap-2">
                                     @if($editable)
                                         <button type="button" wire:click="openEditCostModal({{ $cost->id }})" class="text-gray-400 hover:text-brand-500 dark:text-gray-500">
@@ -75,16 +75,16 @@
                                 </x-tables.td>
                             </tr>
                         @empty
-                            <tr>
+                            <tr class="max-md:block">
                                 <x-tables.td>{{ __('deliveries.cost.empty') }}</x-tables.td>
                             </tr>
                         @endforelse
                         </tbody>
                         @if($breakdown->costs->isNotEmpty())
                             <tfoot>
-                            <tr class="border-gray-200 border-t font-semibold dark:border-gray-700">
-                                <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300" colspan="2">{{ __('deliveries.profitability.total') }}</td>
-                                <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300" colspan="2">{{ \App\Helpers\MoneyHelper::format($breakdown->totalAmount, $profitability->currency) }}</td>
+                            <tr class="max-md:flex max-md:items-center max-md:justify-between max-md:px-1 max-md:py-3 border-gray-200 border-t font-semibold dark:border-gray-700">
+                                <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300 max-md:p-0" colspan="2">{{ __('deliveries.profitability.total') }}</td>
+                                <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300 max-md:p-0" colspan="2">{{ \App\Helpers\MoneyHelper::format($breakdown->totalAmount, $profitability->currency) }}</td>
                             </tr>
                             </tfoot>
                         @endif
@@ -103,13 +103,13 @@
                     @endif
                 </div>
 
-                <table class="min-w-full">
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <table class="min-w-full max-md:block">
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
                     @forelse($profitability->directCosts as $cost)
-                        <tr wire:key="cost-row-{{ $cost->id }}">
-                            <x-tables.td>{{ $cost->type->label() }}</x-tables.td>
-                            <x-tables.td>{{ $cost->description ?? '-' }}</x-tables.td>
-                            <x-tables.td class="text-right">{{ \App\Helpers\MoneyHelper::format($cost->amount, $profitability->currency) }}</x-tables.td>
+                        <tr wire:key="cost-row-{{ $cost->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                            <x-tables.td :label="__('deliveries.cost.type')">{{ $cost->type->label() }}</x-tables.td>
+                            <x-tables.td :label="__('deliveries.cost.description')">{{ $cost->description ?? '-' }}</x-tables.td>
+                            <x-tables.td :label="__('deliveries.cost.amount')" class="text-right">{{ \App\Helpers\MoneyHelper::format($cost->amount, $profitability->currency) }}</x-tables.td>
                             <x-tables.td class="flex justify-end gap-2">
                                 @if($editable)
                                     <button type="button" wire:click="openEditCostModal({{ $cost->id }})" class="text-gray-400 hover:text-brand-500 dark:text-gray-500">
@@ -122,7 +122,7 @@
                             </x-tables.td>
                         </tr>
                     @empty
-                        <tr>
+                        <tr class="max-md:block">
                             <x-tables.td>{{ __('deliveries.cost.empty') }}</x-tables.td>
                         </tr>
                     @endforelse
