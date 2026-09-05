@@ -1,4 +1,4 @@
-<x-tables.card :createRoute="route('deliveries.create')">
+<x-tables.card :createRoute="auth()->user()->can('deliveries.create') ? route('deliveries.create') : null">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Status -->
@@ -77,10 +77,16 @@
                     <x-tables.td :label="__('deliveries.number')">{{ $delivery->number }}</x-tables.td>
                     <x-tables.td :label="__('deliveries.loading_address')">{{ $delivery->loading_address }}</x-tables.td>
                     <x-tables.td :label="__('deliveries.contractor')">
-                        @if($delivery->contractor)
+                        @if($delivery->contractor && auth()->user()->can('contractors.edit'))
                             <a href="{{ route('contractors.edit', $delivery->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
                                 {{ $delivery->contractor->name }}
                             </a>
+                        @elseif($delivery->contractor && auth()->user()->can('contractors.view'))
+                            <a href="{{ route('contractors.show', $delivery->contractor_id) }}" wire:navigate class="hover:text-brand-500 hover:underline">
+                                {{ $delivery->contractor->name }}
+                            </a>
+                        @elseif($delivery->contractor)
+                            {{ $delivery->contractor->name }}
                         @else
                             -
                         @endif

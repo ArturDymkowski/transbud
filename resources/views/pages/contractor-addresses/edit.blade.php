@@ -2,7 +2,7 @@
 
 @section('content')
     <x-common.page-breadcrumb
-        pageTitle="{!! $contractorAddress->contractor->name ?? '-' !!}"
+        pageTitle="{{ $contractorAddress->contractor->name ?? '-' }}"
         :breadcrumbs="[
         __('address_book.plural_model_label') => route('contractor-addresses.index'),
         __('labels.tables.edit') => null

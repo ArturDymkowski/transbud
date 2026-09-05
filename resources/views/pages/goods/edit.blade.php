@@ -2,7 +2,7 @@
 
 @section('content')
     <x-common.page-breadcrumb
-        pageTitle="{!! $good->name !!}"
+        pageTitle="{{ $good->name }}"
         :breadcrumbs="[
         __('goods.plural_model_label') => route('goods.index'),
         __('labels.tables.edit') => null

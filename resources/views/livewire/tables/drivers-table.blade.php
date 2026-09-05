@@ -9,7 +9,7 @@
         @include('livewire.modals.assign-driver-modal')
     @endif
 
-    <x-tables.card :createRoute="$vehicle ? null : route('drivers.create')">
+    <x-tables.card :createRoute="$vehicle || ! auth()->user()->can('drivers.create') ? null : route('drivers.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed & Active -->

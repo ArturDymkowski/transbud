@@ -128,6 +128,6 @@
 
     </div>
 
-    <x-tables.show-footer-actions :indexRoute="route('deliveries.index')" :editRoute="route('deliveries.edit', $delivery)"/>
+    <x-tables.show-footer-actions :indexRoute="route('deliveries.index')" :editRoute="auth()->user()->can('deliveries.edit') ? route('deliveries.edit', $delivery) : null"/>
 
 </div>

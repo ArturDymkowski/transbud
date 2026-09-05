@@ -9,7 +9,7 @@
         @include('livewire.modals.contractor-address-create-modal')
     @endif
 
-    <x-tables.card :createRoute="$contractor ? null : route('contractor-addresses.create')">
+    <x-tables.card :createRoute="$contractor || ! auth()->user()->can('contractor-addresses.create') ? null : route('contractor-addresses.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed & Active -->

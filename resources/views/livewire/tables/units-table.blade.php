@@ -9,7 +9,7 @@
         @include('livewire.modals.assign-unit-modal')
     @endif
 
-    <x-tables.card :createRoute="$good ? null : route('units.create')">
+    <x-tables.card :createRoute="$good || ! auth()->user()->can('units.create') ? null : route('units.create')">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed & Active -->

@@ -33,6 +33,6 @@
 
     </div>
 
-    <x-tables.show-footer-actions :indexRoute="route('goods.index')" :editRoute="route('goods.edit', $good)"/>
+    <x-tables.show-footer-actions :indexRoute="route('goods.index')" :editRoute="auth()->user()->can('goods.edit') ? route('goods.edit', $good) : null"/>
 
 </div>

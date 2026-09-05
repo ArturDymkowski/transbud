@@ -21,6 +21,6 @@
 
     </div>
 
-    <x-tables.show-footer-actions :indexRoute="route('contractor-addresses.index')" :editRoute="route('contractor-addresses.edit', $contractorAddress)"/>
+    <x-tables.show-footer-actions :indexRoute="route('contractor-addresses.index')" :editRoute="auth()->user()->can('contractor-addresses.edit') ? route('contractor-addresses.edit', $contractorAddress) : null"/>
 
 </div>

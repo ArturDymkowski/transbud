@@ -1,4 +1,4 @@
-<x-tables.card :createRoute="route('contractors.create')">
+<x-tables.card :createRoute="auth()->user()->can('contractors.create') ? route('contractors.create') : null">
     <x-slot:header>
         <x-tables.filter-bar searchModel="search">
             <!-- Trashed & Active -->

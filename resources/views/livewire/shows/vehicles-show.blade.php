@@ -60,6 +60,6 @@
 
     </div>
 
-    <x-tables.show-footer-actions :indexRoute="route('vehicles.index')" :editRoute="route('vehicles.edit', $vehicle)"/>
+    <x-tables.show-footer-actions :indexRoute="route('vehicles.index')" :editRoute="auth()->user()->can('vehicles.edit') ? route('vehicles.edit', $vehicle) : null"/>
 
 </div>

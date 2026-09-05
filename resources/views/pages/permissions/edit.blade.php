@@ -2,7 +2,7 @@
 
 @section('content')
     <x-common.page-breadcrumb
-        pageTitle="{!! $permission->name !!}"
+        pageTitle="{{ $permission->name }}"
         :breadcrumbs="[
         __('permissions.plural_model_label') => route('permissions.index'),
         __('labels.tables.edit') => null

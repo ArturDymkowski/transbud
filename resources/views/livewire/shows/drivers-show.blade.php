@@ -119,6 +119,6 @@
 
     </div>
 
-    <x-tables.show-footer-actions :indexRoute="route('drivers.index')" :editRoute="route('drivers.edit', $driver)"/>
+    <x-tables.show-footer-actions :indexRoute="route('drivers.index')" :editRoute="auth()->user()->can('drivers.edit') ? route('drivers.edit', $driver) : null"/>
 
 </div>
