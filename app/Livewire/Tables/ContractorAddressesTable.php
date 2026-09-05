@@ -37,6 +37,8 @@ class ContractorAddressesTable extends Component
     {
         $this->contractor = ($contractor && $contractor->exists) ? $contractor : null;
         $this->readonly = $readonly;
+
+        $this->authorize($this->contractor ? 'contractors.view' : 'contractor-addresses.view');
     }
 
     protected function filterFields(): array

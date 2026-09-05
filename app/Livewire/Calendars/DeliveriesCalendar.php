@@ -10,6 +10,11 @@ class DeliveriesCalendar extends Component
 {
     use WithTransportSetEvents;
 
+    public function mount(): void
+    {
+        $this->authorize('deliveries.view');
+    }
+
     public function getEvents(string $start, string $end): array
     {
         return $this->transportSetEventsBetween($start, $end)

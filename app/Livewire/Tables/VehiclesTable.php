@@ -27,6 +27,11 @@ class VehiclesTable extends Component
     public string $tachographInspectionExpiryDateFrom = '';
     public string $tachographInspectionExpiryDateTo = '';
 
+    public function mount(): void
+    {
+        $this->authorize('vehicles.view');
+    }
+
     protected function filterFields(): array
     {
         return [

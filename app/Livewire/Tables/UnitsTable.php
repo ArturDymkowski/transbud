@@ -33,6 +33,8 @@ class UnitsTable extends Component
     {
         $this->good = ($good && $good->exists) ? $good : null;
         $this->readonly = $readonly;
+
+        $this->authorize($this->good ? 'goods.view' : 'units.view');
     }
 
     protected function filterFields(): array

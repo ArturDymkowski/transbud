@@ -36,6 +36,8 @@ class DeliveriesPlanner extends Component
 
     public function mount(): void
     {
+        $this->authorize('deliveries.view');
+
         $this->date = now()->toDateString();
     }
 

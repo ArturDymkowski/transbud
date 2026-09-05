@@ -14,6 +14,11 @@ class RolesTable extends Component
 
     public string $search = '';
 
+    public function mount(): void
+    {
+        $this->authorize('roles.view');
+    }
+
     public function render()
     {
         $roles = Role::withCount('permissions')

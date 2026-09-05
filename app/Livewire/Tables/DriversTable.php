@@ -46,6 +46,8 @@ class DriversTable extends Component
     {
         $this->vehicle = ($vehicle && $vehicle->exists) ? $vehicle : null;
         $this->readonly = $readonly;
+
+        $this->authorize($this->vehicle ? 'vehicles.view' : 'drivers.view');
     }
 
     protected function filterFields(): array

@@ -103,15 +103,12 @@ test('goods table hides edit/delete for a view-only role and shows them for Admi
     assertToggleDisabled($component, $good->id, false);
 });
 
-test('users table hides edit/delete for a view-only role and shows them for Admin', function () {
+test('users table is forbidden for a view-only role (no users.view at all) and works for Admin', function () {
     $target = User::factory()->create();
 
     $user = User::factory()->create();
     $user->assignRole('User');
-    $component = Livewire::actingAs($user)->test(UsersTable::class)
-        ->assertDontSee(route('users.edit', $target->id), false)
-        ->assertDontSee('deleteUser('.$target->id.')', false);
-    assertToggleDisabled($component, $target->id, true);
+    Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
     $admin->assignRole('Admin');
@@ -278,15 +275,13 @@ test('goods table hides restore for a view-only role and shows it for Admin', fu
         ->assertSee('restoreGood('.$good->id.')', false);
 });
 
-test('users table hides restore for a view-only role and shows it for Admin', function () {
+test('users table restore is forbidden for a view-only role (no users.view at all) and works for Admin', function () {
     $target = User::factory()->create();
     $target->delete();
 
     $user = User::factory()->create();
     $user->assignRole('User');
-    Livewire::actingAs($user)->test(UsersTable::class)
-        ->set('trashed', 'only')
-        ->assertDontSee('restoreUser('.$target->id.')', false);
+    Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
     $admin->assignRole('Admin');
@@ -397,15 +392,13 @@ test('goods table hides force delete for a view-only role and shows it for Admin
         ->assertSee('forceDeleteGood('.$good->id.')', false);
 });
 
-test('users table hides force delete for a view-only role and shows it for Admin', function () {
+test('users table force delete is forbidden for a view-only role (no users.view at all) and works for Admin', function () {
     $target = User::factory()->create();
     $target->delete();
 
     $user = User::factory()->create();
     $user->assignRole('User');
-    Livewire::actingAs($user)->test(UsersTable::class)
-        ->set('trashed', 'only')
-        ->assertDontSee('forceDeleteUser('.$target->id.')', false);
+    Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
     $admin->assignRole('Admin');
@@ -549,12 +542,12 @@ test('goods table hides bulk selection for a view-only role and shows it for Adm
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(GoodsTable::class), $good->id, true);
 });
 
-test('users table hides bulk selection for a view-only role and shows it for Admin', function () {
+test('users table bulk selection is forbidden for a view-only role (no users.view at all) and works for Admin', function () {
     $target = User::factory()->create();
 
     $user = User::factory()->create();
     $user->assignRole('User');
-    assertBulkSelectionVisible(Livewire::actingAs($user)->test(UsersTable::class), $target->id, false);
+    Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
     $admin->assignRole('Admin');

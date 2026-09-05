@@ -21,6 +21,11 @@ class DeliveriesTable extends Component
 
     public string $trashed = '';
 
+    public function mount(): void
+    {
+        $this->authorize('deliveries.view');
+    }
+
     protected function filterFields(): array
     {
         return ['search', 'status', 'trashed'];

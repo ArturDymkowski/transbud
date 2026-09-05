@@ -16,6 +16,11 @@ class PermissionsTable extends Component
 
     public string $search = '';
 
+    public function mount(): void
+    {
+        $this->authorize('permissions.view');
+    }
+
     protected function filterFields(): array
     {
         return ['search'];

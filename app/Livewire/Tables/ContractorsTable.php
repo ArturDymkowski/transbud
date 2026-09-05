@@ -22,6 +22,11 @@ class ContractorsTable extends Component
     public string $active = '';
     public string $trashed = '';
 
+    public function mount(): void
+    {
+        $this->authorize('contractors.view');
+    }
+
     protected function filterFields(): array
     {
         return ['search', 'active', 'trashed'];

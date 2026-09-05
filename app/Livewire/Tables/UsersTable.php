@@ -21,6 +21,11 @@ class UsersTable extends Component
 
     public string $trashed = '';
 
+    public function mount(): void
+    {
+        $this->authorize('users.view');
+    }
+
     protected function filterFields(): array
     {
         return ['search', 'isActive', 'trashed'];
