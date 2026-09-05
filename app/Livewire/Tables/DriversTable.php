@@ -11,14 +11,13 @@ use App\Livewire\Concerns\WithTableSorting;
 use App\Models\DeliveryTransportSet;
 use App\Models\Driver;
 use App\Models\Vehicle;
-use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class DriversTable extends Component
 {
-    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+    use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;
 
     public array $allowedSortFields = [
         'name', 'id', 'is_active',
@@ -30,12 +29,19 @@ class DriversTable extends Component
     public bool $readonly = false;
 
     public string $search = '';
+
     public string $isActive = '';
+
     public string $drivingLicenseExpiryDateFrom = '';
+
     public string $drivingLicenseExpiryDateTo = '';
+
     public string $identityCardExpiryDateFrom = '';
+
     public string $identityCardExpiryDateTo = '';
+
     public ?int $country = null;
+
     public string $trashed = '';
 
     public bool $showAssignModal = false;
@@ -253,14 +259,14 @@ class DriversTable extends Component
 
         if (filled($this->search)) {
             $filters[] = [
-                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'label' => __('labels.tables.search').': "'.$this->search.'"',
                 'property' => 'search',
             ];
         }
 
         if (filled($this->isActive)) {
             $filters[] = [
-                'label' => __('labels.tables.active') . ': ' . ($this->isActive === '1'
+                'label' => __('labels.tables.active').': '.($this->isActive === '1'
                         ? __('labels.tables.yes')
                         : __('labels.tables.no')),
                 'property' => 'isActive',
@@ -269,7 +275,7 @@ class DriversTable extends Component
 
         if (filled($this->country)) {
             $filters[] = [
-                'label' => __('labels.address.country') . ': ' . CountriesEnum::fromId($this->country)->label(),
+                'label' => __('labels.address.country').': '.CountriesEnum::fromId($this->country)->label(),
                 'property' => 'country',
             ];
         }
@@ -283,28 +289,28 @@ class DriversTable extends Component
 
         if (filled($this->drivingLicenseExpiryDateFrom)) {
             $filters[] = [
-                'label' => __('drivers.driving_license_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->drivingLicenseExpiryDateFrom,
+                'label' => __('drivers.driving_license_expiry_date').' '.mb_strtolower(__('labels.general.from')).': '.$this->drivingLicenseExpiryDateFrom,
                 'property' => 'drivingLicenseExpiryDateFrom',
             ];
         }
 
         if (filled($this->drivingLicenseExpiryDateTo)) {
             $filters[] = [
-                'label' => __('drivers.driving_license_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->drivingLicenseExpiryDateTo,
+                'label' => __('drivers.driving_license_expiry_date').' '.mb_strtolower(__('labels.general.to')).': '.$this->drivingLicenseExpiryDateTo,
                 'property' => 'drivingLicenseExpiryDateTo',
             ];
         }
 
         if (filled($this->identityCardExpiryDateFrom)) {
             $filters[] = [
-                'label' => __('drivers.identity_card_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->identityCardExpiryDateFrom,
+                'label' => __('drivers.identity_card_expiry_date').' '.mb_strtolower(__('labels.general.from')).': '.$this->identityCardExpiryDateFrom,
                 'property' => 'identityCardExpiryDateFrom',
             ];
         }
 
         if (filled($this->identityCardExpiryDateTo)) {
             $filters[] = [
-                'label' => __('drivers.identity_card_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->identityCardExpiryDateTo,
+                'label' => __('drivers.identity_card_expiry_date').' '.mb_strtolower(__('labels.general.to')).': '.$this->identityCardExpiryDateTo,
                 'property' => 'identityCardExpiryDateTo',
             ];
         }

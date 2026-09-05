@@ -244,3 +244,29 @@ test('createAddress assigns the new address to the scoped contractor and closes 
         'street' => 'Marszałkowska',
     ]);
 });
+
+test('readonly mode blocks createAddress', function () {
+    $contractor = Contractor::factory()->create();
+
+    Livewire::test(ContractorAddressesTable::class, ['contractor' => $contractor, 'readonly' => true])
+        ->call('openCreateModal')
+        ->set('createAddressData.country', CountriesEnum::POLAND->value)
+        ->set('createAddressData.zipcode', '00-001')
+        ->set('createAddressData.city', 'Warszawa')
+        ->set('createAddressData.street', 'Marszałkowska')
+        ->call('createAddress');
+
+    $this->assertDatabaseMissing('contractor_addresses', [
+        'contractor_id' => $contractor->id,
+        'city' => 'Warszawa',
+    ]);
+});
+
+test('readonly mode blocks toggleActive', function () {
+    $address = ContractorAddress::factory()->create(['is_active' => true]);
+
+    Livewire::test(ContractorAddressesTable::class, ['readonly' => true])
+        ->call('toggleActive', $address->id);
+
+    expect($address->fresh()->is_active)->toBeTrue();
+});

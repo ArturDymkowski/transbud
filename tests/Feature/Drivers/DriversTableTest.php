@@ -275,3 +275,23 @@ test('unscoped, assignDriver is a no-op', function () {
         ->call('assignDriver')
         ->assertHasNoErrors();
 });
+
+test('readonly mode blocks deleteDriver from detaching the assignment', function () {
+    $vehicle = Vehicle::factory()->create();
+    $driver = Driver::factory()->create();
+    $vehicle->drivers()->attach($driver);
+
+    Livewire::test(DriversTable::class, ['vehicle' => $vehicle, 'readonly' => true])
+        ->call('deleteDriver', $driver->id);
+
+    expect($vehicle->drivers()->where('drivers.id', $driver->id)->exists())->toBeTrue();
+});
+
+test('readonly mode blocks toggleActive', function () {
+    $driver = Driver::factory()->create(['is_active' => true]);
+
+    Livewire::test(DriversTable::class, ['readonly' => true])
+        ->call('toggleActive', $driver->id);
+
+    expect($driver->fresh()->is_active)->toBeTrue();
+});

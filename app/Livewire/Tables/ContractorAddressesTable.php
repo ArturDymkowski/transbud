@@ -17,7 +17,7 @@ use Livewire\WithPagination;
 
 class ContractorAddressesTable extends Component
 {
-    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+    use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;
 
     public array $allowedSortFields = ['id', 'contractor_name', 'is_active'];
 
@@ -26,11 +26,15 @@ class ContractorAddressesTable extends Component
     public bool $readonly = false;
 
     public string $search = '';
+
     public string $isActive = '';
+
     public ?int $country = null;
+
     public string $trashed = '';
 
     public bool $showCreateModal = false;
+
     public array $createAddressData = [];
 
     public function mount(?Contractor $contractor = null, bool $readonly = false): void
@@ -219,14 +223,14 @@ class ContractorAddressesTable extends Component
 
         if (filled($this->search)) {
             $filters[] = [
-                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'label' => __('labels.tables.search').': "'.$this->search.'"',
                 'property' => 'search',
             ];
         }
 
         if (filled($this->isActive)) {
             $filters[] = [
-                'label' => __('labels.tables.active') . ': ' . ($this->isActive === '1'
+                'label' => __('labels.tables.active').': '.($this->isActive === '1'
                         ? __('labels.tables.yes')
                         : __('labels.tables.no')),
                 'property' => 'isActive',
@@ -235,7 +239,7 @@ class ContractorAddressesTable extends Component
 
         if (filled($this->country)) {
             $filters[] = [
-                'label' => __('labels.address.country') . ': ' . CountriesEnum::fromId($this->country)->label(),
+                'label' => __('labels.address.country').': '.CountriesEnum::fromId($this->country)->label(),
                 'property' => 'country',
             ];
         }

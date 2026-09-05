@@ -21,6 +21,10 @@ trait WithDeliveryStatusComputation
             return DeliveryStatusEnum::COMPLETED;
         }
 
+        if ($statuses->every(fn (int $status) => $status === DeliveryTransportSetStatusEnum::CANCELLED->value)) {
+            return DeliveryStatusEnum::CANCELLED;
+        }
+
         if ($statuses->contains(fn (int $status) => $status !== DeliveryTransportSetStatusEnum::ASSIGNED->value)) {
             return DeliveryStatusEnum::IN_PROGRESS;
         }

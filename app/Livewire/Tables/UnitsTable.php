@@ -15,14 +15,16 @@ use Livewire\WithPagination;
 
 class UnitsTable extends Component
 {
-    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+    use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;
 
     public ?Good $good = null;
 
     public bool $readonly = false;
 
     public string $search = '';
+
     public string $isActive = '';
+
     public string $trashed = '';
 
     public bool $showAssignModal = false;
@@ -226,14 +228,14 @@ class UnitsTable extends Component
 
         if (filled($this->search)) {
             $filters[] = [
-                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'label' => __('labels.tables.search').': "'.$this->search.'"',
                 'property' => 'search',
             ];
         }
 
         if (filled($this->isActive)) {
             $filters[] = [
-                'label' => __('labels.tables.active') . ': ' . ($this->isActive === '1'
+                'label' => __('labels.tables.active').': '.($this->isActive === '1'
                         ? __('labels.tables.yes')
                         : __('labels.tables.no')),
                 'property' => 'isActive',

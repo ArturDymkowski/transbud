@@ -188,3 +188,23 @@ test('when scoped to a good, deleting a unit only detaches it', function () {
     expect($good->units()->count())->toBe(0);
     $this->assertNotSoftDeleted($unit);
 });
+
+test('readonly mode blocks deleteUnit from detaching the assignment', function () {
+    $good = Good::factory()->create();
+    $unit = Unit::factory()->create();
+    $good->units()->attach($unit);
+
+    Livewire::test(UnitsTable::class, ['good' => $good, 'readonly' => true])
+        ->call('deleteUnit', $unit->id);
+
+    expect($good->units()->where('units.id', $unit->id)->exists())->toBeTrue();
+});
+
+test('readonly mode blocks toggleActive', function () {
+    $unit = Unit::factory()->create(['is_active' => true]);
+
+    Livewire::test(UnitsTable::class, ['readonly' => true])
+        ->call('toggleActive', $unit->id);
+
+    expect($unit->fresh()->is_active)->toBeTrue();
+});
