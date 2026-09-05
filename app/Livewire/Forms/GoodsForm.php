@@ -8,6 +8,9 @@ use App\Livewire\Concerns\WithUnitOptions;
 use App\Models\Good;
 use Livewire\Component;
 
+/**
+ * @property-read array $unitOptions
+ */
 class GoodsForm extends Component
 {
     use WithDemoLimits, WithSavedRedirect, WithUnitOptions;

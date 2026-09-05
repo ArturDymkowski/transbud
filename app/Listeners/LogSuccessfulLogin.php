@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\LoginAuditLog;
+use App\Models\User;
 use Illuminate\Auth\Events\Login;
 
 /**
@@ -17,6 +18,10 @@ class LogSuccessfulLogin
 {
     public function handle(Login $event): void
     {
+        if (! $event->user instanceof User) {
+            return;
+        }
+
         LoginAuditLog::create([
             'email' => $event->user->email,
             'successful' => true,

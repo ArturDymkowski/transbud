@@ -30,36 +30,57 @@ class DeliveryTransportSet extends Model
         'status' => DeliveryTransportSetStatusEnum::class,
     ];
 
+    /**
+     * @return BelongsTo<Delivery, $this>
+     */
     public function delivery(): BelongsTo
     {
         return $this->belongsTo(Delivery::class);
     }
 
+    /**
+     * @return BelongsTo<Driver, $this>
+     */
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
     }
 
+    /**
+     * @return BelongsTo<Vehicle, $this>
+     */
     public function vehicle(): BelongsTo
     {
         return $this->belongsTo(Vehicle::class);
     }
 
+    /**
+     * @return BelongsTo<Vehicle, $this>
+     */
     public function trailer(): BelongsTo
     {
         return $this->belongsTo(Vehicle::class, 'trailer_id');
     }
 
+    /**
+     * @return HasMany<DeliveryGood, $this>
+     */
     public function goods(): HasMany
     {
         return $this->hasMany(DeliveryGood::class);
     }
 
+    /**
+     * @return HasMany<DeliveryCost, $this>
+     */
     public function costs(): HasMany
     {
         return $this->hasMany(DeliveryCost::class);
     }
 
+    /**
+     * @return HasMany<DeliveryTransportSetStatusHistory, $this>
+     */
     public function statusHistories(): HasMany
     {
         return $this->hasMany(DeliveryTransportSetStatusHistory::class)->latest('created_at');

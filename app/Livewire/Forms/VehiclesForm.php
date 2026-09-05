@@ -39,8 +39,8 @@ class VehiclesForm extends Component
     protected function rules(): array
     {
         return [
-            'vehicleData.registration_number' => 'required|string|max:255|unique:vehicles,registration_number,'.($this->vehicle?->id ?? 'NULL'),
-            'vehicleData.vin' => 'required|string|max:255|unique:vehicles,vin,'.($this->vehicle?->id ?? 'NULL'),
+            'vehicleData.registration_number' => 'required|string|max:255|unique:vehicles,registration_number,'.($this->vehicle->id ?? 'NULL'),
+            'vehicleData.vin' => 'required|string|max:255|unique:vehicles,vin,'.($this->vehicle->id ?? 'NULL'),
             'vehicleData.type' => ['required', new Enum(VehicleTypeEnum::class)],
             'vehicleData.technical_inspection_expiry_date' => 'nullable|date',
             'vehicleData.insurance_expiry_date' => 'nullable|date',

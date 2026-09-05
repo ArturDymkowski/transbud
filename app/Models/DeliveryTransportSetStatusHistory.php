@@ -27,11 +27,17 @@ class DeliveryTransportSetStatusHistory extends Model
         'status' => DeliveryTransportSetStatusEnum::class,
     ];
 
+    /**
+     * @return BelongsTo<DeliveryTransportSet, $this>
+     */
     public function transportSet(): BelongsTo
     {
         return $this->belongsTo(DeliveryTransportSet::class, 'delivery_transport_set_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function changedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'changed_by');

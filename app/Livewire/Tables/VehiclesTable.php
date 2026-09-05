@@ -13,18 +13,29 @@ use App\Models\Vehicle;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class VehiclesTable extends Component
 {
-    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+    use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;
 
     public string $search = '';
+
     public string $isActive = '';
+
     public string $trashed = '';
+
     public string $technicalInspectionExpiryDateFrom = '';
+
     public string $technicalInspectionExpiryDateTo = '';
+
     public string $insuranceExpiryDateFrom = '';
+
     public string $insuranceExpiryDateTo = '';
+
     public string $tachographInspectionExpiryDateFrom = '';
+
     public string $tachographInspectionExpiryDateTo = '';
 
     public function mount(): void
@@ -137,14 +148,14 @@ class VehiclesTable extends Component
 
         if (filled($this->search)) {
             $filters[] = [
-                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'label' => __('labels.tables.search').': "'.$this->search.'"',
                 'property' => 'search',
             ];
         }
 
         if (filled($this->isActive)) {
             $filters[] = [
-                'label' => __('labels.tables.active') . ': ' . ($this->isActive === '1'
+                'label' => __('labels.tables.active').': '.($this->isActive === '1'
                         ? __('labels.tables.yes')
                         : __('labels.tables.no')),
                 'property' => 'isActive',
@@ -160,42 +171,42 @@ class VehiclesTable extends Component
 
         if (filled($this->technicalInspectionExpiryDateFrom)) {
             $filters[] = [
-                'label' => __('vehicles.technical_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->technicalInspectionExpiryDateFrom,
+                'label' => __('vehicles.technical_inspection_expiry_date').' '.mb_strtolower(__('labels.general.from')).': '.$this->technicalInspectionExpiryDateFrom,
                 'property' => 'technicalInspectionExpiryDateFrom',
             ];
         }
 
         if (filled($this->technicalInspectionExpiryDateTo)) {
             $filters[] = [
-                'label' => __('vehicles.technical_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->technicalInspectionExpiryDateTo,
+                'label' => __('vehicles.technical_inspection_expiry_date').' '.mb_strtolower(__('labels.general.to')).': '.$this->technicalInspectionExpiryDateTo,
                 'property' => 'technicalInspectionExpiryDateTo',
             ];
         }
 
         if (filled($this->insuranceExpiryDateFrom)) {
             $filters[] = [
-                'label' => __('vehicles.insurance_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->insuranceExpiryDateFrom,
+                'label' => __('vehicles.insurance_expiry_date').' '.mb_strtolower(__('labels.general.from')).': '.$this->insuranceExpiryDateFrom,
                 'property' => 'insuranceExpiryDateFrom',
             ];
         }
 
         if (filled($this->insuranceExpiryDateTo)) {
             $filters[] = [
-                'label' => __('vehicles.insurance_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->insuranceExpiryDateTo,
+                'label' => __('vehicles.insurance_expiry_date').' '.mb_strtolower(__('labels.general.to')).': '.$this->insuranceExpiryDateTo,
                 'property' => 'insuranceExpiryDateTo',
             ];
         }
 
         if (filled($this->tachographInspectionExpiryDateFrom)) {
             $filters[] = [
-                'label' => __('vehicles.tachograph_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.from')) . ': ' . $this->tachographInspectionExpiryDateFrom,
+                'label' => __('vehicles.tachograph_inspection_expiry_date').' '.mb_strtolower(__('labels.general.from')).': '.$this->tachographInspectionExpiryDateFrom,
                 'property' => 'tachographInspectionExpiryDateFrom',
             ];
         }
 
         if (filled($this->tachographInspectionExpiryDateTo)) {
             $filters[] = [
-                'label' => __('vehicles.tachograph_inspection_expiry_date') . ' ' . mb_strtolower(__('labels.general.to')) . ': ' . $this->tachographInspectionExpiryDateTo,
+                'label' => __('vehicles.tachograph_inspection_expiry_date').' '.mb_strtolower(__('labels.general.to')).': '.$this->tachographInspectionExpiryDateTo,
                 'property' => 'tachographInspectionExpiryDateTo',
             ];
         }

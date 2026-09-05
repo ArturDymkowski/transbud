@@ -51,7 +51,7 @@ class DriversForm extends Component
         return [
             'driverData.name' => 'required|string|max:255',
             'driverData.phone' => 'required|string|max:30',
-            'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,'.($this->driver?->id ?? 'NULL'),
+            'driverData.pesel' => 'required|string|size:11|unique:drivers,pesel,'.($this->driver->id ?? 'NULL'),
             'driverData.country' => ['nullable', new Enum(CountriesEnum::class)],
             'driverData.zipcode' => 'nullable|string|max:20',
             'driverData.city' => 'nullable|string|max:100',
@@ -59,7 +59,7 @@ class DriversForm extends Component
             'driverData.house_nr' => 'nullable|string|max:20',
             'driverData.apartment_nr' => 'nullable|string|max:20',
             'driverData.extra_info' => 'nullable|string',
-            'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,'.($this->driver?->id ?? 'NULL'),
+            'driverData.driving_license_number' => 'required|string|unique:drivers,driving_license_number,'.($this->driver->id ?? 'NULL'),
             'driverData.driving_license_expiry_date' => 'required|date',
             'driverData.identity_card_expiry_date' => 'required|date',
 

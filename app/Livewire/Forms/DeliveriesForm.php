@@ -29,6 +29,11 @@ use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
+/**
+ * @property-read array $driverOptions
+ * @property-read array $tractorOptions
+ * @property-read array $trailerOptions
+ */
 class DeliveriesForm extends Component
 {
     use WithDeliveryGoodsSync, WithDeliveryLookupOptions, WithDeliveryResourceAvailability, WithDeliveryStatusComputation, WithDemoLimits, WithDriverVehicleOptions, WithFileUploads, WithSavedRedirect;
@@ -60,7 +65,7 @@ class DeliveriesForm extends Component
                 : '';
             $this->deliveryData['currency'] = $this->delivery->currency->value;
 
-            $this->transportSetsData = $this->delivery->transportSets->map(fn ($transportSet) => [
+            $this->transportSetsData = $this->delivery->transportSets->map(fn (DeliveryTransportSet $transportSet) => [
                 'id' => $transportSet->id,
                 'driver_id' => $transportSet->driver_id,
                 'vehicle_id' => $transportSet->vehicle_id,
@@ -68,7 +73,7 @@ class DeliveriesForm extends Component
                 'loading_at' => $transportSet->loading_at?->format('Y-m-d H:i'),
                 'unloading_at' => $transportSet->unloading_at?->format('Y-m-d H:i'),
                 'status' => $transportSet->status->value,
-                'goods' => $transportSet->goods->map(fn ($good) => [
+                'goods' => $transportSet->goods->map(fn (DeliveryGood $good) => [
                     'id' => $good->id,
                     'good_id' => $good->good_id,
                     'unit_id' => $good->unit_id,
@@ -92,7 +97,7 @@ class DeliveriesForm extends Component
         $draft = DeliveryTransportSetStatusEnum::DRAFT->value;
 
         return [
-            'deliveryData.number' => 'required|string|max:255|unique:deliveries,number,'.($this->delivery?->id ?? 'NULL'),
+            'deliveryData.number' => 'required|string|max:255|unique:deliveries,number,'.($this->delivery->id ?? 'NULL'),
             'deliveryData.contractor_id' => 'required|exists:contractors,id',
             'deliveryData.contractor_address_id' => [
                 'required',

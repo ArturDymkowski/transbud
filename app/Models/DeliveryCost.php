@@ -29,11 +29,17 @@ class DeliveryCost extends Model
         'currency' => CurrencyEnum::class,
     ];
 
+    /**
+     * @return BelongsTo<Delivery, $this>
+     */
     public function delivery(): BelongsTo
     {
         return $this->belongsTo(Delivery::class);
     }
 
+    /**
+     * @return BelongsTo<DeliveryTransportSet, $this>
+     */
     public function transportSet(): BelongsTo
     {
         return $this->belongsTo(DeliveryTransportSet::class, 'delivery_transport_set_id');

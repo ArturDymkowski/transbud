@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\VehicleTypeEnum;
+use Database\Factories\VehicleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vehicle extends Model
 {
-    /** @use HasFactory<\Database\Factories\VehicleFactory> */
+    /** @use HasFactory<VehicleFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -29,6 +30,9 @@ class Vehicle extends Model
         'type' => VehicleTypeEnum::class,
     ];
 
+    /**
+     * @return BelongsToMany<Driver, $this>
+     */
     public function drivers(): BelongsToMany
     {
         return $this->belongsToMany(Driver::class)->withTimestamps();
@@ -39,8 +43,8 @@ class Vehicle extends Model
         return $query->when($search, function ($q) use ($search) {
             $search = trim($search);
             $q->where(function ($q) use ($search) {
-                $q->orWhere('registration_number', 'like', '%' . $search . '%')
-                    ->orWhere('vin', 'like', '%' . $search . '%');
+                $q->orWhere('registration_number', 'like', '%'.$search.'%')
+                    ->orWhere('vin', 'like', '%'.$search.'%');
             });
         });
     }

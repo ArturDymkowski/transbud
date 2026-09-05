@@ -11,7 +11,7 @@ trait WithDriverDocuments
     #[Computed]
     public function existingMedia(): array
     {
-        if (! $this->driver?->exists) {
+        if (! $this->driver->exists) {
             return [];
         }
 
@@ -32,7 +32,7 @@ trait WithDriverDocuments
     {
         $collectionsMap = $this->mediaCollectionsMap();
 
-        if (! isset($collectionsMap[$key]) || ! $this->driver?->exists) {
+        if (! isset($collectionsMap[$key]) || ! $this->driver->exists) {
             return null;
         }
 

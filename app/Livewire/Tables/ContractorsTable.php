@@ -12,14 +12,19 @@ use App\Models\Delivery;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class ContractorsTable extends Component
 {
-    use WithPagination, WithTableSorting, WithPerPage, WithBulkSelection, WithFilters;
+    use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;
 
     public array $allowedSortFields = ['name', 'id', 'active'];
 
     public string $search = '';
+
     public string $active = '';
+
     public string $trashed = '';
 
     public function mount(): void
@@ -116,14 +121,14 @@ class ContractorsTable extends Component
 
         if (filled($this->search)) {
             $filters[] = [
-                'label' => __('labels.tables.search') . ': "' . $this->search . '"',
+                'label' => __('labels.tables.search').': "'.$this->search.'"',
                 'property' => 'search',
             ];
         }
 
         if (filled($this->active)) {
             $filters[] = [
-                'label' => __('labels.tables.active') . ': ' . ($this->active === '1'
+                'label' => __('labels.tables.active').': '.($this->active === '1'
                         ? __('labels.tables.yes')
                         : __('labels.tables.no')),
                 'property' => 'active',

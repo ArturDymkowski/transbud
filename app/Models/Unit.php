@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Unit extends Model
 {
-    /** @use HasFactory<\Database\Factories\UnitFactory> */
+    /** @use HasFactory<UnitFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -21,6 +22,9 @@ class Unit extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * @return BelongsToMany<Good, $this>
+     */
     public function goods(): BelongsToMany
     {
         return $this->belongsToMany(Good::class)->withTimestamps();
@@ -30,7 +34,7 @@ class Unit extends Model
     {
         return $query->when($search, function ($q) use ($search) {
             $search = trim($search);
-            $q->where('name', 'like', '%' . $search . '%');
+            $q->where('name', 'like', '%'.$search.'%');
         });
     }
 }

@@ -72,6 +72,13 @@ class DeliverySeeder extends Seeder
         }
     }
 
+    /**
+     * @param  Collection<int, Contractor>  $contractors
+     * @param  Collection<int, Driver>  $drivers
+     * @param  Collection<int, Vehicle>  $tractors
+     * @param  Collection<int, Vehicle>  $trailers
+     * @param  Collection<int, Good>  $goods
+     */
     private function seedMonth(
         Carbon $monthStart,
         Collection $contractors,
@@ -105,6 +112,12 @@ class DeliverySeeder extends Seeder
         }
     }
 
+    /**
+     * @param  Collection<int, Driver>  $drivers
+     * @param  Collection<int, Vehicle>  $tractors
+     * @param  Collection<int, Vehicle>  $trailers
+     * @param  Collection<int, Good>  $goods
+     */
     private function createTransportSet(
         Delivery $delivery,
         Carbon $monthStart,
@@ -145,7 +158,10 @@ class DeliverySeeder extends Seeder
      * busy/overlap rule as WithDeliveryResourceAvailability, so seeded data never violates
      * the very validation the app enforces on save.
      *
-     * @return array{0: Carbon, 1: Carbon, 2: Model, 3: Model, 4: Model}
+     * @param  Collection<int, Driver>  $drivers
+     * @param  Collection<int, Vehicle>  $tractors
+     * @param  Collection<int, Vehicle>  $trailers
+     * @return array{0: Carbon, 1: Carbon, 2: Driver, 3: Vehicle, 4: Vehicle}
      */
     private function pickAvailableSlot(
         Carbon $monthStart,
@@ -180,6 +196,11 @@ class DeliverySeeder extends Seeder
      * Same overlap rule as WithDeliveryResourceAvailability::validateResourceAvailability() -
      * a resource already booked on a non-draft, non-cancelled transport set overlapping this
      * window is unavailable, regardless of which delivery it belongs to.
+     *
+     * @template TModel of Model
+     *
+     * @param  Collection<int, TModel>  $pool
+     * @return TModel|null
      */
     private function availableResource(Collection $pool, string $column, Carbon $loadingAt, Carbon $unloadingAt): ?Model
     {
@@ -230,6 +251,9 @@ class DeliverySeeder extends Seeder
         };
     }
 
+    /**
+     * @param  Collection<int, Good>  $goods
+     */
     private function attachGoods(DeliveryTransportSet $transportSet, Collection $goods): void
     {
         $count = min(fake()->numberBetween(...self::GOODS_PER_TRANSPORT_SET), $goods->count());

@@ -14,6 +14,9 @@ use Illuminate\Support\Carbon;
  */
 trait WithTransportSetEvents
 {
+    /**
+     * @return Builder<DeliveryTransportSet>
+     */
     private function transportSetEventsBetween(Carbon|string $start, Carbon|string $end): Builder
     {
         return DeliveryTransportSet::query()

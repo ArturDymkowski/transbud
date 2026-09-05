@@ -29,7 +29,7 @@ class UnitsForm extends Component
     protected function rules(): array
     {
         return [
-            'unitData.name' => 'required|string|max:255|unique:units,name,'.($this->unit?->id ?? 'NULL'),
+            'unitData.name' => 'required|string|max:255|unique:units,name,'.($this->unit->id ?? 'NULL'),
         ];
     }
 

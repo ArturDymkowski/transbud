@@ -13,6 +13,9 @@ use App\Models\Unit;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class UnitsTable extends Component
 {
     use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;

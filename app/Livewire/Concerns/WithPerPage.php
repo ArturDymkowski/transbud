@@ -1,6 +1,7 @@
 <?php
 
 // app/Livewire/Concerns/WithPerPage.php
+
 namespace App\Livewire\Concerns;
 
 trait WithPerPage
@@ -14,7 +15,10 @@ trait WithPerPage
 
     public function updatedPerPage(): void
     {
-        $this->selected = [];
+        if (isset($this->selected)) {
+            $this->selected = [];
+        }
+
         $this->resetPage();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Support\Planner;
 
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 /**
  * A single block rendered on the Planner timeline. `offsetPercent`/`widthPercent`

@@ -15,6 +15,8 @@ use Livewire\WithPagination;
  * `is_super_admin` users; see App\Http\Middleware\EnsureSuperAdmin (route) and the
  * `mount()` check below (Livewire's own AJAX endpoint doesn't go through route
  * middleware on re-renders, same reasoning as the Show/Form components).
+ *
+ * @property-read array $successfulOptions
  */
 class LoginAuditLogTable extends Component
 {

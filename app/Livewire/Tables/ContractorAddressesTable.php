@@ -15,6 +15,9 @@ use Illuminate\Validation\Rules\Enum;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class ContractorAddressesTable extends Component
 {
     use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;

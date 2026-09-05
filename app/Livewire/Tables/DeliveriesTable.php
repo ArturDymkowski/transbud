@@ -11,6 +11,9 @@ use App\Models\Delivery;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class DeliveriesTable extends Component
 {
     use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;

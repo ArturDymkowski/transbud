@@ -11,6 +11,9 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class UsersTable extends Component
 {
     use WithAdminProtection, WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;

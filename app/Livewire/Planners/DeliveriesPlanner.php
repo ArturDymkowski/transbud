@@ -153,16 +153,23 @@ class DeliveriesPlanner extends Component
         return $this->transportSetEventsBetween($windowStart, $windowEnd)
             ->whereNotNull($foreignKey)
             ->get()
-            ->map(fn (DeliveryTransportSet $transportSet) => PlannerEvent::forWindow(
-                id: $transportSet->id,
-                resourceId: $transportSet->{$foreignKey},
-                title: $this->transportSetEventTitle($transportSet),
-                color: $this->transportSetEventColor($transportSet),
-                startsAt: $transportSet->loading_at,
-                endsAt: $transportSet->unloading_at ?? $transportSet->loading_at,
-                windowStart: $windowStart,
-                windowEnd: $windowEnd,
-            ))
+            ->map(function (DeliveryTransportSet $transportSet) use ($foreignKey, $windowStart, $windowEnd) {
+                if ($transportSet->loading_at === null) {
+                    return null;
+                }
+
+                return PlannerEvent::forWindow(
+                    id: $transportSet->id,
+                    resourceId: $transportSet->{$foreignKey},
+                    title: $this->transportSetEventTitle($transportSet),
+                    color: $this->transportSetEventColor($transportSet),
+                    startsAt: $transportSet->loading_at,
+                    endsAt: $transportSet->unloading_at ?? $transportSet->loading_at,
+                    windowStart: $windowStart,
+                    windowEnd: $windowEnd,
+                );
+            })
+            ->filter()
             ->groupBy('resourceId');
     }
 

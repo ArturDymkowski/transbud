@@ -50,6 +50,9 @@ class Driver extends Model implements HasMedia
         'country' => CountriesEnum::class,
     ];
 
+    /**
+     * @return BelongsToMany<Vehicle, $this>
+     */
     public function vehicles(): BelongsToMany
     {
         return $this->belongsToMany(Vehicle::class)->withTimestamps();
@@ -99,14 +102,14 @@ class Driver extends Model implements HasMedia
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->width(400)
-            ->height(250)
-            ->sharpen(10)
             ->performOnCollections(
                 self::MEDIA_DRIVING_LICENSE_FRONT,
                 self::MEDIA_DRIVING_LICENSE_BACK,
                 self::MEDIA_IDENTITY_CARD_FRONT,
                 self::MEDIA_IDENTITY_CARD_BACK,
-            );
+            )
+            ->width(400)
+            ->height(250)
+            ->sharpen(10);
     }
 }

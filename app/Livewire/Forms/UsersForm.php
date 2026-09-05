@@ -42,7 +42,7 @@ class UsersForm extends Component
 
         return [
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|max:255|unique:users,email,'.($this->user?->id ?? 'NULL'),
+            'userData.email' => 'required|email|max:255|unique:users,email,'.($this->user->id ?? 'NULL'),
             'userData.password' => $passwordRule.'|string|min:8|confirmed',
             'userData.role_id' => 'nullable|exists:roles,id',
         ];

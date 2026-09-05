@@ -23,16 +23,25 @@ class DeliveryGood extends Model
         'quantity' => 'decimal:2',
     ];
 
+    /**
+     * @return BelongsTo<DeliveryTransportSet, $this>
+     */
     public function transportSet(): BelongsTo
     {
         return $this->belongsTo(DeliveryTransportSet::class, 'delivery_transport_set_id');
     }
 
+    /**
+     * @return BelongsTo<Good, $this>
+     */
     public function good(): BelongsTo
     {
         return $this->belongsTo(Good::class);
     }
 
+    /**
+     * @return BelongsTo<Unit, $this>
+     */
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);

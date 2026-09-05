@@ -78,7 +78,7 @@ class DeliveryCostModal extends Component
         $this->authorize('deliveries.edit');
 
         $cost = $this->delivery->costs->firstWhere('id', $costId);
-        abort_unless($cost, 404);
+        abort_unless($cost !== null, 404);
 
         $this->editingCostId = $cost->id;
         $this->costData = [

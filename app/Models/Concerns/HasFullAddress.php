@@ -5,6 +5,10 @@ namespace App\Models\Concerns;
 use App\Enums\CountriesEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
+/**
+ * @property-read array<int, string> $fullAddressLines
+ * @property-read string $fullAddressText
+ */
 trait HasFullAddress
 {
     protected function fullAddressLines(): Attribute

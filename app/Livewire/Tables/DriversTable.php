@@ -15,6 +15,9 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read array $trashedOptions
+ */
 class DriversTable extends Component
 {
     use WithBulkSelection, WithFilters, WithPagination, WithPerPage, WithTableSorting;

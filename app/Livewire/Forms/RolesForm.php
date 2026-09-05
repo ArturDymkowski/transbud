@@ -3,11 +3,16 @@
 namespace App\Livewire\Forms;
 
 use App\Livewire\Concerns\WithSavedRedirect;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Permission> $allPermissions
+ * @property-read Collection<string, mixed> $groupedPermissions
+ */
 class RolesForm extends Component
 {
     use WithSavedRedirect;
@@ -32,7 +37,7 @@ class RolesForm extends Component
     protected function rules(): array
     {
         return [
-            'roleData.name' => 'required|string|max:255|unique:roles,name,'.($this->role?->id ?? 'NULL'),
+            'roleData.name' => 'required|string|max:255|unique:roles,name,'.($this->role->id ?? 'NULL'),
             'selectedPermissions' => 'array',
             'selectedPermissions.*' => 'exists:permissions,id',
         ];
@@ -66,7 +71,11 @@ class RolesForm extends Component
         if ($isUpdate) {
             $this->role->update(['name' => $this->roleData['name']]);
         } else {
-            $this->role = Role::create(['name' => $this->roleData['name']]);
+            $role = Role::create(['name' => $this->roleData['name']]);
+
+            if ($role instanceof Role) {
+                $this->role = $role;
+            }
         }
 
         $this->role->syncPermissions(Permission::whereIn('id', $this->selectedPermissions)->get());

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\GoodFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Good extends Model
 {
-    /** @use HasFactory<\Database\Factories\GoodFactory> */
+    /** @use HasFactory<GoodFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -24,11 +25,17 @@ class Good extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * @return BelongsTo<Unit, $this>
+     */
     public function defaultUnit(): BelongsTo
     {
         return $this->belongsTo(Unit::class, 'default_unit_id');
     }
 
+    /**
+     * @return BelongsToMany<Unit, $this>
+     */
     public function units(): BelongsToMany
     {
         return $this->belongsToMany(Unit::class)->withTimestamps();
@@ -39,8 +46,8 @@ class Good extends Model
         return $query->when($search, function ($q) use ($search) {
             $search = trim($search);
             $q->where(function ($q) use ($search) {
-                $q->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
+                $q->orWhere('name', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%');
             });
         });
     }

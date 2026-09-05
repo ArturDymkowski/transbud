@@ -36,16 +36,25 @@ class Delivery extends Model implements HasMedia
         'currency' => CurrencyEnum::class,
     ];
 
+    /**
+     * @return BelongsTo<Contractor, $this>
+     */
     public function contractor(): BelongsTo
     {
         return $this->belongsTo(Contractor::class);
     }
 
+    /**
+     * @return BelongsTo<ContractorAddress, $this>
+     */
     public function contractorAddress(): BelongsTo
     {
         return $this->belongsTo(ContractorAddress::class);
     }
 
+    /**
+     * @return HasMany<DeliveryTransportSet, $this>
+     */
     public function transportSets(): HasMany
     {
         return $this->hasMany(DeliveryTransportSet::class);
@@ -54,6 +63,8 @@ class Delivery extends Model implements HasMedia
     /**
      * All costs of this delivery, both those attached directly to it and those
      * attached to one of its transport sets (delivery_id is always set on both).
+     *
+     * @return HasMany<DeliveryCost, $this>
      */
     public function costs(): HasMany
     {
@@ -62,6 +73,8 @@ class Delivery extends Model implements HasMedia
 
     /**
      * Costs that belong to the delivery as a whole, not to a specific transport set.
+     *
+     * @return HasMany<DeliveryCost, $this>
      */
     public function directCosts(): HasMany
     {
