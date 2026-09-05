@@ -107,6 +107,11 @@ return [
         'expired_one_day_ago' => 'Overdue by 1 day',
     ],
 
+    'menu' => [
+        'access' => 'Access',
+        'dictionaries' => 'Dictionaries',
+    ],
+
     'address' => [
         'address' => 'Address',
         'zipcode' => 'Zipcode',

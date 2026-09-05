@@ -107,6 +107,11 @@ return [
         'expired_one_day_ago' => 'Przeterminowane o 1 dzień',
     ],
 
+    'menu' => [
+        'access' => 'Dostęp',
+        'dictionaries' => 'Słowniki',
+    ],
+
     'address' => [
         'address' => 'Adres',
         'zipcode' => 'Kod pocztowy',
