@@ -18,5 +18,4 @@ return [
     'cannot_change_own_status' => 'Nie możesz dezaktywować własnego konta.',
     'cannot_delete_self' => 'Nie możesz usunąć własnego konta.',
     'admin_accounts_require_super_admin' => 'Tylko Super Admin może usuwać lub (de)aktywować konta z rolą Admin.',
-    'admin_role_requires_super_admin' => 'Tylko Super Admin może nadać lub odebrać rolę Admin.',
 ];

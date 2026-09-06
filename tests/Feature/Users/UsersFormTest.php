@@ -136,6 +136,19 @@ test('a role can be assigned to a user on create', function () {
     expect($user->hasRole('Dispatcher'))->toBeTrue();
 });
 
+test('a plain Admin can create a new user with the Admin role', function () {
+    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+
+    Livewire::test(UsersForm::class)
+        ->set(validUserPayload())
+        ->set('userData.role_id', $adminRole->id)
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    $user = User::where('email', 'jan.kowalski@example.com')->first();
+    expect($user->hasRole('Admin'))->toBeTrue();
+});
+
 test('a role can be assigned when its id arrives as a string, as the select input sends it', function () {
     $role = Role::create(['name' => 'Dispatcher']);
 
@@ -240,7 +253,7 @@ test('the role field is not disabled when editing a different account', function
     expect($selectTag)->not->toContain('disabled');
 });
 
-test('a plain Admin cannot demote another Admin away from the Admin role', function () {
+test('a plain Admin can demote another Admin away from the Admin role', function () {
     $targetAdmin = User::role('Admin')->firstOrFail();
 
     $plainAdmin = User::factory()->create();
@@ -252,21 +265,23 @@ test('a plain Admin cannot demote another Admin away from the Admin role', funct
     Livewire::test(UsersForm::class, ['user' => $targetAdmin])
         ->set('userData.role_id', $dispatcherRole->id)
         ->call('save')
-        ->assertHasErrors('userData.role_id');
+        ->assertHasNoErrors('userData.role_id')
+        ->assertRedirect(route('users.index'));
 
-    expect($targetAdmin->refresh()->hasRole('Admin'))->toBeTrue();
+    expect($targetAdmin->refresh()->hasRole('Dispatcher'))->toBeTrue();
 });
 
-test('a plain Admin cannot promote another user to the Admin role', function () {
+test('a plain Admin can promote another user to the Admin role', function () {
     $regularUser = User::factory()->create();
     $adminRole = Role::where('name', 'Admin')->firstOrFail();
 
     Livewire::test(UsersForm::class, ['user' => $regularUser])
         ->set('userData.role_id', $adminRole->id)
         ->call('save')
-        ->assertHasErrors('userData.role_id');
+        ->assertHasNoErrors('userData.role_id')
+        ->assertRedirect(route('users.index'));
 
-    expect($regularUser->refresh()->hasRole('Admin'))->toBeFalse();
+    expect($regularUser->refresh()->hasRole('Admin'))->toBeTrue();
 });
 
 test('a Super Admin can demote another Admin away from the Admin role', function () {

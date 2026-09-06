@@ -6,13 +6,12 @@ use App\Models\User;
 
 /**
  * A plain Admin — including whoever is logged into the shared public-demo
- * account, which anyone on the internet can do — must never be able to touch
- * another Admin's account, or even their own, through this UI. Creating,
- * deleting, activating, deactivating, or granting/revoking the Admin role is
- * exclusively a Super Admin's job (users.is_super_admin, kept outside the
- * Spatie role/permission system on purpose — a plain Admin with roles.edit
- * could otherwise just grant themselves whatever this check would otherwise
- * gate on).
+ * account, which anyone on the internet can do — must never be able to
+ * delete, activate, or deactivate another Admin's account, or even their own,
+ * through this UI. That is exclusively a Super Admin's job (users.is_super_admin,
+ * kept outside the Spatie role/permission system on purpose — a plain Admin
+ * with roles.edit could otherwise just grant themselves whatever this check
+ * would otherwise gate on).
  *
  * Self-protection (nobody can deactivate/delete their own account) is a
  * separate, unconditional rule checked directly at each call site — it applies

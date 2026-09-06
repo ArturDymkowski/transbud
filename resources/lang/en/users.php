@@ -18,5 +18,4 @@ return [
     'cannot_change_own_status' => 'You cannot deactivate your own account.',
     'cannot_delete_self' => 'You cannot delete your own account.',
     'admin_accounts_require_super_admin' => 'Only a Super Admin can delete or (de)activate Admin accounts.',
-    'admin_role_requires_super_admin' => 'Only a Super Admin can grant or revoke the Admin role.',
 ];

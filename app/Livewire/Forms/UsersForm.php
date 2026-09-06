@@ -5,7 +5,6 @@ namespace App\Livewire\Forms;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class UsersForm extends Component
@@ -69,12 +68,6 @@ class UsersForm extends Component
 
         $this->validate();
 
-        if (! $this->isEditingSelf && $this->roleChangeGrantsOrRevokesAdmin() && ! auth()->user()?->is_super_admin) {
-            throw ValidationException::withMessages([
-                'userData.role_id' => trans('users.admin_role_requires_super_admin'),
-            ]);
-        }
-
         $isUpdate = $this->user->exists;
 
         $attributes = collect($this->userData)->except(['password', 'password_confirmation', 'role_id'])->all();
@@ -97,17 +90,6 @@ class UsersForm extends Component
         }
 
         return $this->flashSavedAndRedirect($isUpdate, 'users.index');
-    }
-
-    private function roleChangeGrantsOrRevokesAdmin(): bool
-    {
-        $newRoleId = filled($this->userData['role_id'] ?? null) ? (int) $this->userData['role_id'] : null;
-        $adminRoleId = Role::where('name', 'Admin')->value('id');
-
-        $isCurrentlyAdmin = $this->user->exists && $this->user->hasRole('Admin');
-        $willBeAdmin = $adminRoleId !== null && $newRoleId === $adminRoleId;
-
-        return $isCurrentlyAdmin !== $willBeAdmin;
     }
 
     public function render()
