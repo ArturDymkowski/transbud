@@ -1,7 +1,15 @@
 
 @php
     use App\Helpers\MenuHelper;
+    use Illuminate\Support\Str;
+
     $menuGroups = MenuHelper::getMenuGroups();
+    $currentPath = request()->path();
+    $isSubItemActive = function (array $subItem) use ($currentPath) {
+        $path = ltrim((string) parse_url($subItem['path'], PHP_URL_PATH), '/');
+
+        return $currentPath === $path || Str::startsWith($currentPath, $path.'/');
+    };
 @endphp
 
 <aside id="sidebar"
@@ -11,7 +19,7 @@
             @foreach ($menuGroups as $groupIndex => $menuGroup)
                 @foreach ($menuGroup['items'] as $itemIndex => $item)
                     @if (isset($item['subItems']))
-                        '{{ $groupIndex }}-{{ $itemIndex }}': true,
+                        '{{ $groupIndex }}-{{ $itemIndex }}': {{ collect($item['subItems'])->contains($isSubItemActive) ? 'true' : 'false' }},
                     @endif
                 @endforeach
             @endforeach

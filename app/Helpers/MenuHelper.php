@@ -31,6 +31,41 @@ class MenuHelper
                 'path' => route('drivers.index'),
             ],
             [
+                'name' => __('labels.menu.dictionaries'),
+                'subItems' => [
+                    [
+                        'permission' => 'vehicles.view',
+                        'icon' => 'heroicon-o-truck',
+                        'name' => __('vehicles.plural_model_label'),
+                        'path' => route('vehicles.index'),
+                    ],
+                    [
+                        'permission' => 'contractors.view',
+                        'icon' => 'heroicon-o-building-office',
+                        'name' => __('contractors.plural_model_label'),
+                        'path' => route('contractors.index'),
+                    ],
+                    [
+                        'permission' => 'contractor-addresses.view',
+                        'icon' => 'heroicon-o-book-open',
+                        'name' => __('address_book.plural_model_label'),
+                        'path' => route('contractor-addresses.index'),
+                    ],
+                    [
+                        'permission' => 'goods.view',
+                        'icon' => 'heroicon-o-cube',
+                        'name' => __('goods.plural_model_label'),
+                        'path' => route('goods.index'),
+                    ],
+                    [
+                        'permission' => 'units.view',
+                        'icon' => 'heroicon-o-scale',
+                        'name' => __('units.plural_model_label'),
+                        'path' => route('units.index'),
+                    ],
+                ],
+            ],
+            [
                 'name' => __('labels.menu.access'),
                 'subItems' => [
                     [
@@ -64,41 +99,6 @@ class MenuHelper
                         'icon' => 'heroicon-o-clock',
                         'name' => __('activity_log.plural_model_label'),
                         'path' => route('activity-log.index'),
-                    ],
-                ],
-            ],
-            [
-                'name' => __('labels.menu.dictionaries'),
-                'subItems' => [
-                    [
-                        'permission' => 'vehicles.view',
-                        'icon' => 'heroicon-o-truck',
-                        'name' => __('vehicles.plural_model_label'),
-                        'path' => route('vehicles.index'),
-                    ],
-                    [
-                        'permission' => 'contractors.view',
-                        'icon' => 'heroicon-o-building-office',
-                        'name' => __('contractors.plural_model_label'),
-                        'path' => route('contractors.index'),
-                    ],
-                    [
-                        'permission' => 'contractor-addresses.view',
-                        'icon' => 'heroicon-o-book-open',
-                        'name' => __('address_book.plural_model_label'),
-                        'path' => route('contractor-addresses.index'),
-                    ],
-                    [
-                        'permission' => 'goods.view',
-                        'icon' => 'heroicon-o-cube',
-                        'name' => __('goods.plural_model_label'),
-                        'path' => route('goods.index'),
-                    ],
-                    [
-                        'permission' => 'units.view',
-                        'icon' => 'heroicon-o-scale',
-                        'name' => __('units.plural_model_label'),
-                        'path' => route('units.index'),
                     ],
                 ],
             ],
