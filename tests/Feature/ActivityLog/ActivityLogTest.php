@@ -85,17 +85,62 @@ test('the activity log table lists entries and supports the resource and event f
     $superAdmin = User::factory()->create(['is_super_admin' => true]);
     $this->actingAs($superAdmin);
 
-    $driver = Driver::factory()->create(['name' => 'Jan Kowalski']);
+    $driver = Driver::factory()->create();
     $role = Role::create(['name' => 'Dispatcher']);
 
+    $driverRow = 'activity-log-row-'.Activity::query()->forSubject($driver)->sole()->id;
+    $roleRow = 'activity-log-row-'.Activity::query()->forSubject($role)->sole()->id;
+
     Livewire::test(ActivityLogTable::class)
-        ->assertSee('Jan Kowalski')
-        ->assertSee('Dispatcher')
+        ->assertSee($driverRow, false)
+        ->assertSee($roleRow, false)
         ->set('logName', 'drivers')
-        ->assertSee('Jan Kowalski')
-        ->assertDontSee('Dispatcher')
+        ->assertSee($driverRow, false)
+        ->assertDontSee($roleRow, false)
         ->set('logName', '')
         ->set('event', 'updated')
-        ->assertDontSee('Jan Kowalski')
-        ->assertDontSee('Dispatcher');
+        ->assertDontSee($driverRow, false)
+        ->assertDontSee($roleRow, false);
+});
+
+test('the activity log show page renders the causer, element and change diff', function () {
+    $admin = actingAsAdmin();
+
+    $driver = Driver::factory()->create(['name' => 'Jan Kowalski']);
+    $driver->update(['name' => 'Jan Nowak']);
+
+    $updated = Activity::query()->forSubject($driver)->forEvent('updated')->sole();
+
+    $superAdmin = User::factory()->create(['is_super_admin' => true]);
+    $this->actingAs($superAdmin)
+        ->get(route('activity-log.show', $updated))
+        ->assertOk()
+        ->assertSee($admin->name)
+        ->assertSee(__('activity_log.resources.drivers').' #'.$driver->id)
+        ->assertSee('Jan Nowak')
+        ->assertSee('Jan Kowalski');
+});
+
+test('the element shown for a subject is always {resource} #id, never the record name', function () {
+    $superAdmin = User::factory()->create(['is_super_admin' => true]);
+    $this->actingAs($superAdmin);
+
+    $driver = Driver::factory()->create(['name' => 'Jan Kowalski']);
+    $created = Activity::query()->forSubject($driver)->forEvent('created')->sole();
+
+    Livewire::test(ActivityLogTable::class)
+        ->assertSee(__('activity_log.resources.drivers').' #'.$driver->id)
+        ->assertDontSee('Jan Kowalski');
+
+    $this->get(route('activity-log.show', $created))
+        ->assertSee(__('activity_log.resources.drivers').' #'.$driver->id, false);
+});
+
+test('a regular user, even an Admin, is forbidden from the activity log show page', function () {
+    actingAsAdmin();
+
+    $role = Role::create(['name' => 'Dispatcher']);
+    $activity = Activity::query()->forSubject($role)->forEvent('created')->sole();
+
+    $this->get(route('activity-log.show', $activity))->assertForbidden();
 });

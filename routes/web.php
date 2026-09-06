@@ -112,4 +112,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/activity-log', [ActivityLogController::class, 'index'])
         ->middleware('super-admin')
         ->name('activity-log.index');
+
+    Route::get('/activity-log/{activity}', [ActivityLogController::class, 'show'])
+        ->middleware('super-admin')
+        ->name('activity-log.show');
 });
