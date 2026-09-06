@@ -1,0 +1,35 @@
+<?php
+
+return [
+    'plural_model_label' => 'Activities',
+    'singular_model_label' => 'Activity',
+    'resource' => 'Resource',
+    'event' => 'Event',
+    'subject' => 'Subject',
+    'causer' => 'By',
+    'changes' => 'Changes',
+    'no_changes' => 'No change details',
+    'created_at' => 'Date',
+    'system' => 'System',
+    'search_placeholder' => 'Search by user...',
+    'events' => [
+        'created' => 'Created',
+        'updated' => 'Updated',
+        'deleted' => 'Deleted',
+        'restored' => 'Restored',
+    ],
+    'resources' => [
+        'deliveries' => 'Deliveries',
+        'delivery-costs' => 'Delivery costs',
+        'delivery-transport-sets' => 'Transport sets',
+        'drivers' => 'Drivers',
+        'vehicles' => 'Vehicles',
+        'contractors' => 'Contractors',
+        'contractor-addresses' => 'Contractor addresses',
+        'goods' => 'Goods',
+        'units' => 'Units',
+        'users' => 'Users',
+        'roles' => 'Roles',
+        'permissions' => 'Permissions',
+    ],
+];

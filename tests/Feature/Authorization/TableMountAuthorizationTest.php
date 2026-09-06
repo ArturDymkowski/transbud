@@ -14,13 +14,13 @@ use App\Livewire\Tables\UsersTable;
 use App\Livewire\Tables\VehiclesTable;
 use App\Models\Contractor;
 use App\Models\Good;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Vehicle;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     $this->seed([PermissionSeeder::class, RoleSeeder::class]);

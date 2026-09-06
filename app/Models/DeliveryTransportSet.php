@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DeliveryTransportSetStatusEnum;
+use App\Models\Concerns\HasActivityLog;
 use Database\Factories\DeliveryTransportSetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class DeliveryTransportSet extends Model
 {
     /** @use HasFactory<DeliveryTransportSetFactory> */
-    use HasFactory;
+    use HasActivityLog, HasFactory;
 
     protected $fillable = [
         'delivery_id',

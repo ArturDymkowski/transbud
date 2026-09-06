@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CurrencyEnum;
 use App\Enums\DeliveryStatusEnum;
+use App\Models\Concerns\HasActivityLog;
 use Database\Factories\DeliveryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Delivery extends Model implements HasMedia
 {
     /** @use HasFactory<DeliveryFactory> */
-    use HasFactory, InteractsWithMedia, SoftDeletes;
+    use HasActivityLog, HasFactory, InteractsWithMedia, SoftDeletes;
 
     public const MEDIA_DOCUMENTS = 'documents';
 

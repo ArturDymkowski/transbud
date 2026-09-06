@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
 
 /**
  * demo:reset is meant to run unattended on a cron — these tests pin down the two
@@ -99,6 +100,17 @@ test('uploaded driver documents are removed from disk and the database on reset'
 
     expect($driver->fresh()?->getFirstMedia(Driver::MEDIA_DRIVING_LICENSE_FRONT))->toBeNull();
     Storage::disk('driver_documents')->assertMissing($storedPath);
+});
+
+test('the activity log is wiped on reset', function () {
+    Artisan::call('db:seed', ['--force' => true]);
+
+    $driver = Driver::factory()->create();
+    expect(Activity::forSubject($driver)->exists())->toBeTrue();
+
+    Artisan::call('demo:reset', ['--force' => true]);
+
+    expect(Activity::count())->toBe(0);
 });
 
 test('demo:reset asks for confirmation interactively unless --force is passed', function () {

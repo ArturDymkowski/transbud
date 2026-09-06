@@ -1,8 +1,8 @@
 <?php
 
 use App\Livewire\Forms\PermissionsForm;
+use App\Models\Permission;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
     actingAsAdmin();

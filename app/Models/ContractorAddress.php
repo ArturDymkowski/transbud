@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CountriesEnum;
+use App\Models\Concerns\HasActivityLog;
 use App\Models\Concerns\HasFullAddress;
 use Database\Factories\ContractorAddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ContractorAddress extends Model
 {
     /** @use HasFactory<ContractorAddressFactory> */
-    use HasFactory, HasFullAddress, SoftDeletes;
+    use HasActivityLog, HasFactory, HasFullAddress, SoftDeletes;
 
     protected $fillable = [
         'contractor_id',

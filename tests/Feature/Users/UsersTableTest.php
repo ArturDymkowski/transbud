@@ -1,9 +1,9 @@
 <?php
 
 use App\Livewire\Tables\UsersTable;
+use App\Models\Role;
 use App\Models\User;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();

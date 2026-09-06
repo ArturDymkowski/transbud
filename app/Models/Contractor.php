@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasActivityLog;
 use Database\Factories\ContractorFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Contractor extends Model
 {
     /** @use HasFactory<ContractorFactory> */
-    use HasFactory, SoftDeletes;
+    use HasActivityLog, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'active',

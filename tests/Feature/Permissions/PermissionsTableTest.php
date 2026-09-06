@@ -1,10 +1,10 @@
 <?php
 
 use App\Livewire\Tables\PermissionsTable;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();

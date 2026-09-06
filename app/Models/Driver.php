@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CountriesEnum;
 use App\Enums\VehicleTypeEnum;
+use App\Models\Concerns\HasActivityLog;
 use App\Models\Concerns\HasFullAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Driver extends Model implements HasMedia
 {
-    use HasFactory, HasFullAddress, InteractsWithMedia, SoftDeletes;
+    use HasActivityLog, HasFactory, HasFullAddress, InteractsWithMedia, SoftDeletes;
 
     public const MEDIA_DRIVING_LICENSE_FRONT = 'driving_license_front';
 

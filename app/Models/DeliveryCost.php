@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\CurrencyEnum;
 use App\Enums\DeliveryCostTypeEnum;
+use App\Models\Concerns\HasActivityLog;
 use Database\Factories\DeliveryCostFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DeliveryCost extends Model
 {
     /** @use HasFactory<DeliveryCostFactory> */
-    use HasFactory;
+    use HasActivityLog, HasFactory;
 
     protected $fillable = [
         'delivery_id',

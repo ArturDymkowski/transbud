@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\VehicleTypeEnum;
+use App\Models\Concerns\HasActivityLog;
 use Database\Factories\VehicleFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Vehicle extends Model
 {
     /** @use HasFactory<VehicleFactory> */
-    use HasFactory, SoftDeletes;
+    use HasActivityLog, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'registration_number',

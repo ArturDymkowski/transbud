@@ -13,6 +13,7 @@ use App\Models\ContractorAddress;
 use App\Models\Delivery;
 use App\Models\Driver;
 use App\Models\Good;
+use App\Models\Role;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -20,7 +21,6 @@ use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Role;
 
 /**
  * The seeded "User" role is view-only everywhere (see RoleSeeder) — exactly the

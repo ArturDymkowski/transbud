@@ -1,9 +1,9 @@
 <?php
 
 use App\Livewire\Forms\RolesForm;
+use App\Models\Permission;
+use App\Models\Role;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();

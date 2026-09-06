@@ -3,8 +3,8 @@
 namespace App\Livewire\Forms;
 
 use App\Livewire\Concerns\WithSavedRedirect;
+use App\Models\Permission;
 use Livewire\Component;
-use Spatie\Permission\Models\Permission;
 
 class PermissionsForm extends Component
 {

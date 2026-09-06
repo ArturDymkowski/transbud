@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\Page\ActivityLogController;
 use App\Http\Controllers\Page\ContractorAddressController;
 use App\Http\Controllers\Page\ContractorController;
 use App\Http\Controllers\Page\DeliveryController;
@@ -107,4 +108,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/login-audit-log', [LoginAuditLogController::class, 'index'])
         ->middleware('super-admin')
         ->name('login-audit-log.index');
+
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])
+        ->middleware('super-admin')
+        ->name('activity-log.index');
 });

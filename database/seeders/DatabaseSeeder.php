@@ -11,17 +11,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            PermissionSeeder::class,
-            RoleSeeder::class,
-            UserSeeder::class,
-            DriverSeeder::class,
-            VehicleSeeder::class,
-            ContractorSeeder::class,
-            ContractorAddressSeeder::class,
-            UnitSeeder::class,
-            GoodSeeder::class,
-            DeliverySeeder::class,
-        ]);
+        activity()->withoutLogging(function () {
+            $this->call([
+                PermissionSeeder::class,
+                RoleSeeder::class,
+                UserSeeder::class,
+                DriverSeeder::class,
+                VehicleSeeder::class,
+                ContractorSeeder::class,
+                ContractorAddressSeeder::class,
+                UnitSeeder::class,
+                GoodSeeder::class,
+                DeliverySeeder::class,
+            ]);
+        });
     }
 }

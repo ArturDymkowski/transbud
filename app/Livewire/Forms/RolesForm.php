@@ -3,11 +3,11 @@
 namespace App\Livewire\Forms;
 
 use App\Livewire\Concerns\WithSavedRedirect;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 /**
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Permission> $allPermissions

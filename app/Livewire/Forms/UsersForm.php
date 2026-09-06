@@ -3,10 +3,10 @@
 namespace App\Livewire\Forms;
 
 use App\Livewire\Concerns\WithSavedRedirect;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
 
 class UsersForm extends Component
 {

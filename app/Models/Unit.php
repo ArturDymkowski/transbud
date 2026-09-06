@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasActivityLog;
 use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Unit extends Model
 {
     /** @use HasFactory<UnitFactory> */
-    use HasFactory, SoftDeletes;
+    use HasActivityLog, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',

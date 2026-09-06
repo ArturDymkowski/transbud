@@ -6,9 +6,9 @@ use App\Livewire\Concerns\WithBulkSelection;
 use App\Livewire\Concerns\WithFilters;
 use App\Livewire\Concerns\WithPerPage;
 use App\Livewire\Concerns\WithTableSorting;
+use App\Models\Permission;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Permission\Models\Permission;
 
 class PermissionsTable extends Component
 {

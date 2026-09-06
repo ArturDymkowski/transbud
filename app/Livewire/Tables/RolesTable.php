@@ -3,10 +3,10 @@
 namespace App\Livewire\Tables;
 
 use App\Livewire\Concerns\WithBulkSelection;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
 
 class RolesTable extends Component
 {

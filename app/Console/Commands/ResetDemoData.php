@@ -9,6 +9,7 @@ use Database\Seeders\DatabaseSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -36,6 +37,9 @@ class ResetDemoData extends Command
 
         $this->info('Clearing uploaded driver/delivery documents...');
         $this->clearDocuments();
+
+        $this->info('Clearing the activity log...');
+        DB::table('activity_log')->truncate();
 
         $this->info('Reseeding demo data...');
         Artisan::call('db:seed', ['--class' => DatabaseSeeder::class, '--force' => true]);

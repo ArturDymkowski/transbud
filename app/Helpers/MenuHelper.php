@@ -58,6 +58,13 @@ class MenuHelper
                         'name' => __('login_audit_log.plural_model_label'),
                         'path' => route('login-audit-log.index'),
                     ],
+                    [
+                        // Not a Spatie permission on purpose — see App\Http\Middleware\EnsureSuperAdmin.
+                        'superAdminOnly' => true,
+                        'icon' => 'heroicon-o-clock',
+                        'name' => __('activity_log.plural_model_label'),
+                        'path' => route('activity-log.index'),
+                    ],
                 ],
             ],
             [

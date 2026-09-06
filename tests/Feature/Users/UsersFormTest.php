@@ -1,10 +1,10 @@
 <?php
 
 use App\Livewire\Forms\UsersForm;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     actingAsAdmin();

@@ -1,0 +1,35 @@
+<?php
+
+return [
+    'plural_model_label' => 'Aktywności',
+    'singular_model_label' => 'Aktywność',
+    'resource' => 'Zasób',
+    'event' => 'Zdarzenie',
+    'subject' => 'Dotyczy',
+    'causer' => 'Kto',
+    'changes' => 'Zmiany',
+    'no_changes' => 'Brak szczegółów zmian',
+    'created_at' => 'Data',
+    'system' => 'System',
+    'search_placeholder' => 'Szukaj po użytkowniku...',
+    'events' => [
+        'created' => 'Utworzono',
+        'updated' => 'Zaktualizowano',
+        'deleted' => 'Usunięto',
+        'restored' => 'Przywrócono',
+    ],
+    'resources' => [
+        'deliveries' => 'Dostawy',
+        'delivery-costs' => 'Koszty dostaw',
+        'delivery-transport-sets' => 'Zestawy transportowe',
+        'drivers' => 'Kierowcy',
+        'vehicles' => 'Pojazdy',
+        'contractors' => 'Kontrahenci',
+        'contractor-addresses' => 'Adresy kontrahentów',
+        'goods' => 'Towary',
+        'units' => 'Jednostki',
+        'users' => 'Użytkownicy',
+        'roles' => 'Role',
+        'permissions' => 'Uprawnienia',
+    ],
+];
