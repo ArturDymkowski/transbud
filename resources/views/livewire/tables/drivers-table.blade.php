@@ -102,7 +102,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($drivers as $driver)
-                <tr wire:key="driver-row-{{ $driver->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                <x-tables.tr wire:key="driver-row-{{ $driver->id }}" :route="route('drivers.show', $driver->id)" :id="$driver->id">
                     @unless($readonly)
                         @if($canBulkDeleteDrivers)
                             <x-tables.td>
@@ -178,7 +178,7 @@
                             @endif
                         @endunless
                     </x-tables.td>
-                </tr>
+                </x-tables.tr>
             @endforeach
             </tbody>
         </table>

@@ -60,7 +60,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($users as $user)
-                <tr wire:key="user-row-{{ $user->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                <x-tables.tr wire:key="user-row-{{ $user->id }}" :route="route('users.show', $user->id)" :id="$user->id">
                     @can('users.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $user->id }}" value="{{ $user->id }}" x-model="selected" wire:key="checkbox-{{ $user->id }}"/>
@@ -109,7 +109,7 @@
                             @endcan
                         @endif
                     </x-tables.td>
-                </tr>
+                </x-tables.tr>
             @endforeach
             </tbody>
         </table>

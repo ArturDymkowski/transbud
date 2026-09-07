@@ -72,7 +72,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($units as $unit)
-                <tr wire:key="unit-row-{{ $unit->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                <x-tables.tr wire:key="unit-row-{{ $unit->id }}" :route="route('units.show', $unit->id)" :id="$unit->id">
                     @unless($readonly)
                         @if($canBulkDeleteUnits)
                             <x-tables.td>
@@ -137,7 +137,7 @@
                             @endif
                         @endunless
                     </x-tables.td>
-                </tr>
+                </x-tables.tr>
             @endforeach
             </tbody>
         </table>

@@ -38,7 +38,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @forelse($logs as $log)
-                <tr wire:key="login-audit-log-row-{{ $log->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                <x-tables.tr wire:key="login-audit-log-row-{{ $log->id }}">
                     <x-tables.td label="ID">{{ $log->id }}</x-tables.td>
                     <x-tables.td :label="__('login_audit_log.email')">{{ $log->email }}</x-tables.td>
                     <x-tables.td :label="__('login_audit_log.status')">
@@ -58,7 +58,7 @@
                             -
                         @endif
                     </x-tables.td>
-                </tr>
+                </x-tables.tr>
             @empty
                 <tr class="max-md:block">
                     <td colspan="7" class="max-md:block px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">

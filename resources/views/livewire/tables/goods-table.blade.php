@@ -55,7 +55,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @foreach($goods as $good)
-                <tr wire:key="good-row-{{ $good->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                <x-tables.tr wire:key="good-row-{{ $good->id }}" :route="route('goods.show', $good->id)" :id="$good->id">
                     @can('goods.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $good->id }}" value="{{ $good->id }}" x-model="selected" wire:key="checkbox-{{ $good->id }}"/>
@@ -104,7 +104,7 @@
                             @endcan
                         @endif
                     </x-tables.td>
-                </tr>
+                </x-tables.tr>
             @endforeach
             </tbody>
         </table>

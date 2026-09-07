@@ -28,7 +28,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @forelse($roles as $role)
-                <tr wire:key="role-row-{{ $role->id }}" class="max-md:block max-md:space-y-3 max-md:rounded-xl max-md:border max-md:border-gray-200 max-md:p-4 max-md:divide-y max-md:divide-gray-100 dark:max-md:border-gray-700 dark:max-md:divide-gray-800">
+                <x-tables.tr wire:key="role-row-{{ $role->id }}" :id="$role->id">
                     @can('roles.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $role->id }}" value="{{ $role->id }}" x-model="selected" wire:key="checkbox-{{ $role->id }}"/>
@@ -48,7 +48,7 @@
                             />
                         @endcan
                     </x-tables.td>
-                </tr>
+                </x-tables.tr>
             @empty
                 <tr class="max-md:block">
                     <td colspan="5" class="max-md:block px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
