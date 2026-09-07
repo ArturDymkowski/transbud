@@ -53,8 +53,8 @@ test('disposable demo users, including already soft-deleted ones, are gone after
     // reseeded row coincidentally landing on the same id.
     expect(User::withTrashed()->where('email', $junkUser->email)->exists())->toBeFalse()
         ->and(User::withTrashed()->where('email', $trashedUser->email)->exists())->toBeFalse()
-        // the seeded admin@admin.com demo account must still be there, freshly recreated
-        ->and(User::where('email', 'admin@admin.com')->exists())->toBeTrue();
+        // the seeded admin@transbud.com demo account must still be there, freshly recreated
+        ->and(User::where('email', 'admin@transbud.com')->exists())->toBeTrue();
 });
 
 test('demo domain data is wiped and reseeded back to a consistent count', function () {

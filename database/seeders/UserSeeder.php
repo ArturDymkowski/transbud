@@ -23,15 +23,22 @@ class UserSeeder extends Seeder
 
         $admin = User::factory()->create([
             'name' => 'Admin',
-            'email' => 'admin@admin.com',
+            'email' => 'admin@transbud.com',
             'password' => Hash::make('admin'),
             'is_active' => 1,
             'created_at' => now(),
         ]);
         $admin->assignRole('Admin');
 
-        User::factory()->count(3)->create()->each(function (User $user) {
+        foreach (range(1, 3) as $i) {
+            $user = User::factory()->create([
+                'name' => "user{$i}",
+                'email' => "user{$i}@transbud.com",
+                'password' => Hash::make('password'),
+                'is_active' => 1,
+                'created_at' => now(),
+            ]);
             $user->assignRole('User');
-        });
+        }
     }
 }
