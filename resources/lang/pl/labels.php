@@ -34,12 +34,6 @@ return [
         'sign_out' => 'Wyloguj się',
     ],
 
-    'sidebar_widget' => [
-        'title' => '#1 Panel na Tailwind CSS',
-        'description' => 'Wiodący szablon panelu administracyjnego Tailwind CSS z ponad 500 komponentami i stronami UI.',
-        'purchase_plan' => 'Kup plan',
-    ],
-
     'languages' => [
         'pl' => 'Polski',
         'en' => 'Angielski',

@@ -34,12 +34,6 @@ return [
         'sign_out' => 'Sign out',
     ],
 
-    'sidebar_widget' => [
-        'title' => '#1 Tailwind CSS Dashboard',
-        'description' => 'Leading Tailwind CSS Admin Template with 500+ UI Component and Pages.',
-        'purchase_plan' => 'Purchase Plan',
-    ],
-
     'languages' => [
         'pl' => 'Polish',
         'en' => 'English',
