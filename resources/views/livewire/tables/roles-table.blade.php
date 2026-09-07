@@ -28,7 +28,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @forelse($roles as $role)
-                <x-tables.tr wire:key="role-row-{{ $role->id }}" :id="$role->id">
+                <x-tables.tr wire:key="role-row-{{ $role->id }}" :route="auth()->user()->can('roles.edit') ? route('roles.edit', $role->id) : null" :id="$role->id">
                     @can('roles.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $role->id }}" value="{{ $role->id }}" x-model="selected" wire:key="checkbox-{{ $role->id }}"/>

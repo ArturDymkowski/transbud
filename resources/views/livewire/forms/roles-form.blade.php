@@ -2,6 +2,7 @@
     $resourceLabels = [
         'drivers' => __('drivers.plural_model_label'),
         'vehicles' => __('vehicles.plural_model_label'),
+        'deliveries' => __('deliveries.plural_model_label'),
         'contractors' => __('contractors.plural_model_label'),
         'contractor-addresses' => __('address_book.plural_model_label'),
         'goods' => __('goods.plural_model_label'),

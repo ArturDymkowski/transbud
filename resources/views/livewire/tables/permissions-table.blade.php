@@ -43,7 +43,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 max-md:block max-md:divide-y-0 max-md:space-y-4">
             @forelse($permissions as $permission)
-                <x-tables.tr wire:key="permission-row-{{ $permission->id }}" :id="$permission->id">
+                <x-tables.tr wire:key="permission-row-{{ $permission->id }}" :route="auth()->user()->can('permissions.edit') ? route('permissions.edit', $permission->id) : null" :id="$permission->id">
                     @can('permissions.delete')
                         <x-tables.td>
                             <x-form.input.checkbox name="check_{{ $permission->id }}" value="{{ $permission->id }}" x-model="selected" wire:key="checkbox-{{ $permission->id }}"/>
