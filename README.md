@@ -63,7 +63,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Skonfiguruj połączenie z bazą danych w pliku `.env` (domyślnie MySQL, baza `tailadmin_laravel`),
+Skonfiguruj połączenie z bazą danych w pliku `.env` (domyślnie MySQL, baza `transbud`),
 a następnie:
 
 ```bash

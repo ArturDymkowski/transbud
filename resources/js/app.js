@@ -125,6 +125,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 height: 'auto',
                 dayMaxEvents: 4,
+                eventDisplay: 'block',
                 editable: true,
                 eventDurationEditable: false,
                 events: (info, successCallback, failureCallback) => {

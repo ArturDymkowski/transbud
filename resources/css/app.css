@@ -612,6 +612,12 @@ span.flatpickr-weekday,
 .fc-daygrid-event.fc-event-start {
   @apply !ml-3;
 }
+.fc-daygrid-block-event .fc-event-time {
+  @apply shrink-0;
+}
+.fc-daygrid-block-event .fc-event-title {
+  @apply overflow-hidden text-ellipsis;
+}
 .event-fc-color.fc-bg-success {
   @apply border-success-50 bg-success-50;
 }
