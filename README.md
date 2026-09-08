@@ -1,3 +1,9 @@
+## Wersja demonstracyjna
+
+Aplikacja działa pod adresem: [http://92.5.165.189/login](http://92.5.165.189/login)
+
+Hosting: Oracle Cloud Free Tier.
+
 # Transbud
 
 Transbud to wewnętrzny system do zarządzania firmą transportową (spedycyjno-przewozową).
