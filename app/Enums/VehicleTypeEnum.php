@@ -2,7 +2,6 @@
 
 namespace App\Enums;
 
-
 enum VehicleTypeEnum: int
 {
     case TRACTOR = 0;

@@ -174,7 +174,6 @@ test('forceDeleteAddress nulls the delivery reference instead of deleting the de
     $this->assertDatabaseHas('deliveries', ['id' => $delivery->id, 'contractor_address_id' => null]);
 });
 
-
 test('toggleActive flips the is_active flag', function () {
     $address = ContractorAddress::factory()->create(['is_active' => true]);
 

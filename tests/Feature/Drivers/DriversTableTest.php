@@ -132,7 +132,6 @@ test('forceDeleteDriver nulls the transport set reference instead of deleting th
     $this->assertDatabaseHas('delivery_transport_sets', ['id' => $transportSet->id, 'driver_id' => null]);
 });
 
-
 test('date range filters show a labeled badge above the table', function () {
     $component = Livewire::test(DriversTable::class)
         ->set('drivingLicenseExpiryDateFrom', '2026-01-01')

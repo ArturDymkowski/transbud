@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 class PageBreadcrumb extends Component
 {
     public string $pageTitle;
+
     public array $breadcrumbs;
 
     /**

@@ -5,6 +5,7 @@ namespace App\Livewire\Concerns;
 trait WithBulkSelection
 {
     public array $selected = [];
+
     public array $idsOnPage = [];
 
     protected function deleteSelectedRecords(string $modelClass): void

@@ -134,4 +134,3 @@ test('forceDeleteGood nulls the delivery goods reference instead of deleting the
     $this->assertDatabaseHas('deliveries', ['id' => $delivery->id]);
     $this->assertDatabaseHas('delivery_goods', ['id' => $deliveryGood->id, 'good_id' => null]);
 });
-

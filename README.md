@@ -28,7 +28,7 @@ akcji (tworzenie rekordów, wgrywanie plików) ma nałożone limity opisane w se
 
 ## Technologie
 
-- **PHP 8.3+**, **Laravel 13**
+- **PHP 8.4+**, **Laravel 13**
 - **Livewire 4** — interaktywne komponenty (tabele, formularze, widoki szczegółów) bez pisania własnego API/JS
 - **Spatie Laravel Permission** — role i uprawnienia (`can:zasob.akcja`)
 - **Spatie Laravel MediaLibrary** — załączniki (dokumenty kierowców, załączniki do dostaw) na prywatnych dyskach
@@ -42,7 +42,7 @@ akcji (tworzenie rekordów, wgrywanie plików) ma nałożone limity opisane w se
 
 ## Wymagania
 
-- PHP 8.3 lub nowszy wraz z rozszerzeniami wymaganymi przez Laravel/Composer (m.in. `pdo`,
+- PHP 8.4 lub nowszy wraz z rozszerzeniami wymaganymi przez Laravel/Composer (m.in. `pdo`,
   `mbstring`, `fileinfo`, `gd`/`imagick` — do miniatur w bibliotece mediów)
 - Composer 2.x
 - Node.js 20+ oraz npm

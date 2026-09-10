@@ -8,7 +8,7 @@ return [
         'tractor' => 'Tractor',
         'trailer' => 'Trailer',
     ],
-    'registration_number' => "Registration number",
+    'registration_number' => 'Registration number',
     'vin' => 'VIN',
     'technical_inspection_expiry_date' => 'Technical inspection expiry date',
     'insurance_expiry_date' => 'Insurance expiry date',

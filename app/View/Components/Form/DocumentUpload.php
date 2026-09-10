@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\View\Components\Form;
 
 use Illuminate\View\Component;
@@ -12,11 +11,9 @@ class DocumentUpload extends Component
     public function __construct(
         public string $field,
         public string $label,
-        public mixed  $file = null,
-        public ?array   $existingMediaId = null,
-    )
-    {
-    }
+        public mixed $file = null,
+        public ?array $existingMediaId = null,
+    ) {}
 
     public function hasPendingFile(): bool
     {
@@ -25,7 +22,7 @@ class DocumentUpload extends Component
 
     public function hasExistingMedia(): bool
     {
-        return !$this->hasPendingFile() && $this->existingMediaId !== null;
+        return ! $this->hasPendingFile() && $this->existingMediaId !== null;
     }
 
     public function render(): View

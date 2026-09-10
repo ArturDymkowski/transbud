@@ -19,6 +19,7 @@
     @elseif($type == 'password')
         <div x-data="{ showPassword: false }" class="relative">
             <input {{ $attributes }} name="{{ $name }}" id="{{ $name }}" :type="showPassword ? 'text' : 'password'"
+                   value="{{ old($name, $value) }}"
                    placeholder="{{ $placeholder }}"
                    @class([
                         'dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border bg-transparent py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:text-white/90 dark:placeholder:text-white/30',

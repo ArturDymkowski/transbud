@@ -17,5 +17,5 @@ return [
     'document_front' => 'Dokument przód',
     'document_back' => 'Dokument tył',
     'assigned_vehicles' => 'Przypisane pojazdy',
-    'create_title' => 'Utwórz kierowcę'
+    'create_title' => 'Utwórz kierowcę',
 ];

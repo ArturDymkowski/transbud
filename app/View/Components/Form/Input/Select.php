@@ -17,8 +17,7 @@ class Select extends Component
         public ?string $label = null,
         public ?string $default = null,
         public ?bool $required = false,
-    )
-    {
+    ) {
         //
     }
 

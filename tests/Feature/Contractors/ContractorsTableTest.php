@@ -124,4 +124,3 @@ test('forceDeleteContractor nulls the delivery reference instead of deleting the
     $this->assertDatabaseMissing('contractors', ['id' => $contractor->id]);
     $this->assertDatabaseHas('deliveries', ['id' => $delivery->id, 'contractor_id' => null]);
 });
-

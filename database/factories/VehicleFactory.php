@@ -20,16 +20,16 @@ class VehicleFactory extends Factory
         $expiryDate = fn () => $this->faker->boolean(50)
             ? (
 
-            $this->faker->boolean(80)
-                ? $this->faker->dateTimeBetween('now', '+3 years')->format('Y-m-d')
-                : $this->faker->dateTimeBetween('-3 years', 'yesterday')->format('Y-m-d')
+                $this->faker->boolean(80)
+                    ? $this->faker->dateTimeBetween('now', '+3 years')->format('Y-m-d')
+                    : $this->faker->dateTimeBetween('-3 years', 'yesterday')->format('Y-m-d')
             )
             : null;
 
         return [
             'registration_number' => strtoupper($this->faker->bothify('?? #####')),
             'vin' => strtoupper($this->faker->bothify('#################')),
-            'type' => $this->faker->numberBetween(0,1),
+            'type' => $this->faker->numberBetween(0, 1),
 
             'technical_inspection_expiry_date' => $expiryDate(),
             'insurance_expiry_date' => $expiryDate(),

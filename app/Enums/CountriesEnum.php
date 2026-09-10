@@ -16,7 +16,7 @@ enum CountriesEnum: int
 
     public function label(): string
     {
-        return __('countries.' . $this->name);
+        return __('countries.'.$this->name);
     }
 
     public static function getOptions(): array

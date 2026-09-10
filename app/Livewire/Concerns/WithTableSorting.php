@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Livewire\Concerns;
+
 trait WithTableSorting
 {
     public string $sortField = 'id';
+
     public string $sortDirection = 'desc';
 
     public function sortBy(string $field): void

@@ -16,8 +16,7 @@ class FileInput extends Component
         public ?bool $required = false,
         public ?string $label = null,
         public string $accept = 'image/jpeg,image/png,image/webp,application/pdf',
-    )
-    {
+    ) {
         //
     }
 
