@@ -35,7 +35,7 @@ class DeliverySeeder extends Seeder
     use WithDeliveryStatusComputation;
 
     /** Deliveries created per month (current + previous), a random count in this range each. */
-    private const DELIVERIES_PER_MONTH = [12, 16];
+    private const DELIVERIES_PER_MONTH = [6, 8];
 
     private const TRANSPORT_SETS_PER_DELIVERY = [1, 3];
 
