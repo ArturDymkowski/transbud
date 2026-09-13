@@ -29,7 +29,7 @@ akcji (tworzenie rekordów, wgrywanie plików) ma nałożone limity opisane w se
 ## Technologie
 
 - **PHP 8.4+**, **Laravel 13**
-- **Livewire 4** — interaktywne komponenty (tabele, formularze, widoki szczegółów) bez pisania własnego API/JS
+- **Livewire 4** — interaktywne komponenty (tabele, formularze, widoki szczegółów)
 - **Spatie Laravel Permission** — role i uprawnienia (`can:zasob.akcja`)
 - **Spatie Laravel MediaLibrary** — załączniki (dokumenty kierowców, załączniki do dostaw) na prywatnych dyskach
 - **Spatie Laravel Activitylog** — dziennik aktywności (kto, co i kiedy zmienił)
