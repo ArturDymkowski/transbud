@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Tables\UsersTable;
 use App\Models\Role;
 use App\Models\User;
@@ -109,7 +110,7 @@ test('deleteSelected soft deletes all selected users', function () {
 function actingAsSuperAdmin(): User
 {
     $superAdmin = User::factory()->create(['is_super_admin' => true]);
-    $superAdmin->assignRole('Admin');
+    $superAdmin->assignRole(RoleEnum::ADMIN->value);
     test()->actingAs($superAdmin);
 
     return $superAdmin;
@@ -124,9 +125,9 @@ test('toggleActive refuses to deactivate your own account, even as a Super Admin
 });
 
 test('toggleActive refuses to deactivate another Admin when done by a plain Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail(); // the admin from beforeEach's actingAsAdmin()
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail(); // the admin from beforeEach's actingAsAdmin()
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     Livewire::test(UsersTable::class)->call('toggleActive', $targetAdmin->id);
@@ -135,7 +136,7 @@ test('toggleActive refuses to deactivate another Admin when done by a plain Admi
 });
 
 test('toggleActive allows a Super Admin to deactivate another Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     actingAsSuperAdmin();
 
     Livewire::test(UsersTable::class)->call('toggleActive', $targetAdmin->id);
@@ -152,9 +153,9 @@ test('deleteUser refuses to delete your own account, even as a Super Admin', fun
 });
 
 test('deleteUser refuses to delete another Admin when done by a plain Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     Livewire::test(UsersTable::class)->call('deleteUser', $targetAdmin->id);
@@ -163,7 +164,7 @@ test('deleteUser refuses to delete another Admin when done by a plain Admin', fu
 });
 
 test('deleteUser allows a Super Admin to delete another Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     actingAsSuperAdmin();
 
     Livewire::test(UsersTable::class)->call('deleteUser', $targetAdmin->id);
@@ -192,10 +193,10 @@ test('deleteSelected refuses a selection that includes your own account', functi
 });
 
 test('deleteSelected refuses a selection containing an Admin when done by a plain Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     $regularUser = User::factory()->create();
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     Livewire::test(UsersTable::class)
@@ -207,7 +208,7 @@ test('deleteSelected refuses a selection containing an Admin when done by a plai
 });
 
 test('deleteSelected allows a Super Admin to delete a selection containing an Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     actingAsSuperAdmin();
 
     Livewire::test(UsersTable::class)
@@ -228,11 +229,11 @@ test('restoreUser restores a soft deleted regular user', function () {
 
 test('restoreUser refuses to restore a soft deleted Admin when done by a plain Admin', function () {
     $targetAdmin = User::factory()->create();
-    $targetAdmin->assignRole('Admin');
+    $targetAdmin->assignRole(RoleEnum::ADMIN->value);
     $targetAdmin->delete();
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     Livewire::test(UsersTable::class)->call('restoreUser', $targetAdmin->id);
@@ -242,7 +243,7 @@ test('restoreUser refuses to restore a soft deleted Admin when done by a plain A
 
 test('restoreUser allows a Super Admin to restore a soft deleted Admin', function () {
     $targetAdmin = User::factory()->create();
-    $targetAdmin->assignRole('Admin');
+    $targetAdmin->assignRole(RoleEnum::ADMIN->value);
     $targetAdmin->delete();
 
     actingAsSuperAdmin();
@@ -271,11 +272,11 @@ test('forceDeleteUser refuses to delete your own account, even as a Super Admin'
 });
 
 test('forceDeleteUser refuses to delete another Admin when done by a plain Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     $targetAdmin->delete();
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     Livewire::test(UsersTable::class)->call('forceDeleteUser', $targetAdmin->id);
@@ -284,7 +285,7 @@ test('forceDeleteUser refuses to delete another Admin when done by a plain Admin
 });
 
 test('forceDeleteUser allows a Super Admin to permanently delete another Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     $targetAdmin->delete();
 
     actingAsSuperAdmin();

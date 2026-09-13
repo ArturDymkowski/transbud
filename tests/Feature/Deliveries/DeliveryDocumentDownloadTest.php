@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Models\Delivery;
 use App\Models\Driver;
 use App\Models\User;
@@ -49,7 +50,7 @@ test('user with deliveries.view permission can download an existing delivery doc
     $media = $delivery->getFirstMedia(Delivery::MEDIA_DOCUMENTS);
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
 
     $this->actingAs($user)
         ->get(route('delivery-documents.show', $media))
@@ -81,7 +82,7 @@ test('media belonging to a different model type cannot be downloaded as a delive
     $media = makeDeliveryMediaFor(Driver::factory()->create());
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
 
     $this->actingAs($user)
         ->get(route('delivery-documents.show', $media))

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -64,7 +65,7 @@ function actingAsAdmin(): User
     test()->seed([PermissionSeeder::class, RoleSeeder::class]);
 
     $user = User::factory()->create();
-    $user->assignRole('Admin');
+    $user->assignRole(RoleEnum::ADMIN->value);
 
     test()->actingAs($user);
 

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,7 @@ class UserSeeder extends Seeder
             'is_active' => 1,
             'created_at' => now(),
         ]);
-        $admin->assignRole('Admin');
+        $admin->assignRole(RoleEnum::ADMIN->value);
 
         foreach (range(1, 3) as $i) {
             $user = User::factory()->create([
@@ -37,7 +38,7 @@ class UserSeeder extends Seeder
                 'is_active' => 1,
                 'created_at' => now(),
             ]);
-            $user->assignRole('User');
+            $user->assignRole(RoleEnum::USER->value);
         }
     }
 }

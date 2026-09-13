@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Profile\ProfileOverview;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,7 @@ test('profile page shows the authenticated user own data', function () {
         ->assertOk()
         ->assertSee('Jan Kowalski')
         ->assertSee('jan.kowalski@example.com')
-        ->assertSee('Admin');
+        ->assertSee(RoleEnum::ADMIN->value);
 });
 
 test('a user can update their own name and email', function () {

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RoleEnum;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
@@ -19,10 +20,10 @@ class RoleSeeder extends Seeder
         DB::table('roles')->truncate();
         Schema::enableForeignKeyConstraints();
 
-        $admin = Role::create(['name' => 'Admin']);
+        $admin = Role::create(['name' => RoleEnum::ADMIN->value]);
         $admin->syncPermissions(Permission::all());
 
-        $user = Role::create(['name' => 'User']);
+        $user = Role::create(['name' => RoleEnum::USER->value]);
         $user->syncPermissions(
             Permission::whereIn('name', [
                 'drivers.view',

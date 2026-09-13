@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Tables\RolesTable;
 use App\Models\Permission;
 use App\Models\Role;
@@ -17,7 +18,7 @@ test('guest is redirected from the roles list', function () {
 });
 
 test('roles index page lists seeded roles', function () {
-    $this->get(route('roles.index'))->assertOk()->assertSee('Admin')->assertSee('User');
+    $this->get(route('roles.index'))->assertOk()->assertSee(RoleEnum::ADMIN->value)->assertSee(RoleEnum::USER->value);
 });
 
 test('deleteRole removes a role that has no users assigned', function () {
@@ -85,7 +86,7 @@ test('bulk selection is hidden without roles.delete and shown with it', function
     // calls too, so the "shows it" branch needs an explicit admin actor again —
     // it can't just fall back to beforeEach's actingAsAdmin().
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(RolesTable::class)
         ->assertSee('name="selectAll"', false)
         ->assertSee('checkbox-'.$role->id, false)
@@ -93,7 +94,7 @@ test('bulk selection is hidden without roles.delete and shown with it', function
 });
 
 test('a plain Admin still sees an edit link for the Admin role, opening it as read-only', function () {
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     $html = Livewire::test(RolesTable::class)->html();
 

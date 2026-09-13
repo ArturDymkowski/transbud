@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\RoleEnum;
 use App\Models\Delivery;
 use App\Models\Driver;
 use App\Models\User;
@@ -85,7 +86,7 @@ class ResetDemoData extends Command
     private function restoreSuperAdminRoles(): void
     {
         User::where('is_super_admin', true)->get()->each(
-            fn (User $user) => $user->syncRoles(['Admin'])
+            fn (User $user) => $user->syncRoles([RoleEnum::ADMIN->value])
         );
     }
 }

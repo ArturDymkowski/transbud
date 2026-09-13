@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Forms\UsersForm;
 use App\Models\Role;
 use App\Models\User;
@@ -147,7 +148,7 @@ test('a role can be assigned to a user on create', function () {
 });
 
 test('a plain Admin can create a new user with the Admin role', function () {
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     Livewire::test(UsersForm::class)
         ->set(validUserPayload())
@@ -156,7 +157,7 @@ test('a plain Admin can create a new user with the Admin role', function () {
         ->assertRedirect(route('users.index'));
 
     $user = User::where('email', 'jan.kowalski@example.com')->first();
-    expect($user->hasRole('Admin'))->toBeTrue();
+    expect($user->hasRole(RoleEnum::ADMIN->value))->toBeTrue();
 });
 
 test('a role can be assigned when its id arrives as a string, as the select input sends it', function () {
@@ -216,7 +217,7 @@ test('a user editing their own account cannot change their own role, even with u
     $roleB = Role::create(['name' => 'Accountant']);
 
     $self = User::factory()->create()->fresh();
-    $self->assignRole('Admin');
+    $self->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($self);
 
     Livewire::test(UsersForm::class, ['user' => $self])
@@ -225,7 +226,7 @@ test('a user editing their own account cannot change their own role, even with u
         ->call('save')
         ->assertRedirect(route('users.index'));
 
-    expect($self->refresh()->roles->pluck('name')->all())->toBe(['Admin']);
+    expect($self->refresh()->roles->pluck('name')->all())->toBe([RoleEnum::ADMIN->value]);
 });
 
 /**
@@ -243,7 +244,7 @@ function roleSelectTag(string $html): string
 
 test('the role field is disabled in the form when editing your own account', function () {
     $self = User::factory()->create()->fresh();
-    $self->assignRole('Admin');
+    $self->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($self);
 
     $html = Livewire::test(UsersForm::class, ['user' => $self])->html();
@@ -264,10 +265,10 @@ test('the role field is not disabled when editing a different account', function
 });
 
 test('a plain Admin cannot change another Admin\'s role', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     $dispatcherRole = Role::create(['name' => 'Dispatcher']);
@@ -278,14 +279,14 @@ test('a plain Admin cannot change another Admin\'s role', function () {
         ->assertHasNoErrors('userData.role_id')
         ->assertRedirect(route('users.index'));
 
-    expect($targetAdmin->refresh()->hasRole('Admin'))->toBeTrue();
+    expect($targetAdmin->refresh()->hasRole(RoleEnum::ADMIN->value))->toBeTrue();
 });
 
 test('the role field is read-only when a plain Admin edits another Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     $html = Livewire::test(UsersForm::class, ['user' => $targetAdmin])->html();
@@ -295,7 +296,7 @@ test('the role field is read-only when a plain Admin edits another Admin', funct
 
 test('a plain Admin can promote another user to the Admin role', function () {
     $regularUser = User::factory()->create();
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     Livewire::test(UsersForm::class, ['user' => $regularUser])
         ->set('userData.role_id', $adminRole->id)
@@ -303,14 +304,14 @@ test('a plain Admin can promote another user to the Admin role', function () {
         ->assertHasNoErrors('userData.role_id')
         ->assertRedirect(route('users.index'));
 
-    expect($regularUser->refresh()->hasRole('Admin'))->toBeTrue();
+    expect($regularUser->refresh()->hasRole(RoleEnum::ADMIN->value))->toBeTrue();
 });
 
 test('a Super Admin can demote another Admin away from the Admin role', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
 
     $superAdmin = User::factory()->create(['is_super_admin' => true]);
-    $superAdmin->assignRole('Admin');
+    $superAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($superAdmin);
 
     $dispatcherRole = Role::create(['name' => 'Dispatcher']);
@@ -326,10 +327,10 @@ test('a Super Admin can demote another Admin away from the Admin role', function
 
 test('a Super Admin can promote another user to the Admin role', function () {
     $regularUser = User::factory()->create();
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     $superAdmin = User::factory()->create(['is_super_admin' => true]);
-    $superAdmin->assignRole('Admin');
+    $superAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($superAdmin);
 
     Livewire::test(UsersForm::class, ['user' => $regularUser])
@@ -338,7 +339,7 @@ test('a Super Admin can promote another user to the Admin role', function () {
         ->assertHasNoErrors('userData.role_id')
         ->assertRedirect(route('users.index'));
 
-    expect($regularUser->refresh()->hasRole('Admin'))->toBeTrue();
+    expect($regularUser->refresh()->hasRole(RoleEnum::ADMIN->value))->toBeTrue();
 });
 
 test('a plain Admin can still assign a non-Admin role to a regular user', function () {
@@ -369,10 +370,10 @@ function emailInputTag(string $html): string
 }
 
 test('the name and email fields are read-only when a plain Admin edits another Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     $html = Livewire::test(UsersForm::class, ['user' => $targetAdmin])->html();
@@ -382,12 +383,12 @@ test('the name and email fields are read-only when a plain Admin edits another A
 });
 
 test('a plain Admin cannot change another Admin\'s name or email, even if submitted directly', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
     $originalName = $targetAdmin->name;
     $originalEmail = $targetAdmin->email;
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     Livewire::test(UsersForm::class, ['user' => $targetAdmin])
@@ -401,7 +402,7 @@ test('a plain Admin cannot change another Admin\'s name or email, even if submit
 });
 
 test('the name and email fields are not read-only when a Super Admin edits another Admin', function () {
-    $targetAdmin = User::role('Admin')->firstOrFail();
+    $targetAdmin = User::role(RoleEnum::ADMIN->value)->firstOrFail();
 
     $superAdmin = User::factory()->create(['is_super_admin' => true]);
     $this->actingAs($superAdmin);
@@ -416,7 +417,7 @@ test('the name and email fields are not read-only when a plain Admin edits a non
     $regularUser = User::factory()->create();
 
     $plainAdmin = User::factory()->create();
-    $plainAdmin->assignRole('Admin');
+    $plainAdmin->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($plainAdmin);
 
     $html = Livewire::test(UsersForm::class, ['user' => $regularUser])->html();
@@ -427,7 +428,7 @@ test('the name and email fields are not read-only when a plain Admin edits a non
 
 test('an Admin editing their own name and email is not blocked, even though they hold the Admin role', function () {
     $self = User::factory()->create()->fresh();
-    $self->assignRole('Admin');
+    $self->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($self);
 
     $html = Livewire::test(UsersForm::class, ['user' => $self])->html();

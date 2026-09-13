@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -45,12 +46,12 @@ test('editing a role permission set via syncPermissions takes effect immediately
 
 test('assigning a different role to a user takes effect immediately, without manual cache clearing', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
 
     expect($user->can('drivers.view'))->toBeTrue()
         ->and($user->can('users.view'))->toBeFalse();
 
-    $user->syncRoles(['Admin']);
+    $user->syncRoles([RoleEnum::ADMIN->value]);
 
     $user = $user->fresh();
     expect($user->can('users.view'))->toBeTrue();

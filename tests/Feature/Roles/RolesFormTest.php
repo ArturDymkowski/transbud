@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Forms\RolesForm;
 use App\Models\Permission;
 use App\Models\Role;
@@ -89,7 +90,7 @@ test('editing a role keeps its own name valid despite the uniqueness rule', func
 });
 
 test('a plain Admin can open the Admin role, but only as a read-only view', function () {
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     Livewire::test(RolesForm::class, ['role' => $adminRole])
         ->assertOk()
@@ -97,10 +98,10 @@ test('a plain Admin can open the Admin role, but only as a read-only view', func
 });
 
 test('a plain Admin cannot submit changes to the Admin role', function () {
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     Livewire::test(RolesForm::class, ['role' => $adminRole])
-        ->set('roleData.name', 'Admin')
+        ->set('roleData.name', RoleEnum::ADMIN->value)
         ->call('save')
         ->assertForbidden();
 });
@@ -119,7 +120,7 @@ function roleNameInputTag(string $html): string
 }
 
 test('the Admin role form fields are disabled for a plain Admin', function () {
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
 
     $html = Livewire::test(RolesForm::class, ['role' => $adminRole])->html();
 
@@ -136,10 +137,10 @@ test('a Dispatcher role form is not read-only', function () {
 
 test('a Super Admin can open and edit the Admin role', function () {
     $superAdmin = User::factory()->create(['is_super_admin' => true]);
-    $superAdmin->assignRole('Admin');
+    $superAdmin->assignRole(RoleEnum::ADMIN->value);
     test()->actingAs($superAdmin);
 
-    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+    $adminRole = Role::where('name', RoleEnum::ADMIN->value)->firstOrFail();
     $vehiclesView = Permission::where('name', 'vehicles.view')->first();
 
     Livewire::test(RolesForm::class, ['role' => $adminRole])

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Tables\PermissionsTable;
 use App\Models\Permission;
 use App\Models\Role;
@@ -79,7 +80,7 @@ test('bulk selection is hidden without permissions.delete and shown with it', fu
     // calls too, so the "shows it" branch needs an explicit admin actor again —
     // it can't just fall back to beforeEach's actingAsAdmin().
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(PermissionsTable::class)
         ->assertSee('name="selectAll"', false)
         ->assertSee('checkbox-'.$permission->id, false)

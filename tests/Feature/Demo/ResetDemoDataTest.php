@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Models\Delivery;
 use App\Models\Driver;
 use App\Models\LoginAuditLog;
@@ -36,7 +37,7 @@ test('an is_super_admin account survives a reset with its Admin role restored', 
     $owner->refresh();
     expect($owner->exists)->toBeTrue()
         ->and($owner->is_super_admin)->toBeTrue()
-        ->and($owner->hasRole('Admin'))->toBeTrue();
+        ->and($owner->hasRole(RoleEnum::ADMIN->value))->toBeTrue();
 });
 
 test('disposable demo users, including already soft-deleted ones, are gone after a reset', function () {

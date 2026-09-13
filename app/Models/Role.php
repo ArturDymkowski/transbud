@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleEnum;
 use App\Models\Concerns\HasActivityLog;
 use Spatie\Permission\Models\Role as SpatieRole;
 
@@ -16,6 +17,6 @@ class Role extends SpatieRole
 
     public function isAdminRole(): bool
     {
-        return $this->name === 'Admin';
+        return $this->name === RoleEnum::ADMIN->value;
     }
 }

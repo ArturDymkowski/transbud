@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Tables\ContractorAddressesTable;
 use App\Livewire\Tables\ContractorsTable;
 use App\Livewire\Tables\DeliveriesTable;
@@ -53,14 +54,14 @@ test('contractors table hides edit/delete for a view-only role and shows them fo
     $contractor = Contractor::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $component = Livewire::actingAs($user)->test(ContractorsTable::class)
         ->assertDontSee(route('contractors.edit', $contractor->id), false)
         ->assertDontSee('deleteContractor('.$contractor->id.')', false);
     assertToggleDisabled($component, $contractor->id, true);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(ContractorsTable::class)
         ->assertSee(route('contractors.edit', $contractor->id), false)
         ->assertSee('deleteContractor('.$contractor->id.')', false);
@@ -71,14 +72,14 @@ test('vehicles table hides edit/delete for a view-only role and shows them for A
     $vehicle = Vehicle::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $component = Livewire::actingAs($user)->test(VehiclesTable::class)
         ->assertDontSee(route('vehicles.edit', $vehicle->id), false)
         ->assertDontSee('deleteVehicle('.$vehicle->id.')', false);
     assertToggleDisabled($component, $vehicle->id, true);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(VehiclesTable::class)
         ->assertSee(route('vehicles.edit', $vehicle->id), false)
         ->assertSee('deleteVehicle('.$vehicle->id.')', false);
@@ -89,14 +90,14 @@ test('goods table hides edit/delete for a view-only role and shows them for Admi
     $good = Good::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $component = Livewire::actingAs($user)->test(GoodsTable::class)
         ->assertDontSee(route('goods.edit', $good->id), false)
         ->assertDontSee('deleteGood('.$good->id.')', false);
     assertToggleDisabled($component, $good->id, true);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(GoodsTable::class)
         ->assertSee(route('goods.edit', $good->id), false)
         ->assertSee('deleteGood('.$good->id.')', false);
@@ -107,11 +108,11 @@ test('users table is forbidden for a view-only role (no users.view at all) and w
     $target = User::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(UsersTable::class)
         ->assertSee(route('users.edit', $target->id), false)
         ->assertSee('deleteUser('.$target->id.')', false);
@@ -122,13 +123,13 @@ test('deliveries table hides edit/delete for a view-only role and shows them for
     $delivery = Delivery::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(DeliveriesTable::class)
         ->assertDontSee(route('deliveries.edit', $delivery->id), false)
         ->assertDontSee('deleteDelivery('.$delivery->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(DeliveriesTable::class)
         ->assertSee(route('deliveries.edit', $delivery->id), false)
         ->assertSee('deleteDelivery('.$delivery->id.')', false);
@@ -138,14 +139,14 @@ test('contractor addresses table hides edit/delete for a view-only role and show
     $address = ContractorAddress::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $component = Livewire::actingAs($user)->test(ContractorAddressesTable::class)
         ->assertDontSee(route('contractor-addresses.edit', $address->id), false)
         ->assertDontSee('deleteAddress('.$address->id.')', false);
     assertToggleDisabled($component, $address->id, true);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(ContractorAddressesTable::class)
         ->assertSee(route('contractor-addresses.edit', $address->id), false)
         ->assertSee('deleteAddress('.$address->id.')', false);
@@ -156,14 +157,14 @@ test('drivers table hides edit/delete for a view-only role and shows them for Ad
     $driver = Driver::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $component = Livewire::actingAs($user)->test(DriversTable::class)
         ->assertDontSee(route('drivers.edit', $driver->id), false)
         ->assertDontSee('deleteDriver('.$driver->id.')', false);
     assertToggleDisabled($component, $driver->id, true);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(DriversTable::class)
         ->assertSee(route('drivers.edit', $driver->id), false)
         ->assertSee('deleteDriver('.$driver->id.')', false);
@@ -177,12 +178,12 @@ test('drivers table embedded in a vehicle only shows the unlink icon with vehicl
 
     // "User" role has vehicles.view but not vehicles.edit — sees the driver, not the unlink icon.
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(DriversTable::class, ['vehicle' => $vehicle])
         ->assertDontSee('deleteDriver('.$driver->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(DriversTable::class, ['vehicle' => $vehicle])
         ->assertSee('deleteDriver('.$driver->id.')', false);
 });
@@ -191,14 +192,14 @@ test('units table hides edit/delete for a view-only role and shows them for Admi
     $unit = Unit::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $component = Livewire::actingAs($user)->test(UnitsTable::class)
         ->assertDontSee(route('units.edit', $unit->id), false)
         ->assertDontSee('deleteUnit('.$unit->id.')', false);
     assertToggleDisabled($component, $unit->id, true);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     $component = Livewire::actingAs($admin)->test(UnitsTable::class)
         ->assertSee(route('units.edit', $unit->id), false)
         ->assertSee('deleteUnit('.$unit->id.')', false);
@@ -212,7 +213,7 @@ test('units table embedded in a good only shows the unlink icon with goods.edit'
 
     // "User" role has goods.view but not goods.edit — sees the unit, not the unlink icon.
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UnitsTable::class, ['good' => $good])
         ->assertDontSee('deleteUnit('.$unit->id.')', false);
 
@@ -229,13 +230,13 @@ test('contractors table hides restore for a view-only role and shows it for Admi
     $contractor->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(ContractorsTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreContractor('.$contractor->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(ContractorsTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreContractor('.$contractor->id.')', false);
@@ -246,13 +247,13 @@ test('vehicles table hides restore for a view-only role and shows it for Admin',
     $vehicle->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(VehiclesTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreVehicle('.$vehicle->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(VehiclesTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreVehicle('.$vehicle->id.')', false);
@@ -263,13 +264,13 @@ test('goods table hides restore for a view-only role and shows it for Admin', fu
     $good->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(GoodsTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreGood('.$good->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(GoodsTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreGood('.$good->id.')', false);
@@ -280,11 +281,11 @@ test('users table restore is forbidden for a view-only role (no users.view at al
     $target->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(UsersTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreUser('.$target->id.')', false);
@@ -295,13 +296,13 @@ test('contractor addresses table hides restore for a view-only role and shows it
     $address->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(ContractorAddressesTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreAddress('.$address->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(ContractorAddressesTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreAddress('.$address->id.')', false);
@@ -312,13 +313,13 @@ test('drivers table hides restore for a view-only role and shows it for Admin', 
     $driver->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(DriversTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreDriver('.$driver->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(DriversTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreDriver('.$driver->id.')', false);
@@ -329,13 +330,13 @@ test('units table hides restore for a view-only role and shows it for Admin', fu
     $unit->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UnitsTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreUnit('.$unit->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(UnitsTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreUnit('.$unit->id.')', false);
@@ -346,13 +347,13 @@ test('contractors table hides force delete for a view-only role and shows it for
     $contractor->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(ContractorsTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteContractor('.$contractor->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(ContractorsTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteContractor('.$contractor->id.')', false);
@@ -363,13 +364,13 @@ test('vehicles table hides force delete for a view-only role and shows it for Ad
     $vehicle->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(VehiclesTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteVehicle('.$vehicle->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(VehiclesTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteVehicle('.$vehicle->id.')', false);
@@ -380,13 +381,13 @@ test('goods table hides force delete for a view-only role and shows it for Admin
     $good->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(GoodsTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteGood('.$good->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(GoodsTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteGood('.$good->id.')', false);
@@ -397,11 +398,11 @@ test('users table force delete is forbidden for a view-only role (no users.view 
     $target->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(UsersTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteUser('.$target->id.')', false);
@@ -412,13 +413,13 @@ test('contractor addresses table hides force delete for a view-only role and sho
     $address->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(ContractorAddressesTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteAddress('.$address->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(ContractorAddressesTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteAddress('.$address->id.')', false);
@@ -429,13 +430,13 @@ test('drivers table hides force delete for a view-only role and shows it for Adm
     $driver->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(DriversTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteDriver('.$driver->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(DriversTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteDriver('.$driver->id.')', false);
@@ -446,13 +447,13 @@ test('units table hides force delete for a view-only role and shows it for Admin
     $unit->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UnitsTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteUnit('.$unit->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(UnitsTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteUnit('.$unit->id.')', false);
@@ -463,13 +464,13 @@ test('deliveries table hides restore for a view-only role and shows it for Admin
     $delivery->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(DeliveriesTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('restoreDelivery('.$delivery->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(DeliveriesTable::class)
         ->set('trashed', 'only')
         ->assertSee('restoreDelivery('.$delivery->id.')', false);
@@ -480,13 +481,13 @@ test('deliveries table hides force delete for a view-only role and shows it for 
     $delivery->delete();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(DeliveriesTable::class)
         ->set('trashed', 'only')
         ->assertDontSee('forceDeleteDelivery('.$delivery->id.')', false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     Livewire::actingAs($admin)->test(DeliveriesTable::class)
         ->set('trashed', 'only')
         ->assertSee('forceDeleteDelivery('.$delivery->id.')', false);
@@ -510,11 +511,11 @@ test('contractors table hides bulk selection for a view-only role and shows it f
     $contractor = Contractor::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(ContractorsTable::class), $contractor->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(ContractorsTable::class), $contractor->id, true);
 });
 
@@ -522,11 +523,11 @@ test('vehicles table hides bulk selection for a view-only role and shows it for 
     $vehicle = Vehicle::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(VehiclesTable::class), $vehicle->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(VehiclesTable::class), $vehicle->id, true);
 });
 
@@ -534,11 +535,11 @@ test('goods table hides bulk selection for a view-only role and shows it for Adm
     $good = Good::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(GoodsTable::class), $good->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(GoodsTable::class), $good->id, true);
 });
 
@@ -546,11 +547,11 @@ test('users table bulk selection is forbidden for a view-only role (no users.vie
     $target = User::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     Livewire::actingAs($user)->test(UsersTable::class)->assertForbidden();
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(UsersTable::class), $target->id, true);
 });
 
@@ -558,11 +559,11 @@ test('deliveries table hides bulk selection for a view-only role and shows it fo
     $delivery = Delivery::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(DeliveriesTable::class), $delivery->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(DeliveriesTable::class), $delivery->id, true);
 });
 
@@ -570,11 +571,11 @@ test('contractor addresses table hides bulk selection for a view-only role and s
     $address = ContractorAddress::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(ContractorAddressesTable::class), $address->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(ContractorAddressesTable::class), $address->id, true);
 });
 
@@ -582,11 +583,11 @@ test('drivers table hides bulk selection for a view-only role and shows it for A
     $driver = Driver::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(DriversTable::class), $driver->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(DriversTable::class), $driver->id, true);
 });
 
@@ -596,13 +597,13 @@ test('drivers table embedded in a vehicle gates bulk selection on vehicles.edit'
     $vehicle->drivers()->attach($driver);
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(
         Livewire::actingAs($user)->test(DriversTable::class, ['vehicle' => $vehicle]), $driver->id, false
     );
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(
         Livewire::actingAs($admin)->test(DriversTable::class, ['vehicle' => $vehicle]), $driver->id, true
     );
@@ -612,11 +613,11 @@ test('units table hides bulk selection for a view-only role and shows it for Adm
     $unit = Unit::factory()->create();
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(Livewire::actingAs($user)->test(UnitsTable::class), $unit->id, false);
 
     $admin = User::factory()->create();
-    $admin->assignRole('Admin');
+    $admin->assignRole(RoleEnum::ADMIN->value);
     assertBulkSelectionVisible(Livewire::actingAs($admin)->test(UnitsTable::class), $unit->id, true);
 });
 
@@ -626,7 +627,7 @@ test('units table embedded in a good gates bulk selection on goods.edit', functi
     $good->units()->attach($unit);
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     assertBulkSelectionVisible(
         Livewire::actingAs($user)->test(UnitsTable::class, ['good' => $good]), $unit->id, false
     );

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Concerns;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 
 /**
@@ -21,7 +22,7 @@ trait WithAdminProtection
 {
     protected function requiresSuperAdminToManage(User $user): bool
     {
-        return $user->hasRole('Admin') && ! auth()->user()?->is_super_admin;
+        return $user->hasRole(RoleEnum::ADMIN->value) && ! auth()->user()?->is_super_admin;
     }
 
     /**
@@ -33,6 +34,6 @@ trait WithAdminProtection
             return false;
         }
 
-        return User::role('Admin')->whereIn('id', $userIds)->exists();
+        return User::role(RoleEnum::ADMIN->value)->whereIn('id', $userIds)->exists();
     }
 }

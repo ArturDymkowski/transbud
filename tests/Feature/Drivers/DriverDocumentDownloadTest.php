@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Models\Driver;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
@@ -48,7 +49,7 @@ test('user with drivers.view permission can download an existing driver document
     $media = $driver->getFirstMedia(Driver::MEDIA_DRIVING_LICENSE_FRONT);
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
 
     $this->actingAs($user)
         ->get(route('driver-documents.show', $media))
@@ -80,7 +81,7 @@ test('media belonging to a different model type cannot be downloaded', function 
     $media = makeMediaFor(User::factory()->create());
 
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
 
     $this->actingAs($user)
         ->get(route('driver-documents.show', $media))

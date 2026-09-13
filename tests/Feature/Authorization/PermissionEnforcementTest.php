@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Livewire\Tables\DriversTable;
 use App\Models\Driver;
 use App\Models\User;
@@ -13,7 +14,7 @@ beforeEach(function () {
 
 test('a user with the User role can view drivers but not create them', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $this->actingAs($user);
 
     $this->get(route('drivers.index'))->assertOk();
@@ -22,7 +23,7 @@ test('a user with the User role can view drivers but not create them', function 
 
 test('a user with the User role cannot access user management', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $this->actingAs($user);
 
     $this->get(route('users.index'))->assertForbidden();
@@ -30,7 +31,7 @@ test('a user with the User role cannot access user management', function () {
 
 test('a user with the User role cannot access roles or permissions management', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $this->actingAs($user);
 
     $this->get(route('roles.index'))->assertForbidden();
@@ -39,7 +40,7 @@ test('a user with the User role cannot access roles or permissions management', 
 
 test('a user with the User role cannot delete a driver through the Livewire action', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $this->actingAs($user);
 
     $driver = Driver::factory()->create();
@@ -53,7 +54,7 @@ test('a user with the User role cannot delete a driver through the Livewire acti
 
 test('a user with the User role cannot restore a driver through the Livewire action', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $this->actingAs($user);
 
     $driver = Driver::factory()->create();
@@ -68,7 +69,7 @@ test('a user with the User role cannot restore a driver through the Livewire act
 
 test('a user with the User role cannot permanently delete a driver through the Livewire action', function () {
     $user = User::factory()->create();
-    $user->assignRole('User');
+    $user->assignRole(RoleEnum::USER->value);
     $this->actingAs($user);
 
     $driver = Driver::factory()->create();
@@ -90,7 +91,7 @@ test('a user with no role is forbidden everywhere', function () {
 
 test('the Admin role can access every management page', function () {
     $user = User::factory()->create();
-    $user->assignRole('Admin');
+    $user->assignRole(RoleEnum::ADMIN->value);
     $this->actingAs($user);
 
     $this->get(route('drivers.index'))->assertOk();
