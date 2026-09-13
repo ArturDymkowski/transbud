@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Concerns\WithAdminProtection;
 use App\Livewire\Concerns\WithSavedRedirect;
 use App\Models\Role;
 use App\Models\User;
@@ -9,13 +10,15 @@ use Livewire\Component;
 
 class UsersForm extends Component
 {
-    use WithSavedRedirect;
+    use WithAdminProtection, WithSavedRedirect;
 
     public array $userData = [];
 
     public ?User $user = null;
 
     public bool $isEditingSelf = false;
+
+    public bool $protectedAdminFieldsReadOnly = false;
 
     public function mount(?User $user = null)
     {
@@ -27,9 +30,17 @@ class UsersForm extends Component
 
         $this->isEditingSelf = $this->user->exists && $this->user->id === auth()->id();
 
+        $this->protectedAdminFieldsReadOnly = $this->user->exists
+            && ! $this->isEditingSelf
+            && $this->requiresSuperAdminToManage($this->user);
+
         $this->userData = $this->user->only(['name', 'email']);
-        $this->userData['password'] = '';
-        $this->userData['password_confirmation'] = '';
+
+        if (! $this->user->exists) {
+            $this->userData['password'] = '';
+            $this->userData['password_confirmation'] = '';
+        }
+
         $this->userData['role_id'] = $this->user->exists
             ? $this->user->roles()->value('roles.id')
             : null;
@@ -37,14 +48,17 @@ class UsersForm extends Component
 
     protected function rules(): array
     {
-        $passwordRule = $this->user->exists ? 'nullable' : 'required';
-
-        return [
+        $rules = [
             'userData.name' => 'required|string|max:255',
             'userData.email' => 'required|email|max:255|unique:users,email,'.($this->user->id ?? 'NULL'),
-            'userData.password' => $passwordRule.'|string|min:8|confirmed',
             'userData.role_id' => 'nullable|exists:roles,id',
         ];
+
+        if (! $this->user->exists) {
+            $rules['userData.password'] = 'required|string|min:8|confirmed';
+        }
+
+        return $rules;
     }
 
     protected function validationAttributes(): array
@@ -72,8 +86,13 @@ class UsersForm extends Component
 
         $attributes = collect($this->userData)->except(['password', 'password_confirmation', 'role_id'])->all();
 
-        if (filled($this->userData['password'])) {
+        if (! $isUpdate) {
             $attributes['password'] = $this->userData['password'];
+        }
+
+        if ($this->protectedAdminFieldsReadOnly) {
+            $attributes['name'] = $this->user->name;
+            $attributes['email'] = $this->user->email;
         }
 
         if ($isUpdate) {
@@ -83,7 +102,7 @@ class UsersForm extends Component
             $this->user->save();
         }
 
-        if (! $this->isEditingSelf) {
+        if (! $this->isEditingSelf && ! $this->protectedAdminFieldsReadOnly) {
             $this->user->syncRoles(array_filter([
                 filled($this->userData['role_id'] ?? null) ? (int) $this->userData['role_id'] : null,
             ]));

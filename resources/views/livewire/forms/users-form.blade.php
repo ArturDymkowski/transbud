@@ -9,6 +9,7 @@
                 <x-form.input.text-input name="userData.name"
                                          label="{{ __('users.name') }}"
                                          required="true"
+                                         :disabled="$protectedAdminFieldsReadOnly"
                                          wire:model="userData.name"
                 />
             </div>
@@ -17,6 +18,7 @@
                 <x-form.input.text-input name="userData.email"
                                          label="{{ __('users.email') }}"
                                          required="true"
+                                         :disabled="$protectedAdminFieldsReadOnly"
                                          wire:model="userData.email"
                 />
             </div>
@@ -24,28 +26,29 @@
         </div>
     </x-form.section>
 
-    <!-- Sekcja: Hasło -->
-    <x-form.section title="{{ __('users.password_section') }}">
-        <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
+    @unless($user->exists)
+        <!-- Sekcja: Hasło -->
+        <x-form.section title="{{ __('users.password_section') }}">
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3">
 
-            <div class="col-span-1">
-                <x-form.input.text-input type="password" name="userData.password"
-                                         label="{{ __('users.password') }}"
-                                         :required="! $user->exists"
-                                         placeholder="{{ $user->exists ? __('users.password_keep_hint') : '' }}"
-                                         wire:model="userData.password"
-                />
+                <div class="col-span-1">
+                    <x-form.input.text-input type="password" name="userData.password"
+                                             label="{{ __('users.password') }}"
+                                             required="true"
+                                             wire:model="userData.password"
+                    />
+                </div>
+
+                <div class="col-span-1">
+                    <x-form.input.text-input type="password" name="userData.password_confirmation"
+                                             label="{{ __('users.password_confirmation') }}"
+                                             wire:model="userData.password_confirmation"
+                    />
+                </div>
+
             </div>
-
-            <div class="col-span-1">
-                <x-form.input.text-input type="password" name="userData.password_confirmation"
-                                         label="{{ __('users.password_confirmation') }}"
-                                         wire:model="userData.password_confirmation"
-                />
-            </div>
-
-        </div>
-    </x-form.section>
+        </x-form.section>
+    @endunless
 
     <!-- Sekcja: Rola -->
     <x-form.section title="{{ __('users.role_section') }}">
@@ -56,7 +59,7 @@
                                      label="{{ __('users.role') }}"
                                      wire:model="userData.role_id"
                                      :options="$this->roleOptions"
-                                     :disabled="$isEditingSelf"/>
+                                     :disabled="$isEditingSelf || $protectedAdminFieldsReadOnly"/>
                 @if($isEditingSelf)
                     <p class="mt-1.5 text-xs text-gray-400">{{ __('users.cannot_change_own_role') }}</p>
                 @endif

@@ -49,6 +49,15 @@
                                                      wire:model="deliveryData.loading_address"
                             />
                         </div>
+
+                        <div class="col-span-1">
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                {{ __('deliveries.status.status') }}
+                            </label>
+                            <x-ui.status-badge :color="\App\Enums\DeliveryStatusEnum::from($deliveryStatus)->color()">
+                                {{ \App\Enums\DeliveryStatusEnum::from($deliveryStatus)->label() }}
+                            </x-ui.status-badge>
+                        </div>
                     </div>
                 </div>
 

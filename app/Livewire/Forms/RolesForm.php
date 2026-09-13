@@ -23,9 +23,13 @@ class RolesForm extends Component
 
     public ?Role $role = null;
 
+    public bool $isReadOnly = false;
+
     public function mount(?Role $role = null): void
     {
         $this->role = ($role && $role->exists) ? $role : new Role;
+
+        $this->isReadOnly = $this->role->exists && $this->role->isAdminRole() && ! auth()->user()?->is_super_admin;
 
         $this->roleData['name'] = $this->role->name ?? '';
 
@@ -63,6 +67,7 @@ class RolesForm extends Component
     public function save()
     {
         $this->authorize($this->role->exists ? 'roles.edit' : 'roles.create');
+        abort_if($this->isReadOnly, 403);
 
         $this->validate();
 

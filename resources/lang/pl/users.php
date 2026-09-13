@@ -8,7 +8,6 @@ return [
     'password' => 'Hasło',
     'password_confirmation' => 'Powtórz hasło',
     'password_section' => 'Hasło',
-    'password_keep_hint' => 'Pozostaw puste, aby nie zmieniać hasła',
     'basic_info' => 'Informacje podstawowe',
     'role' => 'Rola',
     'role_section' => 'Rola',

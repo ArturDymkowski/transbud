@@ -101,8 +101,18 @@ test('an existing user can be edited without changing the password', function ()
     expect(session('success'))->toBe(trans('labels.general.updated_success'));
 });
 
-test('an existing user password can be changed', function () {
+test('the password field is only present on the create form', function () {
+    $createHtml = Livewire::test(UsersForm::class)->html();
+    expect($createHtml)->toContain('userData.password');
+
     $user = User::factory()->create()->fresh();
+    $editHtml = Livewire::test(UsersForm::class, ['user' => $user])->html();
+    expect($editHtml)->not->toContain('userData.password');
+});
+
+test('a password sent to an existing user is ignored, since the edit form has no password field', function () {
+    $user = User::factory()->create(['password' => Hash::make('original-password')])->fresh();
+    $originalHash = $user->password;
 
     Livewire::test(UsersForm::class, ['user' => $user])
         ->set('userData.password', 'newpassword123')
@@ -110,7 +120,7 @@ test('an existing user password can be changed', function () {
         ->call('save')
         ->assertRedirect(route('users.index'));
 
-    expect(Hash::check('newpassword123', $user->refresh()->password))->toBeTrue();
+    expect($user->refresh()->password)->toBe($originalHash);
 });
 
 test('editing a user keeps its own email valid despite the uniqueness rule', function () {
@@ -253,7 +263,7 @@ test('the role field is not disabled when editing a different account', function
     expect($selectTag)->not->toContain('disabled');
 });
 
-test('a plain Admin can demote another Admin away from the Admin role', function () {
+test('a plain Admin cannot change another Admin\'s role', function () {
     $targetAdmin = User::role('Admin')->firstOrFail();
 
     $plainAdmin = User::factory()->create();
@@ -268,7 +278,19 @@ test('a plain Admin can demote another Admin away from the Admin role', function
         ->assertHasNoErrors('userData.role_id')
         ->assertRedirect(route('users.index'));
 
-    expect($targetAdmin->refresh()->hasRole('Dispatcher'))->toBeTrue();
+    expect($targetAdmin->refresh()->hasRole('Admin'))->toBeTrue();
+});
+
+test('the role field is read-only when a plain Admin edits another Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    $html = Livewire::test(UsersForm::class, ['user' => $targetAdmin])->html();
+
+    expect(roleSelectTag($html))->toContain('disabled');
 });
 
 test('a plain Admin can promote another user to the Admin role', function () {
@@ -330,4 +352,86 @@ test('a plain Admin can still assign a non-Admin role to a regular user', functi
         ->assertRedirect(route('users.index'));
 
     expect($regularUser->refresh()->hasRole('Dispatcher'))->toBeTrue();
+});
+
+function nameInputTag(string $html): string
+{
+    preg_match('/<input[^>]*id="userData\.name"[^>]*>/s', $html, $matches);
+
+    return $matches[0] ?? '';
+}
+
+function emailInputTag(string $html): string
+{
+    preg_match('/<input[^>]*id="userData\.email"[^>]*>/s', $html, $matches);
+
+    return $matches[0] ?? '';
+}
+
+test('the name and email fields are read-only when a plain Admin edits another Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    $html = Livewire::test(UsersForm::class, ['user' => $targetAdmin])->html();
+
+    expect(nameInputTag($html))->toContain('disabled');
+    expect(emailInputTag($html))->toContain('disabled');
+});
+
+test('a plain Admin cannot change another Admin\'s name or email, even if submitted directly', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+    $originalName = $targetAdmin->name;
+    $originalEmail = $targetAdmin->email;
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    Livewire::test(UsersForm::class, ['user' => $targetAdmin])
+        ->set('userData.name', 'Tampered name')
+        ->set('userData.email', 'tampered@example.com')
+        ->call('save')
+        ->assertRedirect(route('users.index'));
+
+    expect($targetAdmin->refresh()->name)->toBe($originalName);
+    expect($targetAdmin->refresh()->email)->toBe($originalEmail);
+});
+
+test('the name and email fields are not read-only when a Super Admin edits another Admin', function () {
+    $targetAdmin = User::role('Admin')->firstOrFail();
+
+    $superAdmin = User::factory()->create(['is_super_admin' => true]);
+    $this->actingAs($superAdmin);
+
+    $html = Livewire::test(UsersForm::class, ['user' => $targetAdmin])->html();
+
+    expect(nameInputTag($html))->not->toContain('disabled');
+    expect(emailInputTag($html))->not->toContain('disabled');
+});
+
+test('the name and email fields are not read-only when a plain Admin edits a non-Admin user', function () {
+    $regularUser = User::factory()->create();
+
+    $plainAdmin = User::factory()->create();
+    $plainAdmin->assignRole('Admin');
+    $this->actingAs($plainAdmin);
+
+    $html = Livewire::test(UsersForm::class, ['user' => $regularUser])->html();
+
+    expect(nameInputTag($html))->not->toContain('disabled');
+    expect(emailInputTag($html))->not->toContain('disabled');
+});
+
+test('an Admin editing their own name and email is not blocked, even though they hold the Admin role', function () {
+    $self = User::factory()->create()->fresh();
+    $self->assignRole('Admin');
+    $this->actingAs($self);
+
+    $html = Livewire::test(UsersForm::class, ['user' => $self])->html();
+
+    expect(nameInputTag($html))->not->toContain('disabled');
+    expect(emailInputTag($html))->not->toContain('disabled');
 });

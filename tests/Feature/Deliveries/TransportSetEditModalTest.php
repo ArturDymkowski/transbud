@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DeliveryStatusEnum;
 use App\Enums\DeliveryTransportSetStatusEnum;
 use App\Enums\VehicleTypeEnum;
 use App\Livewire\Modals\TransportSetEditModal;
@@ -41,6 +42,17 @@ test('the open-transport-set-modal event populates the modal with the transport 
         ->assertSet('transportSetId', $transportSet->id)
         ->assertSet('deliveryId', $delivery->id)
         ->assertSet('transportSetData.driver_id', $driver->id);
+});
+
+test('the modal shows the delivery status badge, like the show and edit pages do', function () {
+    $delivery = createDeliveryWithMatchingAddressForModal();
+    $delivery->update(['status' => DeliveryStatusEnum::IN_PROGRESS]);
+    $transportSet = DeliveryTransportSet::factory()->create(['delivery_id' => $delivery->id]);
+
+    Livewire::test(TransportSetEditModal::class)
+        ->dispatch('open-transport-set-modal', transportSetId: $transportSet->id)
+        ->assertSet('deliveryStatus', DeliveryStatusEnum::IN_PROGRESS->value)
+        ->assertSee(DeliveryStatusEnum::IN_PROGRESS->label());
 });
 
 test('saving updates the transport set and notifies the calendar and planner', function () {

@@ -45,7 +45,7 @@
         JS;
 @endphp
 
-<x-form.wrapper :cancelRoute="route('roles.index')" :x-data="$permissionCheckboxesScript">
+<x-form.wrapper :cancelRoute="route('roles.index')" :readOnly="$isReadOnly" :x-data="$permissionCheckboxesScript">
 
     <x-form.section title="{{ __('roles.basic_info') }}">
         <div class="flex flex-col gap-6 sm:flex-row sm:items-end">
@@ -53,16 +53,19 @@
                 <x-form.input.text-input name="roleData.name"
                                          label="{{ __('roles.name') }}"
                                          required="true"
+                                         :disabled="$isReadOnly"
                                          wire:model="roleData.name"
                 />
             </div>
 
-            <div class="flex items-center gap-3" @change="toggleAll()">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
-                    {{ __('roles.select_all_permissions') }}
-                </span>
-                <x-form.input.toggle name="selectAll" :isActive="$allChecked"/>
-            </div>
+            @unless($isReadOnly)
+                <div class="flex items-center gap-3" @change="toggleAll()">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                        {{ __('roles.select_all_permissions') }}
+                    </span>
+                    <x-form.input.toggle name="selectAll" :isActive="$allChecked"/>
+                </div>
+            @endunless
         </div>
     </x-form.section>
 
@@ -70,8 +73,8 @@
         <div class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($this->groupedPermissions as $resource => $permissions)
                 <div>
-                    <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300 cursor-pointer select-none hover:text-brand-500"
-                        @click="toggleGroup('{{ $resource }}')"
+                    <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300 {{ $isReadOnly ? '' : 'cursor-pointer hover:text-brand-500' }} select-none"
+                        @unless($isReadOnly) @click="toggleGroup('{{ $resource }}')" @endunless
                     >
                         {{ $resourceLabels[$resource] ?? $resource }}
                     </h3>
@@ -81,6 +84,7 @@
                             <x-form.input.checkbox name="permission_{{ $permission->id }}"
                                                     value="{{ $permission->id }}"
                                                     data-resource="{{ $resource }}"
+                                                    :disabled="$isReadOnly"
                                                     wire:model="selectedPermissions"
                                                     wire:key="permission-checkbox-{{ $permission->id }}"
                             >

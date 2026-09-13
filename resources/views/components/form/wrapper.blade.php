@@ -1,4 +1,4 @@
-@props(['cancelRoute'])
+@props(['cancelRoute', 'readOnly' => false])
 
 <form wire:submit="save" {{ $attributes }}>
 
@@ -8,6 +8,6 @@
         {{ $slot }}
     </div>
 
-    <x-form.actions :cancelRoute="$cancelRoute"/>
+    <x-form.actions :cancelRoute="$cancelRoute" :readOnly="$readOnly"/>
 
 </form>

@@ -36,6 +36,8 @@ class TransportSetEditModal extends Component
 
     public ?int $transportSetId = null;
 
+    public ?int $deliveryStatus = null;
+
     public array $deliveryData = [];
 
     public array $transportSetData = [];
@@ -49,6 +51,7 @@ class TransportSetEditModal extends Component
 
         $this->deliveryId = $transportSet->delivery_id;
         $this->transportSetId = $transportSet->id;
+        $this->deliveryStatus = $transportSet->delivery->status->value;
 
         $this->deliveryData = $transportSet->delivery->only([
             'number', 'contractor_id', 'contractor_address_id', 'loading_address',
@@ -76,7 +79,7 @@ class TransportSetEditModal extends Component
     public function closeModal(): void
     {
         $this->isOpen = false;
-        $this->reset('deliveryId', 'transportSetId', 'deliveryData', 'transportSetData');
+        $this->reset('deliveryId', 'transportSetId', 'deliveryStatus', 'deliveryData', 'transportSetData');
     }
 
     protected function rules(): array

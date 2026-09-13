@@ -8,7 +8,6 @@ return [
     'password' => 'Password',
     'password_confirmation' => 'Confirm password',
     'password_section' => 'Password',
-    'password_keep_hint' => 'Leave blank to keep the current password',
     'basic_info' => 'Basic information',
     'role' => 'Role',
     'role_section' => 'Role',

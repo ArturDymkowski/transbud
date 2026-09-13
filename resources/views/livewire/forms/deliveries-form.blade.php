@@ -82,6 +82,17 @@
                                          required="true"/>
                 </div>
 
+                @if($delivery->exists)
+                    <div class="col-span-1">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            {{ __('deliveries.status.status') }}
+                        </label>
+                        <x-ui.status-badge :color="$delivery->status->color()">
+                            {{ $delivery->status->label() }}
+                        </x-ui.status-badge>
+                    </div>
+                @endif
+
             </div>
         </x-form.section>
 

@@ -91,3 +91,11 @@ test('bulk selection is hidden without roles.delete and shown with it', function
         ->assertSee('checkbox-'.$role->id, false)
         ->assertSee('wire:click="deleteSelected"', false);
 });
+
+test('a plain Admin still sees an edit link for the Admin role, opening it as read-only', function () {
+    $adminRole = Role::where('name', 'Admin')->firstOrFail();
+
+    $html = Livewire::test(RolesTable::class)->html();
+
+    expect($html)->toContain(route('roles.edit', $adminRole->id));
+});
