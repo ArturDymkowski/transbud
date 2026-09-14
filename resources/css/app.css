@@ -648,6 +648,22 @@ span.flatpickr-weekday,
 .fc .fc-timegrid-axis-cushion {
   @apply text-sm font-medium text-gray-500 dark:text-gray-400;
 }
+.dark .fc {
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.03);
+  --fc-border-color: var(--color-gray-800);
+  --fc-list-event-hover-bg-color: rgba(255, 255, 255, 0.03);
+}
+.fc-list-day-cushion {
+  @apply text-sm font-medium text-gray-700 dark:text-gray-400;
+}
+.fc-list-event-time,
+.fc-list-event-title {
+  @apply text-sm text-gray-700 dark:text-gray-400;
+}
+.fc-list-empty {
+  @apply text-sm text-gray-500 dark:text-gray-400;
+}
 
 .input-date-icon::-webkit-inner-spin-button,
 .input-date-icon::-webkit-calendar-picker-indicator {

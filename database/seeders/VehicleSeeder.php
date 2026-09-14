@@ -27,14 +27,14 @@ class VehicleSeeder extends Seeder
         'tachograph_inspection_expiry_date',
     ];
 
-    private const TRACTOR_COUNT = 4;
+    private const TRACTOR_COUNT = 6;
 
-    private const TRAILER_COUNT = 3;
+    private const TRAILER_COUNT = 6;
 
     /**
      * Run the database seed.
      *
-     * 7 vehicles total (4 tractors + 3 trailers) - enough for DeliverySeeder to build
+     * 12 vehicles total (6 tractors + 6 trailers) - enough for DeliverySeeder to build
      * varied transport sets from, without an unrealistically large fleet.
      *
      * @return void
