@@ -47,6 +47,7 @@
 
                 <button type="button"
                         wire:click="removeDocument('{{ $field }}')"
+                        wire:confirm="{{ __('drivers.confirm_delete_document') }}"
                         wire:loading.attr="disabled"
                         class="flex h-6 w-6 items-center justify-center rounded-full bg-gray-900/70 text-white hover:bg-red-600 transition-colors"
                         title="{{ __('labels.general.delete_document') }}">

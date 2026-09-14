@@ -4,6 +4,7 @@ return [
     'singular_model_label' => 'Kierowca',
     'plural_model_label' => 'Kierowcy',
     'confirm_delete_driver' => 'Czy na pewno chcesz usunąć kierowcę?',
+    'confirm_delete_document' => 'Czy na pewno chcesz usunąć ten dokument?',
     'name' => 'Nazwa',
     'phone' => 'Telefon',
     'pesel' => 'PESEL',

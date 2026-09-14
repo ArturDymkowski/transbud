@@ -4,6 +4,7 @@ return [
     'singular_model_label' => 'Driver',
     'plural_model_label' => 'Drivers',
     'confirm_delete_driver' => 'Are you sure you want to delete the driver?',
+    'confirm_delete_document' => 'Are you sure you want to delete this document?',
     'name' => 'Name',
     'phone' => 'Phone',
     'pesel' => 'PESEL',
