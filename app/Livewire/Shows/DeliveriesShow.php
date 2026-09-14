@@ -18,6 +18,7 @@ class DeliveriesShow extends Component
             'transportSets.driver', 'transportSets.vehicle', 'transportSets.trailer',
             'transportSets.goods.good', 'transportSets.goods.unit',
             'transportSets.statusHistories.changedBy',
+            'media',
         ]);
     }
 

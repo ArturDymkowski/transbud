@@ -126,6 +126,25 @@
             </div>
         </x-form.section>
 
+        <!-- Sekcja: Dokumenty -->
+        <x-form.section title="{{ __('deliveries.documents') }}">
+            <div class="flex flex-col gap-2">
+                @forelse($delivery->getMedia(\App\Models\Delivery::MEDIA_DOCUMENTS) as $media)
+                    <div wire:key="show-document-{{ $media->id }}" class="flex items-center justify-between px-4 py-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                        <span class="text-sm text-gray-700 dark:text-gray-400 truncate">{{ $media->file_name }}</span>
+                        <a href="{{ route('delivery-documents.show', $media->id) }}"
+                           download="{{ $media->file_name }}"
+                           class="text-gray-400 hover:text-brand-500"
+                           title="{{ __('labels.general.download_document') }}">
+                            <x-heroicon-o-arrow-down-tray class="w-5 h-5"/>
+                        </a>
+                    </div>
+                @empty
+                    <p class="text-sm text-gray-500 dark:text-gray-400">-</p>
+                @endforelse
+            </div>
+        </x-form.section>
+
     </div>
 
     <x-tables.show-footer-actions :indexRoute="route('deliveries.index')" :editRoute="auth()->user()->can('deliveries.edit') ? route('deliveries.edit', $delivery) : null"/>
