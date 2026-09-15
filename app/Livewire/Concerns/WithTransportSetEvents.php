@@ -21,7 +21,14 @@ trait WithTransportSetEvents
     {
         return DeliveryTransportSet::query()
             ->whereNotNull('loading_at')
-            ->whereBetween('loading_at', [$start, $end])
+            ->where('loading_at', '<=', $end)
+            ->where(function (Builder $query) use ($start) {
+                $query->where('unloading_at', '>=', $start)
+                    ->orWhere(function (Builder $query) use ($start) {
+                        $query->whereNull('unloading_at')
+                            ->where('loading_at', '>=', $start);
+                    });
+            })
             ->with(['delivery', 'driver', 'vehicle', 'trailer'])
             ->whereNotIn('status', [DeliveryTransportSetStatusEnum::CANCELLED, DeliveryTransportSetStatusEnum::DRAFT]);
     }

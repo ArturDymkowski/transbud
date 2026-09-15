@@ -80,6 +80,27 @@ test('planner does not show transport sets scheduled on other days', function ()
         ->assertSee('DEL-TOMORROW');
 });
 
+test('a transport set that ends the next day still shows up on that next day, clipped to midnight-to-unloading', function () {
+    $driver = Driver::factory()->create(['is_active' => true]);
+    $delivery = Delivery::factory()->create(['number' => 'DEL-OVERNIGHT-1']);
+    DeliveryTransportSet::factory()->create([
+        'delivery_id' => $delivery->id,
+        'driver_id' => $driver->id,
+        'status' => DeliveryTransportSetStatusEnum::ASSIGNED,
+        'loading_at' => today()->setTime(11, 30),
+        'unloading_at' => today()->addDay()->setTime(21, 30),
+    ]);
+
+    $component = Livewire::test(DeliveriesPlanner::class)
+        ->call('nextDay')
+        ->assertSee('DEL-OVERNIGHT-1');
+
+    $event = $component->instance()->eventsByResource()->get($driver->id)->first();
+
+    expect($event->offsetPercent)->toBe(0.0);
+    expect($event->widthPercent)->toBeGreaterThan(89.0)->toBeLessThan(90.0);
+});
+
 test('previousDay, nextDay and goToToday move the visible date', function () {
     $today = today()->toDateString();
 
