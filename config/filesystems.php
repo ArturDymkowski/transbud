@@ -66,6 +66,10 @@ return [
             'root' => storage_path('app/private/driver-documents'),
             'visibility' => 'private',
             'throw' => false,
+            'permissions' => [
+                'file' => ['private' => 0660],
+                'dir' => ['private' => 0770],
+            ],
         ],
 
         'delivery_documents' => [
@@ -73,6 +77,10 @@ return [
             'root' => storage_path('app/private/delivery-documents'),
             'visibility' => 'private',
             'throw' => false,
+            'permissions' => [
+                'file' => ['private' => 0660],
+                'dir' => ['private' => 0770],
+            ],
         ],
     ],
 
