@@ -31,14 +31,14 @@ class MenuHelper
                 'path' => route('drivers.index'),
             ],
             [
+                'permission' => 'vehicles.view',
+                'icon' => 'heroicon-o-truck',
+                'name' => __('vehicles.plural_model_label'),
+                'path' => route('vehicles.index'),
+            ],
+            [
                 'name' => __('labels.menu.dictionaries'),
                 'subItems' => [
-                    [
-                        'permission' => 'vehicles.view',
-                        'icon' => 'heroicon-o-truck',
-                        'name' => __('vehicles.plural_model_label'),
-                        'path' => route('vehicles.index'),
-                    ],
                     [
                         'permission' => 'contractors.view',
                         'icon' => 'heroicon-o-building-office',
